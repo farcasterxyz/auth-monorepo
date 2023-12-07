@@ -4,6 +4,7 @@ This monorepo contains packages and applications related to [Farcaster Connect](
 
 ## Packages
 
-| Package Name                             | Description                    |
-| ---------------------------------------- | ------------------------------ |
-| [@farcaster/connect-relay](./apps/relay) | Farcaster Connect relay server |
+| Package Name                             | Description                      |
+| ---------------------------------------- | -------------------------------- |
+| [@farcaster/connect-relay](./apps/relay) | Farcaster Connect relay server   |
+| [@farcaster/connect](./packages/connect) | Farcaster Connect client library |

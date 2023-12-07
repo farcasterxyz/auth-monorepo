@@ -1,9 +1,18 @@
 import fastify from "fastify";
-import fastifyCors from "@fastify/cors";
+import cors from "@fastify/cors";
+import rateLimit from "@fastify/rate-limit";
 import { err, ok } from "neverthrow";
 import { connectRequestSchema, authenticateRequestSchema } from "./schemas";
 import { ChannelStore } from "./channels";
-import { AuthenticateRequest, ConnectRequest, RelaySession, authenticate, connect, status } from "./handlers";
+import {
+  AuthenticateRequest,
+  ConnectRequest,
+  RelaySession,
+  authenticate,
+  connect,
+  handleError,
+  status,
+} from "./handlers";
 import { logger } from "./logger";
 import { RelayError, RelayAsyncResult } from "./errors";
 
@@ -24,16 +33,9 @@ export class RelayServer {
       redisUrl,
       ttl,
     });
-    this.app.setErrorHandler((error, request, reply) => {
-      if (error.validation) {
-        reply.status(400).send({ error: "Bad Request", message: error.message });
-      } else {
-        log.error({ err: error, errMsg: error.message, request }, "Error in http request");
-        reply.code(500).send({ error: error.message });
-      }
-    });
+    this.app.setErrorHandler(handleError.bind(this, log));
 
-    this.app.register(fastifyCors, { origin: [corsOrigin] });
+    this.app.register(cors, { origin: [corsOrigin] });
     this.app.decorateRequest("channels");
     this.app.addHook("onRequest", async (request) => {
       request.channels = this.channels;
@@ -47,7 +49,8 @@ export class RelayServer {
   initHandlers() {
     this.app.register(
       (v1, _opts, next) => {
-        v1.register((publicRoutes, _opts, next) => {
+        v1.register(async (publicRoutes, _opts, next) => {
+          await publicRoutes.register(rateLimit);
           publicRoutes.post<{ Body: ConnectRequest }>("/connect", { schema: { body: connectRequestSchema } }, connect);
           next();
         });

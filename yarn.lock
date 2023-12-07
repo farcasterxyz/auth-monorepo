@@ -723,6 +723,15 @@
   dependencies:
     fast-json-stringify "^5.7.0"
 
+"@fastify/rate-limit@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.npmjs.org/@fastify/rate-limit/-/rate-limit-9.0.1.tgz#8efe06d20a3c551d90e8277b3e4b52894f0dec44"
+  integrity sha512-BNKWtMHyJV+f3TUAQxWacq8dVfJLeTzBOthKpTpkYEBdBRY0cYn2UTPGpHglwZ84o0V+U7pS3wfO4mzF8eXFzg==
+  dependencies:
+    "@lukeed/ms" "^2.0.1"
+    fastify-plugin "^4.0.0"
+    toad-cache "^3.3.1"
+
 "@grpc/grpc-js@~1.8.21":
   version "1.8.21"
   resolved "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.8.21.tgz#d282b122c71227859bf6c5866f4c40f4a2696513"
@@ -1023,6 +1032,11 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
+
+"@lukeed/ms@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/@lukeed/ms/-/ms-2.0.2.tgz#07f09e59a74c52f4d88c6db5c1054e819538e2a8"
+  integrity sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==
 
 "@manypkg/find-root@^1.1.0":
   version "1.1.0"
@@ -5528,7 +5542,7 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
-toad-cache@^3.3.0:
+toad-cache@^3.3.0, toad-cache@^3.3.1:
   version "3.4.1"
   resolved "https://registry.npmjs.org/toad-cache/-/toad-cache-3.4.1.tgz#a3506a9e0f877d751832083e2ee4ed8fb151b3e5"
   integrity sha512-T0m3MxP3wcqW0LaV3dF1mHBU294sgYSm4FOpa5eEJaYO7PqJZBOjZEQI1y4YaKNnih1FXCEYTWDS9osCoTUefg==

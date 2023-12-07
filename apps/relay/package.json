@@ -18,6 +18,7 @@
   "dependencies": {
     "@farcaster/hub-nodejs": "^0.10.19",
     "@fastify/cors": "^8.4.2",
+    "@fastify/rate-limit": "^9.0.1",
     "dotenv": "^16.3.1",
     "ethers": "^6.9.0",
     "fastify": "^4.24.3",

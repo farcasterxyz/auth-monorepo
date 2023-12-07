@@ -114,7 +114,7 @@ describe("relay server", () => {
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: 'body/notBefore must match format "date-time"',
       });
     });
@@ -125,7 +125,7 @@ describe("relay server", () => {
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: "body must have required property 'siweUri'",
       });
     });
@@ -138,7 +138,7 @@ describe("relay server", () => {
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: 'body/siweUri must match format "uri"',
       });
     });
@@ -149,7 +149,7 @@ describe("relay server", () => {
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: "body must have required property 'domain'",
       });
     });
@@ -162,7 +162,7 @@ describe("relay server", () => {
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: 'body/domain must match format "hostname"',
       });
     });
@@ -222,7 +222,7 @@ describe("relay server", () => {
       });
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: "body must have required property 'fid'",
       });
     });
@@ -235,7 +235,7 @@ describe("relay server", () => {
       );
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: 'body/username must match pattern "^[a-z0-9][a-z0-9-]{0,15}$|^[a-z0-9][a-z0-9-]{0,15}\\.eth$"',
       });
     });
@@ -248,7 +248,7 @@ describe("relay server", () => {
       );
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: 'body/signature must match pattern "^0x[a-fA-F0-9]{130}$"',
       });
     });
@@ -261,7 +261,7 @@ describe("relay server", () => {
       );
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
-        error: "Bad Request",
+        error: "Validation error",
         message: 'body/pfpUrl must match format "uri"',
       });
     });

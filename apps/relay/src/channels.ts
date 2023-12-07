@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 import { ResultAsync, err, ok } from "neverthrow";
 import { randomUUID } from "crypto";
-import { RelayAsyncResult, RelayError } from "./errors";
+import { ConnectAsyncResult, ConnectError } from "@farcaster/connect";
 
 interface ChannelStoreOpts {
   redisUrl: string;
@@ -17,36 +17,36 @@ export class ChannelStore<T> {
     this.ttl = ttl ?? 3600;
   }
 
-  async open(state?: T): RelayAsyncResult<string> {
+  async open(state?: T): ConnectAsyncResult<string> {
     const channelToken = randomUUID();
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state ?? {}), "EX", this.ttl),
-      (err) => new RelayError("unavailable", err as Error),
+      (err) => new ConnectError("unavailable", err as Error),
     ).andThen(() => ok(channelToken));
   }
 
-  async update(channelToken: string, state: T): RelayAsyncResult<T> {
+  async update(channelToken: string, state: T): ConnectAsyncResult<T> {
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state), "KEEPTTL"),
-      (err) => new RelayError("unavailable", err as Error),
+      (err) => new ConnectError("unavailable", err as Error),
     ).andThen(() => ok(state));
   }
 
-  async read(channelToken: string): RelayAsyncResult<T> {
+  async read(channelToken: string): ConnectAsyncResult<T> {
     return ResultAsync.fromPromise(
       this.redis.get(channelToken),
-      (err) => new RelayError("unavailable", err as Error),
+      (err) => new ConnectError("unavailable", err as Error),
     ).andThen((channel) => {
       if (channel) {
         return ok(JSON.parse(channel));
       } else {
-        return err(new RelayError("not_found", "Channel not found"));
+        return err(new ConnectError("not_found", "Channel not found"));
       }
     });
   }
 
   async close(channelToken: string) {
-    return ResultAsync.fromPromise(this.redis.del(channelToken), (err) => new RelayError("unknown", err as Error));
+    return ResultAsync.fromPromise(this.redis.del(channelToken), (err) => new ConnectError("unknown", err as Error));
   }
 
   async clear() {

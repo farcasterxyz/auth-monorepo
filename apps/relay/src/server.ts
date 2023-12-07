@@ -14,7 +14,7 @@ import {
   status,
 } from "./handlers";
 import { logger } from "./logger";
-import { RelayError, RelayAsyncResult } from "./errors";
+import { ConnectError, ConnectAsyncResult } from "@farcaster/connect";
 
 const log = logger.child({ component: "RelayServer" });
 
@@ -82,12 +82,12 @@ export class RelayServer {
     );
   }
 
-  async start(ip = "0.0.0.0", port = 0): RelayAsyncResult<string> {
+  async start(ip = "0.0.0.0", port = 0): ConnectAsyncResult<string> {
     return new Promise((resolve) => {
       this.app.listen({ host: ip, port }, (e, address) => {
         if (e) {
           log.error({ err: e, errMsg: e.message }, "Failed to start http server");
-          resolve(err(new RelayError("unavailable", `Failed to start http server: ${e.message}`)));
+          resolve(err(new ConnectError("unavailable", `Failed to start http server: ${e.message}`)));
         }
 
         log.info({ address }, "Started relay server");

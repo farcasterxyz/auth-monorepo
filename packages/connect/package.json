@@ -1,0 +1,33 @@
+{
+  "name": "@farcaster/connect",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup --config tsup.config.ts",
+    "clean": "rimraf ./dist",
+    "lint": "biome format src/ --write && biome check src/ --apply",
+    "lint:ci": "biome ci src/",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:ci": "ENVIRONMENT=test NODE_OPTIONS=--experimental-vm-modules jest --ci --forceExit --coverage",
+    "prepublishOnly": "yarn run build"
+  },
+  "dependencies": {
+    "siwe": "^2.1.4"
+  },
+  "devDependencies": {
+    "viem": "^1.19.11"
+  }
+}

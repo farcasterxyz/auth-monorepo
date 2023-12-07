@@ -1,23 +1,23 @@
 import { Result } from "neverthrow";
 
-interface RelayErrorOpts {
+interface ConnectErrorOpts {
   message: string;
-  cause: Error | RelayError;
+  cause: Error | ConnectError;
   presentable: boolean;
 }
 
-export class RelayError extends Error {
-  public readonly errCode: RelayErrorCode;
+export class ConnectError extends Error {
+  public readonly errCode: ConnectErrorCode;
 
   /* Indicates if error message can be presented to the user */
   public readonly presentable: boolean = false;
 
   /**
-   * @param errCode - the RelayError code for this message
-   * @param context - a message, another Error, or a RelayErrorOpts
+   * @param errCode - the ConnectError code for this message
+   * @param context - a message, another Error, or a ConnectErrorOpts
    */
-  constructor(errCode: RelayErrorCode, context: Partial<RelayErrorOpts> | string | Error) {
-    let parsedContext: string | Error | Partial<RelayErrorOpts>;
+  constructor(errCode: ConnectErrorCode, context: Partial<ConnectErrorOpts> | string | Error) {
+    let parsedContext: string | Error | Partial<ConnectErrorOpts>;
 
     if (typeof context === "string") {
       parsedContext = { message: context };
@@ -33,25 +33,26 @@ export class RelayError extends Error {
 
     super(parsedContext.message, { cause: parsedContext.cause });
 
-    this.name = "RelayError";
+    this.name = "ConnectError";
     this.errCode = errCode;
   }
 }
 
 /**
- * RelayErrorCode defines all the types of errors that can be raised.
+ * ConnectErrorCode defines all the types of errors that can be raised.
  *
  * A string union type is chosen over an enumeration since TS enums are unusual types that generate
  * javascript code and may cause downstream issues. See:
  * https://www.executeprogram.com/blog/typescript-features-to-avoid
  */
-export type RelayErrorCode =
+export type ConnectErrorCode =
   /* The request did not have valid authentication credentials, retry with credentials  */
   | "unauthenticated"
   /* The authenticated request did not have the authority to perform this action  */
   | "unauthorized"
   /* The request cannot be completed as constructed, do not retry */
   | "bad_request"
+  | "bad_request.validation_failure"
   /* The requested resource could not be found */
   | "not_found"
   /* The request could not be completed because the operation is not executable */
@@ -62,5 +63,5 @@ export type RelayErrorCode =
   | "unknown";
 
 /** Type alias for shorthand when handling errors */
-export type RelayResult<T> = Result<T, RelayError>;
-export type RelayAsyncResult<T> = Promise<RelayResult<T>>;
+export type ConnectResult<T> = Result<T, ConnectError>;
+export type ConnectAsyncResult<T> = Promise<ConnectResult<T>>;

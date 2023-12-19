@@ -1,8 +1,8 @@
-import { createWalletClient } from "../clients/createWalletClient";
+import { createAuthClient } from "../clients/createAuthClient";
 import { jest } from "@jest/globals";
 
 describe("authenticate", () => {
-  const client = createWalletClient({
+  const client = createAuthClient({
     relayURI: "https://connect.farcaster.xyz",
   });
 

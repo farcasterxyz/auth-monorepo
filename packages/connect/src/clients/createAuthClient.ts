@@ -2,11 +2,11 @@ import { authenticate, AuthenticateArgs, AuthenticateResponse } from "../actions
 import { Client, ClientConfig, createClient } from "./createClient";
 import { AsyncHttpResponse } from "./transports/http";
 
-export interface WalletClient extends Client {
+export interface AuthClient extends Client {
   authenticate: (args: AuthenticateArgs) => AsyncHttpResponse<AuthenticateResponse>;
 }
 
-export const createWalletClient = (config: ClientConfig): WalletClient => {
+export const createAuthClient = (config: ClientConfig): AuthClient => {
   const client = createClient(config);
   return {
     ...client,

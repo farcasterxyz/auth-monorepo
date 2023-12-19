@@ -20,8 +20,8 @@
     "clean": "rimraf ./dist",
     "lint": "biome format src/ --write && biome check src/ --apply",
     "lint:ci": "biome ci src/",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:ci": "ENVIRONMENT=test NODE_OPTIONS=--experimental-vm-modules jest --ci --forceExit --coverage",
+    "test": "jest",
+    "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {

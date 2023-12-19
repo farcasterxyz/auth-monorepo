@@ -1,36 +1,36 @@
-import { createWalletClient, WalletClient } from "./createWalletClient";
+import { createAuthClient, AuthClient } from "./createAuthClient";
 
-describe("createWalletClient", () => {
+describe("createAuthClient", () => {
   const config = {
     relayURI: "https://connect.farcaster.xyz",
   };
 
-  let walletClient: WalletClient;
+  let authClient: AuthClient;
 
   beforeEach(() => {
-    walletClient = createWalletClient(config);
+    authClient = createAuthClient(config);
   });
 
   test("adds version to config", () => {
-    expect(walletClient.config).toEqual({
+    expect(authClient.config).toEqual({
       relayURI: "https://connect.farcaster.xyz",
       version: "v1",
     });
   });
 
   test("overrides version", () => {
-    walletClient = createWalletClient({
+    authClient = createAuthClient({
       ...config,
       version: "v2",
     });
 
-    expect(walletClient.config).toEqual({
+    expect(authClient.config).toEqual({
       relayURI: "https://connect.farcaster.xyz",
       version: "v2",
     });
   });
 
   test("includes app actions", () => {
-    expect(walletClient.authenticate).toBeDefined();
+    expect(authClient.authenticate).toBeDefined();
   });
 });

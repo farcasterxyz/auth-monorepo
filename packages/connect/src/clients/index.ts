@@ -1,8 +1,8 @@
 export { createAppClient } from "./createAppClient";
-export { createWalletClient } from "./createWalletClient";
+export { createAuthClient } from "./createAuthClient";
 
 export type { AppClient } from "./createAppClient";
-export type { WalletClient } from "./createWalletClient";
+export type { AuthClient } from "./createAuthClient";
 export type { ClientConfig } from "./createClient";
 export type { ConnectArgs, ConnectResponse } from "../actions/connect";
 export type { StatusArgs, StatusResponse } from "../actions/status";

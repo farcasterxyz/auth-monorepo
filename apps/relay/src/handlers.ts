@@ -75,12 +75,12 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
       signature,
     });
     if (update.isOk()) {
-      reply.send();
+      reply.send(update.value);
     } else {
       reply.code(500).send({ error: update.error.message });
     }
   } else {
-    if (channel.error.errCode === "not_found") reply.code(401).send();
+    if (channel.error.errCode === "not_found") reply.code(401).send({ error: "Unauthorized " });
     reply.code(500).send({ error: channel.error.message });
   }
 }
@@ -97,7 +97,7 @@ export async function status(request: FastifyRequest, reply: FastifyReply) {
     }
     reply.send(res);
   } else {
-    if (channel.error.errCode === "not_found") reply.code(401).send();
+    if (channel.error.errCode === "not_found") reply.code(401).send({ error: "Unauthorized" });
     reply.code(500).send({ error: channel.error.message });
   }
 }

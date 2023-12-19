@@ -63,7 +63,7 @@ export class RelayServer {
             if (channelToken) {
               request.channelToken = channelToken;
             } else {
-              reply.code(401).send();
+              reply.code(401).send({ error: "Unauthorized " });
               return;
             }
           });

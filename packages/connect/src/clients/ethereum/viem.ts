@@ -1,9 +1,11 @@
 import { Hex, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
+import { JsonRpcProvider } from "ethers";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/hub-web";
 
 export interface Ethereum {
   getFid: (custody: Hex) => Promise<BigInt>;
+  provider: JsonRpcProvider;
 }
 
 interface ViemConfigArgs {
@@ -25,7 +27,17 @@ export const viem = (args?: ViemConfigArgs): Ethereum => {
     });
   };
 
+  const getProvider = () => {
+    const { chain, transport } = publicClient;
+    const network = {
+      chainId: chain.id,
+      name: chain.name,
+    };
+    return new JsonRpcProvider(transport.url, network);
+  };
+
   return {
     getFid,
+    provider: getProvider(),
   };
 };

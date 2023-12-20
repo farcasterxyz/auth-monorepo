@@ -56,7 +56,7 @@ describe("clients", () => {
         response: pendingStatusResponse,
         data: { state: pendingState },
       } = await appClient.status({ channelToken });
-      expect(pendingStatusResponse.status).toBe(200);
+      expect(pendingStatusResponse.status).toBe(202);
       expect(pendingState).toBe("pending");
 
       // 3. Auth client generates a sign in message
@@ -101,7 +101,7 @@ describe("clients", () => {
         signature: sig,
         ...userData,
       });
-      expect(authResponse.status).toBe(200);
+      expect(authResponse.status).toBe(201);
 
       // 4. App client polls channel status
       const {

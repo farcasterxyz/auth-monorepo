@@ -15,6 +15,7 @@ export const verifySignInMessage = async (
 ): VerifySignInMessageResponse => {
   const result = await verify(message, signature, {
     getFid: client.ethereum.getFid,
+    provider: client.ethereum.provider,
   });
   if (result.isErr()) {
     throw result.error;

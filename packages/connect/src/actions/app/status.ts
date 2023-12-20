@@ -1,11 +1,13 @@
-import { Client } from "../clients/createClient";
-import { get, AsyncHttpResponse } from "../clients/transports/http";
+import { Client } from "../../clients/createClient";
+import { get, AsyncHttpResponse } from "../../clients/transports/http";
 
 export interface StatusArgs {
   channelToken: string;
 }
 
-export interface StatusResponse {
+export type StatusResponse = AsyncHttpResponse<StatusAPIResponse>;
+
+interface StatusAPIResponse {
   state: "pending" | "completed";
   nonce: string;
   connectURI: string;
@@ -20,6 +22,6 @@ export interface StatusResponse {
 
 const path = "connect/status";
 
-export const status = async (client: Client, { channelToken }: StatusArgs): AsyncHttpResponse<StatusResponse> => {
+export const status = async (client: Client, { channelToken }: StatusArgs): StatusResponse => {
   return get(client, path, { authToken: channelToken });
 };

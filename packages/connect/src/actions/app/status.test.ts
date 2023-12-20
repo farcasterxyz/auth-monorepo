@@ -1,4 +1,4 @@
-import { createAppClient } from "../clients/createAppClient";
+import { createAppClient } from "../../clients/createAppClient";
 import { jest } from "@jest/globals";
 
 describe("status", () => {

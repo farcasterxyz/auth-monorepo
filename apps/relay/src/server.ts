@@ -14,7 +14,7 @@ import {
   status,
 } from "./handlers";
 import { logger } from "./logger";
-import { ConnectError, ConnectAsyncResult } from "@farcaster/connect";
+import { ConnectError, ConnectAsyncResult } from "./errors";
 
 const log = logger.child({ component: "RelayServer" });
 

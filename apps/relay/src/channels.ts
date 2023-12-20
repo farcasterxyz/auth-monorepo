@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 import { ResultAsync, err, ok } from "neverthrow";
 import { randomUUID } from "crypto";
-import { ConnectAsyncResult, ConnectError } from "@farcaster/connect";
+import { ConnectAsyncResult, ConnectError } from "./errors";
 
 interface ChannelStoreOpts {
   redisUrl: string;

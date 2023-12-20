@@ -1,8 +1,11 @@
 import { createClient, Client } from "./createClient";
+import { viem } from "./ethereum/viem";
 
 describe("createClient", () => {
+  const ethereum = viem();
   const config = {
     relayURI: "https://connect.farcaster.xyz",
+    ethereum,
   };
 
   let client: Client;
@@ -41,6 +44,7 @@ describe("createClient", () => {
         relayURI: "https://connect.farcaster.xyz",
         version: "v2",
       },
+      ethereum,
     });
   });
 });

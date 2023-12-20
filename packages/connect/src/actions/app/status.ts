@@ -23,5 +23,5 @@ interface StatusAPIResponse {
 const path = "connect/status";
 
 export const status = async (client: Client, { channelToken }: StatusArgs): StatusResponse => {
-  return get(client, path, { authToken: channelToken });
+  return get<StatusAPIResponse>(client, path, { authToken: channelToken });
 };

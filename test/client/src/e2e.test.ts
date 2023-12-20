@@ -1,5 +1,7 @@
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { RelayServer } from "../../../apps/relay/src/server";
 import { createAppClient, createAuthClient } from "../../../packages/connect/src/clients";
+import { viem } from "../../../packages/connect/src/clients/ethereum/viem";
 import { jest } from "@jest/globals";
 
 let httpServer: RelayServer;
@@ -24,69 +26,98 @@ afterEach(async () => {
 });
 
 describe("clients", () => {
-  const connectParams = {
-    siweUri: "https://example.com",
-    domain: "example.com",
-  };
-
-  const authenticateParams = {
-    message: "example.com wants you to sign in with your Ethereum account: [...]",
-    signature:
-      "0x9335c30585854d1bd7040dccfbb18bfecc9eba6ee18c55a3996ef0aca783fba832b13b05dc09beec99fc6477804113fd293c68c84ea350a11794cdc121c71fd51b" as const,
-    fid: 1,
-    username: "alice",
-    bio: "I'm a little teapot who didn't fill out my bio",
-    displayName: "Alice Teapot",
-    pfpUrl: "https://example.com/alice.png",
-  };
-
   describe("e2e", () => {
     test("end to end connect flow", async () => {
       const appClient = createAppClient({
         relayURI: httpServerAddress,
+        ethereum: viem(),
       });
 
       const authClient = createAuthClient({
         relayURI: httpServerAddress,
+        ethereum: viem(),
       });
 
-      const customNonce = "some-custom-nonce";
+      const account = privateKeyToAccount(generatePrivateKey());
+
+      // 1. App client opens a sign in channel
       const {
         response: connectResponse,
-        data: { channelToken },
-      } = await appClient.connect({ ...connectParams, nonce: customNonce });
-
+        data: { channelToken, connectURI },
+      } = await appClient.connect({
+        siweUri: "https://example.com",
+        domain: "example.com",
+        nonce: "abcd1234",
+      });
       expect(connectResponse.status).toBe(201);
 
+      // 1. App client checks channel status
       const {
         response: pendingStatusResponse,
         data: { state: pendingState },
       } = await appClient.status({ channelToken });
-
       expect(pendingStatusResponse.status).toBe(200);
       expect(pendingState).toBe("pending");
 
+      // 3. Auth client generates a sign in message
+
+      // 3a. Parse connect URI to get channel token and SIWE message params
+      const { channelToken: token, params } = authClient.parseSignInURI({
+        uri: connectURI,
+      });
+      expect(token).toBe(channelToken);
+
+      const { siweUri, ...siweParams } = params;
+      expect(siweUri).toBe("https://example.com");
+      expect(siweParams.domain).toBe("example.com");
+      expect(siweParams.nonce).toBe("abcd1234");
+
+      // 3b. Build sign in message
+      const siweMessage = authClient.buildSignInMessage({
+        ...siweParams,
+        uri: siweUri,
+        address: account.address,
+        fid: 1,
+      });
+
+      // 3c. Collect user signature
+      const sig = await account.signMessage({
+        message: siweMessage.toMessage(),
+      });
+
+      // 3d. Look up userData
+      const userData = {
+        fid: 1,
+        username: "alice",
+        bio: "I'm a little teapot who didn't fill out my bio",
+        displayName: "Alice Teapot",
+        pfpUrl: "https://example.com/alice.png",
+      };
+
+      // 3e. Send back signed message
       const { response: authResponse } = await authClient.authenticate({
         channelToken,
-        ...authenticateParams,
+        message: siweMessage.toMessage(),
+        signature: sig,
+        ...userData,
       });
       expect(authResponse.status).toBe(200);
 
+      // 4. App client polls channel status
       const {
         response: completedStatusResponse,
         data: { state: completedState, message, signature, nonce },
       } = await appClient.status({ channelToken });
-
       expect(completedStatusResponse.status).toBe(200);
       expect(completedState).toBe("completed");
-      expect(message).toBe(authenticateParams.message);
-      expect(signature).toBe(authenticateParams.signature);
+      expect(message).toBe(siweMessage.toMessage());
+      expect(signature).toBe(sig);
       expect(nonce).toBe(nonce);
 
+      // 5. Channel is now closed
       const { response: channelClosedResponse } = await appClient.status({
         channelToken,
       });
-
       expect(channelClosedResponse.status).toBe(401);
     });
   });

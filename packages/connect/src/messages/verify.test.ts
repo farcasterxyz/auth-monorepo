@@ -3,8 +3,6 @@ import { verify } from "./verify";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { Hex, zeroAddress } from "viem";
 import { getDefaultProvider } from "ethers";
-import { SiweMessage } from "siwe";
-import fs from "fs";
 
 const account = privateKeyToAccount(generatePrivateKey());
 
@@ -17,16 +15,9 @@ const siweParams = {
   issuedAt: "2023-10-01T00:00:00.000Z",
 };
 
-const connectParams = {
-  ...siweParams,
-  statement: "Farcaster Connect",
-  chainId: 10,
-  resources: ["farcaster://fid/1234"],
-};
-
 describe("verify", () => {
   test("verifies valid EOA signatures", async () => {
-    const verifyFid = (_custody: Hex) => Promise.resolve(1234n);
+    const getFid = (_custody: Hex) => Promise.resolve(1234n);
 
     const res = build({
       ...siweParams,
@@ -35,8 +26,7 @@ describe("verify", () => {
     });
     const message = res._unsafeUnwrap();
     const sig = await account.signMessage({ message: message.toMessage() });
-    fs.writeFileSync("sig.json", JSON.stringify({ message: message.toMessage(), sig: sig }));
-    const result = await verify(message, sig, { verifyFid });
+    const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toStrictEqual({
       data: message,
@@ -46,7 +36,7 @@ describe("verify", () => {
   });
 
   test("adds parsed resources to response", async () => {
-    const verifyFid = (_custody: Hex) => Promise.resolve(1234n);
+    const getFid = (_custody: Hex) => Promise.resolve(1234n);
 
     const res = build({
       ...siweParams,
@@ -55,7 +45,7 @@ describe("verify", () => {
     });
     const message = res._unsafeUnwrap();
     const sig = await account.signMessage({ message: message.toMessage() });
-    const result = await verify(message, sig, { verifyFid });
+    const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toStrictEqual({
       data: message,
@@ -65,7 +55,7 @@ describe("verify", () => {
   });
 
   test("verifies valid 1271 signatures", async () => {
-    const verifyFid = (_custody: Hex) => Promise.resolve(1234n);
+    const getFid = (_custody: Hex) => Promise.resolve(1234n);
     const provider = getDefaultProvider(10);
 
     const res = build({
@@ -75,7 +65,7 @@ describe("verify", () => {
     });
     const message = res._unsafeUnwrap();
     const sig = await account.signMessage({ message: message.toMessage() });
-    const result = await verify(message, sig, { verifyFid, provider });
+    const result = await verify(message, sig, { getFid, provider });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toStrictEqual({
       data: message,
@@ -85,7 +75,7 @@ describe("verify", () => {
   });
 
   test("1271 signatures fail without provider", async () => {
-    const verifyFid = (_custody: Hex) => Promise.resolve(1234n);
+    const getFid = (_custody: Hex) => Promise.resolve(1234n);
 
     const res = build({
       ...siweParams,
@@ -94,7 +84,7 @@ describe("verify", () => {
     });
     const message = res._unsafeUnwrap();
     const sig = await account.signMessage({ message: message.toMessage() });
-    const result = await verify(message, sig, { verifyFid });
+    const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -102,7 +92,7 @@ describe("verify", () => {
   });
 
   test("invalid SIWE message", async () => {
-    const verifyFid = (_custody: Hex) => Promise.resolve(1234n);
+    const getFid = (_custody: Hex) => Promise.resolve(1234n);
 
     const message = build({
       ...siweParams,
@@ -112,7 +102,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message: message._unsafeUnwrap().toMessage(),
     });
-    const result = await verify(message._unsafeUnwrap(), sig, { verifyFid });
+    const result = await verify(message._unsafeUnwrap(), sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -120,7 +110,7 @@ describe("verify", () => {
   });
 
   test("invalid fid owner", async () => {
-    const verifyFid = (_custody: Hex) => Promise.resolve(5678n);
+    const getFid = (_custody: Hex) => Promise.resolve(5678n);
 
     const message = build({
       ...siweParams,
@@ -130,7 +120,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message: message._unsafeUnwrap().toMessage(),
     });
-    const result = await verify(message._unsafeUnwrap(), sig, { verifyFid });
+    const result = await verify(message._unsafeUnwrap(), sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -138,7 +128,7 @@ describe("verify", () => {
   });
 
   test("client error", async () => {
-    const verifyFid = (_custody: Hex) => Promise.reject(new Error("client error"));
+    const getFid = (_custody: Hex) => Promise.reject(new Error("client error"));
 
     const message = build({
       ...siweParams,
@@ -148,7 +138,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message: message._unsafeUnwrap().toMessage(),
     });
-    const result = await verify(message._unsafeUnwrap(), sig, { verifyFid });
+    const result = await verify(message._unsafeUnwrap(), sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unavailable");

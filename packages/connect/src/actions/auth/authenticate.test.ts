@@ -1,9 +1,11 @@
 import { createAuthClient } from "../../clients/createAuthClient";
 import { jest } from "@jest/globals";
+import { viem } from "../../clients/ethereum/viem";
 
 describe("authenticate", () => {
   const client = createAuthClient({
     relayURI: "https://connect.farcaster.xyz",
+    ethereum: viem(),
   });
 
   afterEach(() => {

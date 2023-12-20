@@ -1,18 +1,21 @@
+import { SiweMessage } from "siwe";
 import { Client } from "../../clients/createClient";
 import { SignInResponse, verify } from "../../messages/verify";
 
 export interface VerifySignInMessageArgs {
-  message: string;
+  message: string | Partial<SiweMessage>;
   signature: `0x${string}`;
 }
 
 export type VerifySignInMessageResponse = Promise<SignInResponse>;
 
 export const verifySignInMessage = async (
-  _client: Client,
+  client: Client,
   { message, signature }: VerifySignInMessageArgs,
 ): VerifySignInMessageResponse => {
-  const result = await verify(message, signature);
+  const result = await verify(message, signature, {
+    getFid: client.ethereum.getFid,
+  });
   if (result.isErr()) {
     throw result.error;
   } else {

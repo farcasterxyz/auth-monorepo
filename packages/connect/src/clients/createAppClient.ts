@@ -5,7 +5,7 @@ import {
   VerifySignInMessageArgs,
   VerifySignInMessageResponse,
 } from "../actions/app/verifySignInMessage";
-import { Client, ClientConfig, createClient } from "./createClient";
+import { Client, CreateClientArgs, createClient } from "./createClient";
 
 export interface AppClient extends Client {
   connect: (args: ConnectArgs) => ConnectResponse;
@@ -13,7 +13,7 @@ export interface AppClient extends Client {
   verifySignInMessage: (args: VerifySignInMessageArgs) => VerifySignInMessageResponse;
 }
 
-export const createAppClient = (config: ClientConfig): AppClient => {
+export const createAppClient = (config: CreateClientArgs): AppClient => {
   const client = createClient(config);
   return {
     ...client,

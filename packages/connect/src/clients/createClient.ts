@@ -1,3 +1,11 @@
+import { Ethereum } from "../clients/ethereum/viem";
+
+export interface CreateClientArgs {
+  relayURI: string;
+  version?: string;
+  ethereum: Ethereum;
+}
+
 export interface ClientConfig {
   relayURI: string;
   version?: string;
@@ -5,14 +13,16 @@ export interface ClientConfig {
 
 export interface Client {
   config: ClientConfig;
+  ethereum: Ethereum;
 }
 
 const configDefaults = {
   version: "v1",
 };
 
-export const createClient = (config: ClientConfig) => {
+export const createClient = ({ ethereum, ...config }: CreateClientArgs) => {
   return {
     config: { ...configDefaults, ...config },
+    ethereum: ethereum,
   };
 };

@@ -1,9 +1,11 @@
 import { createAppClient } from "../../clients/createAppClient";
 import { jest } from "@jest/globals";
+import { viem } from "../../clients/ethereum/viem";
 
 describe("connect", () => {
   const client = createAppClient({
     relayURI: "https://connect.farcaster.xyz",
+    ethereum: viem(),
   });
 
   afterEach(() => {

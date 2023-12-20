@@ -1,4 +1,4 @@
-import { createAuthClient } from "../clients/createAuthClient";
+import { createAuthClient } from "../../clients/createAuthClient";
 import { jest } from "@jest/globals";
 
 describe("authenticate", () => {

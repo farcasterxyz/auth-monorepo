@@ -1,9 +1,14 @@
-import { authenticate, AuthenticateArgs, AuthenticateResponse } from "../actions/authenticate";
+import { authenticate, AuthenticateArgs, AuthenticateResponse } from "../actions/auth/authenticate";
+import {
+  buildSignInMessage,
+  BuildSignInMessageArgs,
+  BuildSignInMessageResponse,
+} from "../actions/auth/buildSignInMessage";
 import { Client, ClientConfig, createClient } from "./createClient";
-import { AsyncHttpResponse } from "./transports/http";
 
 export interface AuthClient extends Client {
-  authenticate: (args: AuthenticateArgs) => AsyncHttpResponse<AuthenticateResponse>;
+  authenticate: (args: AuthenticateArgs) => AuthenticateResponse;
+  buildSignInMessage: (args: BuildSignInMessageArgs) => BuildSignInMessageResponse;
 }
 
 export const createAuthClient = (config: ClientConfig): AuthClient => {
@@ -11,5 +16,6 @@ export const createAuthClient = (config: ClientConfig): AuthClient => {
   return {
     ...client,
     authenticate: (args: AuthenticateArgs) => authenticate(client, args),
+    buildSignInMessage: (args: BuildSignInMessageArgs) => buildSignInMessage(client, args),
   };
 };

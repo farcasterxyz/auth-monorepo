@@ -1,8 +1,10 @@
 import { createAppClient, AppClient } from "./createAppClient";
+import { viem } from "./ethereum/viem";
 
 describe("createAppClient", () => {
   const config = {
     relayURI: "https://connect.farcaster.xyz",
+    ethereum: viem(),
   };
 
   let appClient: AppClient;

@@ -7,5 +7,8 @@
     "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
     "lint": "biome format src/ --write && biome check src/ --apply",
     "lint:ci": "biome ci src/"
+  },
+  "devDependencies": {
+    "viem": "^1.20.3"
   }
 }

@@ -1,8 +1,10 @@
 import { createAuthClient, AuthClient } from "./createAuthClient";
+import { viem } from "./ethereum/viem";
 
 describe("createAuthClient", () => {
   const config = {
     relayURI: "https://connect.farcaster.xyz",
+    ethereum: viem(),
   };
 
   let authClient: AuthClient;

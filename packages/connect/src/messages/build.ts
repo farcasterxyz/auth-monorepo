@@ -12,6 +12,7 @@ export type SignInMessageParams = Partial<SiweMessage> & FarcasterResourceParams
 export const build = (params: SignInMessageParams): ConnectResult<SiweMessage> => {
   const { fid, ...siweParams } = params;
   const resources = siweParams.resources ?? [];
+  siweParams.version = "1";
   siweParams.statement = STATEMENT;
   siweParams.chainId = CHAIN_ID;
   siweParams.resources = [buildFidResource(fid), ...resources];

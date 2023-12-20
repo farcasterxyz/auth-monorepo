@@ -8,7 +8,7 @@ import { FarcasterResourceParams } from "./build";
 
 type Hex = `0x${string}`;
 type SignInOpts = {
-  verifyFid: (custody: Hex) => Promise<BigInt>;
+  getFid: (custody: Hex) => Promise<BigInt>;
   provider?: Provider;
 };
 export type SignInResponse = SiweResponse & FarcasterResourceParams;
@@ -23,10 +23,10 @@ export const verify = async (
   message: string | Partial<SiweMessage>,
   signature: string,
   options: SignInOpts = {
-    verifyFid: voidVerifyFid,
+    getFid: voidVerifyFid,
   },
 ): ConnectAsyncResult<SignInResponse> => {
-  const { verifyFid, provider } = options;
+  const { getFid, provider } = options;
   const valid = validate(message);
   if (valid.isErr()) return err(valid.error);
 
@@ -37,7 +37,7 @@ export const verify = async (
     return err(new ConnectError("unauthorized", errMessage));
   }
 
-  const fid = await verifyFidOwner(siwe.value, verifyFid);
+  const fid = await verifyFidOwner(siwe.value, getFid);
   if (fid.isErr()) return err(fid.error);
   if (!fid.value.success) {
     const errMessage = siwe.value.error?.type ?? "Unknown error";

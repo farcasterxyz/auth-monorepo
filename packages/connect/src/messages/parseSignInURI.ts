@@ -4,7 +4,7 @@ import { SignInMessageParams } from "./build";
 
 export interface ParsedSignInURI {
   channelToken: string;
-  params: Partial<SignInMessageParams>;
+  params: Partial<SignInMessageParams> & { siweUri?: string };
 }
 
 export const parseSignInURI = (signInUri: string): ConnectResult<ParsedSignInURI> => {

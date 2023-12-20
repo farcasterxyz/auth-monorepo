@@ -33,7 +33,8 @@ export const viem = (args?: ViemConfigArgs): Ethereum => {
       chainId: chain.id,
       name: chain.name,
     };
-    return new JsonRpcProvider(transport.url, network);
+    const rpc = transport.url ?? chain.rpcUrls.default.http[0];
+    return new JsonRpcProvider(rpc, network);
   };
 
   return {

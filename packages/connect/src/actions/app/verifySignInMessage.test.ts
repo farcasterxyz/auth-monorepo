@@ -45,4 +45,27 @@ describe("verifySignInMessage", () => {
       }),
     ).rejects.toStrictEqual(error);
   });
+
+  test("verifies 1271 sign in message", async () => {
+    const LGTM = "0xC89858205c6AdDAD842E1F58eD6c42452671885A";
+    const message = authClient.buildSignInMessage({
+      ...siweParams,
+      address: LGTM,
+      fid: 1234,
+    });
+
+    const signature = await account.signMessage({
+      message: message.toMessage(),
+    });
+
+    const errMsg = `Invalid resource: signer ${LGTM} does not own fid 1234.`;
+    const error = new ConnectError("unauthorized", errMsg);
+
+    await expect(
+      client.verifySignInMessage({
+        message,
+        signature,
+      }),
+    ).rejects.toStrictEqual(error);
+  });
 });

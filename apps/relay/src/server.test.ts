@@ -205,7 +205,7 @@ describe("relay server", () => {
       const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
     });
 
     test("POST with invalid token", async () => {
@@ -314,7 +314,7 @@ describe("relay server", () => {
       const response = await http.get(getFullUrl("/v1/connect/status"), {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(202);
 
       const { state, nonce, ...rest } = response.data;
       expect(state).toBe("pending");
@@ -370,11 +370,11 @@ describe("relay server", () => {
       };
 
       response = await http.get(getFullUrl("/v1/connect/status"), authHeaders);
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(202);
       expect(response.data.state).toBe("pending");
 
       response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, authHeaders);
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
 
       response = await http.get(getFullUrl("/v1/connect/status"), authHeaders);
       expect(response.status).toBe(200);

@@ -1,10 +1,12 @@
 import { createClient } from "../createClient";
-import { get, post } from "./http";
+import { viem } from "../ethereum/viem";
+import { get, poll, post } from "./http";
 import { jest } from "@jest/globals";
 
 describe("http", () => {
   const config = {
     relayURI: "https://connect.farcaster.xyz",
+    ethereum: viem(),
   };
 
   const client = createClient(config);
@@ -105,6 +107,42 @@ describe("http", () => {
           "X-Some-Header": "some-header-value",
         },
       });
+    });
+  });
+
+  describe("poll", () => {
+    test("polls for success response", async () => {
+      const accepted1 = new Response(JSON.stringify({ state: "pending" }), {
+        status: 202,
+      });
+      const accepted2 = new Response(JSON.stringify({ state: "pending" }), {
+        status: 202,
+      });
+      const ok = new Response(JSON.stringify({ state: "completed" }), {
+        status: 200,
+      });
+
+      const spy = jest
+        .spyOn(global, "fetch")
+        .mockResolvedValueOnce(accepted1)
+        .mockResolvedValueOnce(accepted2)
+        .mockResolvedValueOnce(ok);
+
+      const res = await poll(client, "path");
+
+      expect(spy).toHaveBeenCalledTimes(3);
+      expect(res.response.status).toBe(200);
+      expect(res.data).toEqual({ state: "completed" });
+    });
+
+    test("times out", async () => {
+      const accepted = new Response(JSON.stringify({ state: "pending" }), {
+        status: 202,
+      });
+
+      jest.spyOn(global, "fetch").mockResolvedValue(accepted);
+
+      await expect(poll(client, "path", { timeout: 1, interval: 1 })).rejects.toThrow("Polling timed out after 1ms");
     });
   });
 });

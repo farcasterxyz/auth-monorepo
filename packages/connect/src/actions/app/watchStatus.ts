@@ -1,0 +1,41 @@
+import { Client } from "../../clients/createClient";
+import { AsyncHttpResponse, poll, HttpResponse } from "../../clients/transports/http";
+
+export interface WatchStatusArgs {
+  channelToken: string;
+  timeout?: number;
+  interval?: number;
+  onResponse?: (response: HttpResponse<StatusAPIResponse>) => void;
+}
+
+export type WatchStatusResponse = AsyncHttpResponse<StatusAPIResponse>;
+
+interface StatusAPIResponse {
+  state: "pending" | "completed";
+  nonce: string;
+  connectURI: string;
+  message?: string;
+  signature?: `0x${string}`;
+  fid?: number;
+  username?: string;
+  bio?: string;
+  displayName?: string;
+  pfpUrl?: string;
+}
+
+const path = "connect/status";
+
+const voidCallback = () => {};
+
+export const watchStatus = async (client: Client, args: WatchStatusArgs): WatchStatusResponse => {
+  return poll<StatusAPIResponse>(
+    client,
+    path,
+    {
+      timeout: args?.timeout ?? 10000,
+      interval: args?.interval ?? 1000,
+      onResponse: args?.onResponse ?? voidCallback,
+    },
+    { authToken: args.channelToken },
+  );
+};

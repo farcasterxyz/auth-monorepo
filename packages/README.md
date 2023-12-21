@@ -4,7 +4,7 @@ Farcaster Connect client library.
 
 ## App Client
 
-If you're building a [connected app](https://docs.farcaster.xyz/learn/what-is-farcaster/apps#connected-apps), use an app client.
+If you're building a [connected app](https://docs.farcaster.xyz/learn/what-is-farcaster/apps#connected-apps), use an _app client_.
 
 You can use an app client to create a Farcaster Connect relay channel, generate a URL to request a signature from the user's Farcaster wallet app, and verify the returned signature.
 
@@ -258,7 +258,7 @@ Example: `"0x9335c3055d4778013fdabad293c68c84ea350a11794cdc121c71fd51b[...]"`
 
 ## Auth Client
 
-If you're building a [wallet app](https://docs.farcaster.xyz/learn/what-is-farcaster/apps#wallet-apps), use an auth client.
+If you're building a [wallet app](https://docs.farcaster.xyz/learn/what-is-farcaster/apps#wallet-apps) and receiving signature requests, use an _auth client_.
 
 You can use an auth client to parse an incoming Sign In With Farcaster request URL, build a Sign In With Farcaster message to present to the user, and submit the signed message to a Farcaster Connect relay channel.
 

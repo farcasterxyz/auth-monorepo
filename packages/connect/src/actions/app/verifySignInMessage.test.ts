@@ -25,14 +25,14 @@ describe("verifySignInMessage", () => {
   };
 
   test("verifies sign in message", async () => {
-    const message = authClient.buildSignInMessage({
+    const { message } = authClient.buildSignInMessage({
       ...siweParams,
       address: account.address,
       fid: 1234,
     });
 
     const signature = await account.signMessage({
-      message: message.toMessage(),
+      message,
     });
 
     const errMsg = `Invalid resource: signer ${account.address} does not own fid 1234.`;

@@ -4,7 +4,7 @@ import { SignInMessageParams } from "./build";
 
 export interface ParsedSignInURI {
   channelToken: string;
-  params: Partial<SignInMessageParams> & { siweUri?: string };
+  params: Partial<SignInMessageParams>;
 }
 
 export const parseSignInURI = (signInUri: string): ConnectResult<ParsedSignInURI> => {
@@ -23,7 +23,8 @@ export const parseSignInURI = (signInUri: string): ConnectResult<ParsedSignInURI
   if (!params["domain"]) {
     return err(validationFail("No domain provided"));
   }
-  return ok({ channelToken, params });
+  const { siweUri, ...siweParams } = params;
+  return ok({ channelToken, params: { uri: siweUri, ...siweParams } });
 };
 
 const validationFail = (message: string): ConnectError => {

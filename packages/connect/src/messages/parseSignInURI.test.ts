@@ -9,7 +9,7 @@ describe("parseSignInUri", () => {
       channelToken: "76be6229-bdf7-4ad2-930a-540fb2de1e08",
       params: {
         domain: "example.com",
-        siweUri: "https://example.com/login",
+        uri: "https://example.com/login",
         nonce: "ESsxs6MaFio7OvqWb",
       },
     });

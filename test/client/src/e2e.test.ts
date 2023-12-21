@@ -67,22 +67,20 @@ describe("clients", () => {
       });
       expect(token).toBe(channelToken);
 
-      const { siweUri, ...siweParams } = params;
-      expect(siweUri).toBe("https://example.com");
-      expect(siweParams.domain).toBe("example.com");
-      expect(siweParams.nonce).toBe("abcd1234");
+      expect(params.uri).toBe("https://example.com");
+      expect(params.domain).toBe("example.com");
+      expect(params.nonce).toBe("abcd1234");
 
       // 3b. Build sign in message
-      const siweMessage = authClient.buildSignInMessage({
-        ...siweParams,
-        uri: siweUri,
+      const { message: messageString } = authClient.buildSignInMessage({
+        ...params,
         address: account.address,
         fid: 1,
       });
 
       // 3c. Collect user signature
       const sig = await account.signMessage({
-        message: siweMessage.toMessage(),
+        message: messageString,
       });
 
       // 3d. Look up userData
@@ -97,7 +95,7 @@ describe("clients", () => {
       // 3e. Send back signed message
       const { response: authResponse } = await authClient.authenticate({
         channelToken,
-        message: siweMessage.toMessage(),
+        message: messageString,
         signature: sig,
         ...userData,
       });
@@ -110,7 +108,7 @@ describe("clients", () => {
       } = await appClient.status({ channelToken });
       expect(completedStatusResponse.status).toBe(200);
       expect(completedState).toBe("completed");
-      expect(message).toBe(siweMessage.toMessage());
+      expect(message).toBe(messageString);
       expect(signature).toBe(sig);
       expect(nonce).toBe(nonce);
 

@@ -8,7 +8,7 @@ describe("buildSignInMessage", () => {
   });
 
   test("builds Siwe message from provided parameters", async () => {
-    const message = client.buildSignInMessage({
+    const { siweMessage, message } = client.buildSignInMessage({
       address: "0x63C378DDC446DFf1d831B9B96F7d338FE6bd4231",
       uri: "https://example.com/login",
       domain: "example.com",
@@ -17,7 +17,7 @@ describe("buildSignInMessage", () => {
       resources: ["https://example.com/resource"],
     });
 
-    expect(message).toMatchObject({
+    expect(siweMessage).toMatchObject({
       address: "0x63C378DDC446DFf1d831B9B96F7d338FE6bd4231",
       statement: "Farcaster Connect",
       chainId: 10,
@@ -27,5 +27,6 @@ describe("buildSignInMessage", () => {
       nonce: "12345678",
       resources: ["farcaster://fid/1", "https://example.com/resource"],
     });
+    expect(message).toBe(siweMessage.toMessage());
   });
 });

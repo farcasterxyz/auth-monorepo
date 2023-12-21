@@ -18,15 +18,19 @@
   "scripts": {
     "build": "tsup --config tsup.config.ts",
     "clean": "rimraf ./dist",
-    "lint": "biome format src/ --write && biome check src/ --apply",
-    "lint:ci": "biome ci src/",
+    "lint": "biome format src/ scripts/ --write && biome check src/ scripts/ --apply",
+    "lint:ci": "biome ci src/ scripts/",
     "test": "jest",
     "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
+    "console": "yarn ts-node ./scripts/console.ts",
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
     "@farcaster/hub-web": "^0.7.1",
     "siwe": "^2.1.4"
+  },
+  "peerDependencies": {
+    "viem": "^1.19.11"
   },
   "devDependencies": {
     "viem": "^1.19.11"

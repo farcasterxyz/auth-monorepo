@@ -311,7 +311,7 @@ Sign In With Farcaster protocol handler URI.
 
 Type: `string`
 
-Example: `"farcaster://connect?channelToken=76be6229-bdf7-4ad2-930a-540fb2de1e08&nonce=ESsxs6MaFio7OvqWb&siweUri=https%3A%2F%2Fexample.com%2Flogin&domain=example.com"``
+Example: `"farcaster://connect?channelToken=76be6229-bdf7-4ad2-930a-540fb2de1e08&nonce=ESsxs6MaFio7OvqWb&siweUri=https%3A%2F%2Fexample.com%2Flogin&domain=example.com"`
 
 #### `buildSignInMessage`
 
@@ -348,7 +348,7 @@ Wallet user's custody address. This address must sign the generated Sign In With
 
 Type: `0x${string}`
 
-Example: `"0x63C378DDC446DFf1d831B9B96F7d338FE6bd4231"``
+Example: `"0x63C378DDC446DFf1d831B9B96F7d338FE6bd4231"`
 
 ##### fid
 

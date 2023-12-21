@@ -1,6 +1,7 @@
 {
   "name": "connect-react",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "main": "./dist/connect-react.umd.cjs",
   "module": "./dist/connect-react.js",

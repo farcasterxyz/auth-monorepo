@@ -10,7 +10,6 @@ export type StatusResponse = AsyncHttpResponse<StatusAPIResponse>;
 interface StatusAPIResponse {
   state: "pending" | "completed";
   nonce: string;
-  connectURI: string;
   message?: string;
   signature?: `0x${string}`;
   fid?: number;

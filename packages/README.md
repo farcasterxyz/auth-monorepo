@@ -24,10 +24,7 @@ const appClient = createAppClient({
 Create a Farcaster Connect channel.
 
 ```ts
-const {
-  response,
-  data: { channelToken, connectURI },
-} = await appClient.connect({
+const channel = await appClient.connect({
   siweUri: "https://example.com/login",
   domain: "example.com",
 });
@@ -52,13 +49,15 @@ const {
 Login URL for your application.
 
 Type: `string`
-Example: `"https://example.com/login"
+
+Example: `"https://example.com/login"`
 
 ##### domain
 
 Domain of your application. Value should match the domain requesting the SIWE signature.
 
 Type: `string`
+
 Example: `"example.com"`
 
 ##### nonce (optional)
@@ -66,6 +65,7 @@ Example: `"example.com"`
 A custom nonce. Must be at least 8 alphanumeric characters.
 
 Type: `string`
+
 Example: `"ESsxs6MaFio7OvqWb"`
 
 ##### notBefore (optional)
@@ -73,6 +73,7 @@ Example: `"ESsxs6MaFio7OvqWb"`
 Start time at which the SIWE signature becomes valid. ISO 8601 datetime.
 
 Type: `string`
+
 Example: `"2023-12-20T23:21:24.917Z"`
 
 ##### expirationTime (optional)
@@ -80,6 +81,7 @@ Example: `"2023-12-20T23:21:24.917Z"`
 Expiration time at which the SIWE signature is no longer valid. ISO 8601 datetime.
 
 Type: `string`
+
 Example: `"2023-12-20T23:21:24.917Z"`
 
 ##### requestId (optional)
@@ -87,6 +89,7 @@ Example: `"2023-12-20T23:21:24.917Z"`
 A system specific ID your app can use to refer to the sign in request.
 
 Type: `string`
+
 Example: `"8d0494d9-e0cf-402b-ab0a-394ac7fe07a0"`
 
 #### `status`
@@ -94,9 +97,7 @@ Example: `"8d0494d9-e0cf-402b-ab0a-394ac7fe07a0"`
 Get current status of a Farcaster Connect request.
 
 ```ts
-const {
-  data: { state, message, signature },
-} = await appClient.status({
+const status = await appClient.status({
   channelToken: "210f1718-427e-46a4-99e3-2207f21f83ec",
 });
 ```
@@ -127,16 +128,15 @@ const {
 Farcaster Connect channel token, returned by `connect`.
 
 Type: `string`
+
 Example: `"210f1718-427e-46a4-99e3-2207f21f83ec"`
 
 #### `watchStatus`
 
-Poll current status of a Farcaster Connect request. This action resolves with the final channel value when the status changes to `'complete'`.
+Poll the current status of a Farcaster Connect request. When the status changes to `'complete'` this action resolves with the final channel value, including the Sign In With Farcaster message, signature, and user profile information.
 
 ```ts
-const {
-  data: { channelToken, connectURI },
-} = await appClient.watchStatus({
+const status = await appClient.watchStatus({
   channelToken: "210f1718-427e-46a4-99e3-2207f21f83ec",
   timeout: 60_000,
   interval: 1_000,
@@ -153,7 +153,7 @@ const {
 {
     response: Response
     data: {
-        state: 'pending' | 'completed'
+        state: 'completed'
         nonce: string
         message?: string
         signature?: `0x${string}`
@@ -173,6 +173,7 @@ const {
 Farcaster Connect channel token, returned by `connect`.
 
 Type: `string`
+
 Example: `"210f1718-427e-46a4-99e3-2207f21f83ec"`
 
 ###### timeout
@@ -180,6 +181,7 @@ Example: `"210f1718-427e-46a4-99e3-2207f21f83ec"`
 Polling timeout, in milliseconds. If the connect request is not completed before the timeout, `watchStatus` throws.
 
 Type: `number`
+
 Example: `60_000`
 
 ###### interval
@@ -187,13 +189,15 @@ Example: `60_000`
 Polling interval, in milliseconds. The client will check for updates at this frequency.
 
 Type: `number`
+
 Example: `1_000`
 
 ###### onResponse
 
-Callback function invoked each time the client poll for an update. Receives the return value of the latest `status`.
+Callback function invoked each time the client polls for an update and receives a response from the relay server. Receives the return value of the latest `status` request.
 
 Type: `({ response, data }) => void`
+
 Example:
 
 ```ts
@@ -205,12 +209,12 @@ Example:
 
 #### `verifySignInMessage`
 
-Verify a Sign In With Farcaster message. Your app should check that this succeeds after reading the message and signature provided by the user's Farcaster wallet over the Connect channel.
+Verify a Sign In With Farcaster message. Your app should call this function and check that it succeeds after reading the message and signature provided by the user's Farcaster wallet over the Connect channel.
 
 ```ts
 const { data, success, fid } = await appClient.verifySignInMessage({
   message: "example.com wants you to sign in with your Ethereum account: [...]",
-  signature: "0x9335c3055d477804113fdabad293...c68c84ea350a11794cdc121c71fd51b",
+  signature: "0x9335c3055d47780411a3fdabad293c68c84ea350a11794cdc811fd51b[...]",
 });
 ```
 
@@ -231,6 +235,7 @@ const { data, success, fid } = await appClient.verifySignInMessage({
 The Sign in With Farcaster message to verify. This may be either a string or a parsed `SiweMessage`. Your app should read this value from the Connect channel once the request is completed.
 
 Type: `string | SiweMessage`
+
 Example: `"example.com wants you to sign in with your Ethereum account: [...]"`
 
 ###### signature
@@ -238,7 +243,8 @@ Example: `"example.com wants you to sign in with your Ethereum account: [...]"`
 Signature provided by the user's Farcaster wallet. Your app should read this from the Connect channel once the request is completed.
 
 Type: `0x${string}`
-Example: `"0x9335c3055d477804113fdabad293...c68c84ea350a11794cdc121c71fd51b"``
+
+Example: `"0x9335c3055d4778013fdabad293c68c84ea350a11794cdc121c71fd51b[...]"`
 
 ## Auth Client
 

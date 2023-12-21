@@ -8,5 +8,10 @@
     "isolatedModules": true
   },
   "include": ["src/index.ts"],
-  "exclude": ["build", "node_modules", "jest.config.ts"]
+  "exclude": ["build", "node_modules", "jest.config.ts"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
 }

@@ -29,6 +29,9 @@
     "@farcaster/hub-web": "^0.7.1",
     "siwe": "^2.1.4"
   },
+  "peerDependencies": {
+    "viem": "^1.19.11"
+  },
   "devDependencies": {
     "viem": "^1.19.11"
   }

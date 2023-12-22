@@ -65,3 +65,24 @@ export type ConnectErrorCode =
 /** Type alias for shorthand when handling errors */
 export type ConnectResult<T> = Result<T, ConnectError>;
 export type ConnectAsyncResult<T> = Promise<ConnectResult<T>>;
+export type NoneOf<T> = {
+  [K in keyof T]: never;
+};
+export type Unwrapped<T> =
+  | (T & {
+      isError: false;
+      error?: never;
+    })
+  | (NoneOf<T> & {
+      isError: true;
+      error?: ConnectError;
+    });
+export type AsyncUnwrapped<T> = Promise<Unwrapped<T>>;
+
+export const unwrap = <T>(result: ConnectResult<T>): Unwrapped<T> => {
+  if (result.isErr()) {
+    return { error: result.error, isError: true };
+  } else {
+    return { ...result.value, isError: false };
+  }
+};

@@ -24,12 +24,12 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const message = res._unsafeUnwrap();
-    const sig = await account.signMessage({ message: message.toMessage() });
+    const { siweMessage, message } = res._unsafeUnwrap();
+    const sig = await account.signMessage({ message });
     const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toStrictEqual({
-      data: message,
+    expect(result._unsafeUnwrap()).toEqual({
+      data: siweMessage,
       success: true,
       fid: 1234,
     });
@@ -43,12 +43,12 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const message = res._unsafeUnwrap();
-    const sig = await account.signMessage({ message: message.toMessage() });
+    const { siweMessage, message } = res._unsafeUnwrap();
+    const sig = await account.signMessage({ message });
     const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toStrictEqual({
-      data: message,
+    expect(result._unsafeUnwrap()).toEqual({
+      data: siweMessage,
       success: true,
       fid: 1234,
     });
@@ -63,12 +63,12 @@ describe("verify", () => {
       address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
       fid: 1234,
     });
-    const message = res._unsafeUnwrap();
-    const sig = await account.signMessage({ message: message.toMessage() });
+    const { siweMessage, message } = res._unsafeUnwrap();
+    const sig = await account.signMessage({ message });
     const result = await verify(message, sig, { getFid, provider });
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toStrictEqual({
-      data: message,
+    expect(result._unsafeUnwrap()).toEqual({
+      data: siweMessage,
       success: true,
       fid: 1234,
     });
@@ -82,8 +82,8 @@ describe("verify", () => {
       address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
       fid: 1234,
     });
-    const message = res._unsafeUnwrap();
-    const sig = await account.signMessage({ message: message.toMessage() });
+    const { message } = res._unsafeUnwrap();
+    const sig = await account.signMessage({ message });
     const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
@@ -94,15 +94,16 @@ describe("verify", () => {
   test("invalid SIWE message", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(1234n);
 
-    const message = build({
+    const res = build({
       ...siweParams,
       address: zeroAddress,
       fid: 1234,
     });
+    const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({
-      message: message._unsafeUnwrap().toMessage(),
+      message,
     });
-    const result = await verify(message._unsafeUnwrap(), sig, { getFid });
+    const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -112,15 +113,16 @@ describe("verify", () => {
   test("invalid fid owner", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(5678n);
 
-    const message = build({
+    const res = build({
       ...siweParams,
       address: account.address,
       fid: 1234,
     });
+    const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({
-      message: message._unsafeUnwrap().toMessage(),
+      message,
     });
-    const result = await verify(message._unsafeUnwrap(), sig, { getFid });
+    const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -130,15 +132,16 @@ describe("verify", () => {
   test("client error", async () => {
     const getFid = (_custody: Hex) => Promise.reject(new Error("client error"));
 
-    const message = build({
+    const res = build({
       ...siweParams,
       address: account.address,
       fid: 1234,
     });
+    const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({
-      message: message._unsafeUnwrap().toMessage(),
+      message,
     });
-    const result = await verify(message._unsafeUnwrap(), sig, { getFid });
+    const result = await verify(message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unavailable");
@@ -146,15 +149,16 @@ describe("verify", () => {
   });
 
   test("missing verifier", async () => {
-    const message = build({
+    const res = build({
       ...siweParams,
       address: account.address,
       fid: 1234,
     });
+    const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({
-      message: message._unsafeUnwrap().toMessage(),
+      message,
     });
-    const result = await verify(message._unsafeUnwrap(), sig);
+    const result = await verify(message, sig);
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unavailable");

@@ -1,5 +1,6 @@
+import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
-import { AsyncHttpResponse, poll, HttpResponse } from "../../clients/transports/http";
+import { poll, HttpResponse } from "../../clients/transports/http";
 
 export interface WatchStatusArgs {
   channelToken: string;
@@ -8,7 +9,7 @@ export interface WatchStatusArgs {
   onResponse?: (response: HttpResponse<StatusAPIResponse>) => void;
 }
 
-export type WatchStatusResponse = AsyncHttpResponse<StatusAPIResponse>;
+export type WatchStatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>>;
 
 interface StatusAPIResponse {
   state: "pending" | "completed";
@@ -28,7 +29,7 @@ const path = "connect/status";
 const voidCallback = () => {};
 
 export const watchStatus = async (client: Client, args: WatchStatusArgs): WatchStatusResponse => {
-  return poll<StatusAPIResponse>(
+  const result = await poll<StatusAPIResponse>(
     client,
     path,
     {
@@ -38,4 +39,5 @@ export const watchStatus = async (client: Client, args: WatchStatusArgs): WatchS
     },
     { authToken: args.channelToken },
   );
+  return unwrap(result);
 };

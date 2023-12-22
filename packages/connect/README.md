@@ -41,6 +41,8 @@ const channel = await appClient.connect({
     channelToken: string;
     connectURI: string;
   }
+  isError: boolean;
+  error: Error;
 }
 ```
 
@@ -124,6 +126,8 @@ const status = await appClient.status({
         displayName?: string
         pfpUrl?: string
     }
+    isError: boolean
+    error: Error
 }
 ```
 
@@ -171,6 +175,8 @@ const status = await appClient.watchStatus({
         displayName?: string
         pfpUrl?: string
     }
+    isError: boolean
+    error: Error
 }
 ```
 
@@ -186,7 +192,7 @@ Example: `"210f1718-427e-46a4-99e3-2207f21f83ec"`
 
 ###### timeout
 
-Polling timeout, in milliseconds. If the connect request is not completed before the timeout, `watchStatus` throws.
+Polling timeout, in milliseconds. If the connect request is not completed before the timeout, `watchStatus` returns an error.
 
 Type: `number`
 
@@ -235,6 +241,8 @@ const { data, success, fid } = await appClient.verifySignInMessage({
     data: SiweMessage,
     success: boolean,
     fid: number
+    isError: boolean
+    error: Error
 }
 ```
 
@@ -279,7 +287,7 @@ Parse the Sign In With Farcaster URI provided by a connected app user.
 
 Returns the parsed parameters. Your app should use these to construct a Sign In With Farcaster message.
 
-Throws if URI is invalid.
+Returns an error if URI is invalid.
 
 ```ts
 const params = authClient.parseSignInURI({
@@ -300,6 +308,8 @@ const params = authClient.parseSignInURI({
     expirationTime?: string
     requestId?: string
   }
+  isError: boolean
+  error: Error
 }
 ```
 
@@ -337,6 +347,8 @@ const { siweMessage, message } = authClient.buildSignInMessage({
 {
   siweMessage: SiweMessage;
   message: string;
+  isError: boolean;
+  error: Error;
 }
 ```
 
@@ -438,6 +450,8 @@ const params = authClient.authenticate({
       displayName?: string
       pfpUrl?: string
   }
+  isError: boolean
+  error: Error
 }
 ```
 

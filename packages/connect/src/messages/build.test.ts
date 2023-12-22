@@ -16,12 +16,14 @@ describe("build", () => {
       fid: 5678,
     });
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toMatchObject({
+    const { siweMessage, message } = result._unsafeUnwrap();
+    expect(siweMessage).toMatchObject({
       ...siweParams,
       statement: "Farcaster Connect",
       chainId: 10,
       resources: ["farcaster://fid/5678"],
     });
+    expect(message).toEqual(siweMessage.toMessage());
   });
 
   test("handles additional resources", () => {
@@ -31,7 +33,8 @@ describe("build", () => {
       resources: ["https://example.com/resource"],
     });
     expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toMatchObject({
+    const { siweMessage } = result._unsafeUnwrap();
+    expect(siweMessage).toMatchObject({
       ...siweParams,
       statement: "Farcaster Connect",
       chainId: 10,

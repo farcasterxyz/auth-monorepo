@@ -1,13 +1,14 @@
 import { SiweMessage } from "siwe";
 import { Client } from "../../clients/createClient";
-import { SignInResponse, verify } from "../../messages/verify";
+import { VerifyResponse, verify } from "../../messages/verify";
+import { Unwrapped, unwrap } from "../../errors";
 
 export interface VerifySignInMessageArgs {
   message: string | Partial<SiweMessage>;
   signature: `0x${string}`;
 }
 
-export type VerifySignInMessageResponse = Promise<SignInResponse>;
+export type VerifySignInMessageResponse = Promise<Unwrapped<VerifyResponse>>;
 
 export const verifySignInMessage = async (
   client: Client,
@@ -17,9 +18,5 @@ export const verifySignInMessage = async (
     getFid: client.ethereum.getFid,
     provider: client.ethereum.provider,
   });
-  if (result.isErr()) {
-    throw result.error;
-  } else {
-    return result.value;
-  }
+  return unwrap(result);
 };

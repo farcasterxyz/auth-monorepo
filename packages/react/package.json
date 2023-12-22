@@ -17,11 +17,13 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@farcaster/connect": "^0.0.2",
     "@vanilla-extract/css": "^1.14.0",
     "qrcode": "^1.5.3",
     "react-remove-scroll": "^2.5.7"
   },
   "devDependencies": {
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
@@ -34,7 +36,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.2.2",
-    "vite": "^4.4.11"
+    "viem": "^1.19.11",
+    "vite": "^4.4.11",
+    "vite-plugin-node-polyfills": "^0.17.0"
   },
   "peerDependencies": {
     "react": ">= 17",

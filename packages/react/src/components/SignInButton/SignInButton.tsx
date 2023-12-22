@@ -1,13 +1,15 @@
 import { button } from "../styles.css.ts";
 
-export function SignInButton() {
-  const handleClick = () => {
-    console.log("clicked");
-  };
-
+export function SignInButton({ onClick }: { onClick: () => void }) {
   return (
-    <button className={button} onClick={handleClick}>
-      <svg width="20" height="20" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <button className={button} onClick={onClick}>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 1000 1000"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
           d="M257.778 155.556H742.222V844.445H671.111V528.889H670.414C662.554 441.677 589.258 373.333 500 373.333C410.742 373.333 337.446 441.677 329.586 528.889H328.889V844.445H257.778V155.556Z"
           fill="white"

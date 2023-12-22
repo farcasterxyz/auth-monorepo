@@ -1,5 +1,6 @@
-import { time } from "console";
+import { ResultAsync, ok, err } from "neverthrow";
 import { Client } from "../createClient";
+import { ConnectError, ConnectAsyncResult } from "../../errors";
 
 export interface HttpOpts {
   authToken?: string;
@@ -31,12 +32,21 @@ export const get = async <ResponseDataType>(
   client: Client,
   path: string,
   opts?: HttpOpts,
-): Promise<HttpResponse<ResponseDataType>> => {
-  const response = await fetch(getURI(client, path), {
-    headers: getHeaders(opts),
+): ConnectAsyncResult<HttpResponse<ResponseDataType>> => {
+  return ResultAsync.fromPromise(
+    fetch(getURI(client, path), {
+      headers: getHeaders(opts),
+    }),
+    (e) => {
+      return new ConnectError("unknown", e as Error);
+    },
+  ).andThen((response) => {
+    return ResultAsync.fromPromise(response.json(), (e) => {
+      return new ConnectError("unknown", e as Error);
+    }).andThen((data) => {
+      return ok({ response, data });
+    });
   });
-  const data: ResponseDataType = await response.json();
-  return { response, data };
 };
 
 export const post = async <BodyType, ResponseDataType>(
@@ -44,14 +54,23 @@ export const post = async <BodyType, ResponseDataType>(
   path: string,
   json: BodyType,
   opts?: HttpOpts,
-): Promise<HttpResponse<ResponseDataType>> => {
-  const response = await fetch(getURI(client, path), {
-    method: "POST",
-    body: JSON.stringify(json),
-    headers: getHeaders(opts),
+): ConnectAsyncResult<HttpResponse<ResponseDataType>> => {
+  return ResultAsync.fromPromise(
+    fetch(getURI(client, path), {
+      method: "POST",
+      body: JSON.stringify(json),
+      headers: getHeaders(opts),
+    }),
+    (e) => {
+      return new ConnectError("unknown", e as Error);
+    },
+  ).andThen((response) => {
+    return ResultAsync.fromPromise(response.json(), (e) => {
+      return new ConnectError("unknown", e as Error);
+    }).andThen((data) => {
+      return ok({ response, data });
+    });
   });
-  const data: ResponseDataType = await response.json();
-  return { response, data };
 };
 
 export const poll = async <ResponseDataType>(
@@ -59,7 +78,7 @@ export const poll = async <ResponseDataType>(
   path: string,
   pollOpts?: PollOpts<ResponseDataType>,
   opts?: HttpOpts,
-): Promise<HttpResponse<ResponseDataType>> => {
+): ConnectAsyncResult<HttpResponse<ResponseDataType>> => {
   const { timeout, interval, successCode, onResponse } = {
     ...defaultPollOpts,
     ...pollOpts,
@@ -69,13 +88,18 @@ export const poll = async <ResponseDataType>(
 
   while (Date.now() < deadline) {
     const res = await get<ResponseDataType>(client, path, opts);
-    if (res.response.status === successCode) {
-      return res;
+    if (res.isOk()) {
+      const { response } = res.value;
+      if (response.status === successCode) {
+        return ok(res.value);
+      }
+      onResponse(res.value);
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    } else {
+      return err(res.error);
     }
-    onResponse(res);
-    await new Promise((resolve) => setTimeout(resolve, interval));
   }
-  throw new Error(`Polling timed out after ${timeout}ms`);
+  return err(new ConnectError("unavailable", `Polling timed out after ${timeout}ms`));
 };
 
 const getURI = (client: Client, path: string) => {

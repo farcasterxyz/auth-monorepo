@@ -11,11 +11,11 @@ describe("http", () => {
 
   const client = createClient(config);
 
-  const data = { data: "response stub" };
-  let response: Response;
+  const bodyData = { data: "response stub" };
+  let httpResponse: Response;
 
   beforeEach(() => {
-    response = new Response(JSON.stringify(data));
+    httpResponse = new Response(JSON.stringify(bodyData));
   });
 
   afterEach(() => {
@@ -24,23 +24,25 @@ describe("http", () => {
 
   describe("get", () => {
     test("returns fetch response", async () => {
-      jest.spyOn(global, "fetch").mockResolvedValue(response);
+      jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const res = await get(client, "path");
+      const { response } = res._unsafeUnwrap();
 
-      expect(res.response).toEqual(response);
+      expect(response).toEqual(httpResponse);
     });
 
     test("returns parsed body data", async () => {
-      jest.spyOn(global, "fetch").mockResolvedValue(response);
+      jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const res = await get(client, "path");
+      const { data } = res._unsafeUnwrap();
 
-      expect(res.data).toEqual(data);
+      expect(data).toEqual(bodyData);
     });
 
     test("constructs fetch request", async () => {
-      const spy = jest.spyOn(global, "fetch").mockResolvedValue(response);
+      const spy = jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       await get(client, "path");
 
@@ -51,7 +53,7 @@ describe("http", () => {
     });
 
     test("adds optional params", async () => {
-      const spy = jest.spyOn(global, "fetch").mockResolvedValue(response);
+      const spy = jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       await get(client, "path", {
         authToken: "some-auth-token",
@@ -71,25 +73,27 @@ describe("http", () => {
 
   describe("post", () => {
     test("returns fetch response", async () => {
-      jest.spyOn(global, "fetch").mockResolvedValue(response);
+      jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
       const res = await post(client, "path", requestData);
 
-      expect(res.response).toEqual(response);
+      const { response } = res._unsafeUnwrap();
+      expect(response).toEqual(httpResponse);
     });
 
     test("returns parsed body data", async () => {
-      jest.spyOn(global, "fetch").mockResolvedValue(response);
+      jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
       const res = await post(client, "path", requestData);
 
-      expect(res.data).toEqual(data);
+      const { data } = res._unsafeUnwrap();
+      expect(data).toEqual(data);
     });
 
     test("constructs fetch request", async () => {
-      const spy = jest.spyOn(global, "fetch").mockResolvedValue(response);
+      const spy = jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
       await post(client, "path", requestData, {
@@ -131,8 +135,10 @@ describe("http", () => {
       const res = await poll(client, "path");
 
       expect(spy).toHaveBeenCalledTimes(3);
-      expect(res.response.status).toBe(200);
-      expect(res.data).toEqual({ state: "completed" });
+      expect(res.isOk()).toBe(true);
+      const { response, data } = res._unsafeUnwrap();
+      expect(response.status).toBe(200);
+      expect(data).toEqual({ state: "completed" });
     });
 
     test("times out", async () => {
@@ -142,7 +148,9 @@ describe("http", () => {
 
       jest.spyOn(global, "fetch").mockResolvedValue(accepted);
 
-      await expect(poll(client, "path", { timeout: 1, interval: 1 })).rejects.toThrow("Polling timed out after 1ms");
+      const res = await poll(client, "path", { timeout: 1, interval: 1 });
+      expect(res.isErr()).toBe(true);
+      expect(res._unsafeUnwrapErr().message).toBe("Polling timed out after 1ms");
     });
   });
 });

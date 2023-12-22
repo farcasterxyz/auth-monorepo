@@ -1,11 +1,12 @@
+import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
-import { get, AsyncHttpResponse } from "../../clients/transports/http";
+import { get, HttpResponse } from "../../clients/transports/http";
 
 export interface StatusArgs {
   channelToken: string;
 }
 
-export type StatusResponse = AsyncHttpResponse<StatusAPIResponse>;
+export type StatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>>;
 
 interface StatusAPIResponse {
   state: "pending" | "completed";
@@ -22,5 +23,8 @@ interface StatusAPIResponse {
 const path = "connect/status";
 
 export const status = async (client: Client, { channelToken }: StatusArgs): StatusResponse => {
-  return get<StatusAPIResponse>(client, path, { authToken: channelToken });
+  const response = await get<StatusAPIResponse>(client, path, {
+    authToken: channelToken,
+  });
+  return unwrap(response);
 };

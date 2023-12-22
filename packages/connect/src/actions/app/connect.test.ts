@@ -1,6 +1,7 @@
 import { createAppClient } from "../../clients/createAppClient";
 import { jest } from "@jest/globals";
 import { viem } from "../../clients/ethereum/viem";
+import { ConnectError } from "../../errors";
 
 describe("connect", () => {
   const client = createAppClient({
@@ -44,5 +45,19 @@ describe("connect", () => {
         "Content-Type": "application/json",
       },
     });
+  });
+
+  test("handles errors", async () => {
+    const spy = jest.spyOn(global, "fetch").mockRejectedValue(new Error("some error"));
+
+    const res = await client.connect({
+      siweUri,
+      domain,
+      nonce,
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(res.isError).toBe(true);
+    expect(res.error).toEqual(new ConnectError("unknown", "some error"));
   });
 });

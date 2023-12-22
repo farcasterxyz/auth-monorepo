@@ -1,8 +1,9 @@
+import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
-import { AsyncHttpResponse, post } from "../../clients/transports/http";
+import { HttpResponse, post } from "../../clients/transports/http";
 
 export type ConnectArgs = ConnectRequest;
-export type ConnectResponse = AsyncHttpResponse<ConnectAPIResponse>;
+export type ConnectResponse = AsyncUnwrapped<HttpResponse<ConnectAPIResponse>>;
 
 interface ConnectRequest {
   siweUri: string;
@@ -21,5 +22,6 @@ interface ConnectAPIResponse {
 const path = "connect";
 
 export const connect = async (client: Client, { ...request }: ConnectArgs): ConnectResponse => {
-  return post<ConnectRequest, ConnectAPIResponse>(client, path, request);
+  const response = await post<ConnectRequest, ConnectAPIResponse>(client, path, request);
+  return unwrap(response);
 };

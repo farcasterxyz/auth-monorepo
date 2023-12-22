@@ -11,7 +11,7 @@ type SignInOpts = {
   getFid: (custody: Hex) => Promise<BigInt>;
   provider?: Provider;
 };
-export type SignInResponse = SiweResponse & FarcasterResourceParams;
+export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 
 const voidVerifyFid = (_custody: Hex) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
 
@@ -25,7 +25,7 @@ export const verify = async (
   options: SignInOpts = {
     getFid: voidVerifyFid,
   },
-): ConnectAsyncResult<SignInResponse> => {
+): ConnectAsyncResult<VerifyResponse> => {
   const { getFid, provider } = options;
   const valid = validate(message);
   if (valid.isErr()) return err(valid.error);
@@ -43,7 +43,8 @@ export const verify = async (
     const errMessage = siwe.value.error?.type ?? "Unknown error";
     return err(new ConnectError("unauthorized", errMessage));
   }
-  return ok(fid.value);
+  const { error, ...response } = fid.value;
+  return ok(response);
 };
 
 const verifySiweMessage = async (
@@ -57,9 +58,9 @@ const verifySiweMessage = async (
 };
 
 const verifyFidOwner = async (
-  response: SignInResponse,
+  response: SiweResponse & FarcasterResourceParams,
   fidVerifier: (custody: Hex) => Promise<BigInt>,
-): ConnectAsyncResult<SignInResponse> => {
+): ConnectAsyncResult<SiweResponse & FarcasterResourceParams> => {
   const signer = response.data.address as Hex;
   return ResultAsync.fromPromise(fidVerifier(signer), (e) => {
     return new ConnectError("unavailable", e as Error);
@@ -76,7 +77,7 @@ const verifyFidOwner = async (
   });
 };
 
-const mergeResources = (response: SiweResponse): ConnectResult<SignInResponse> => {
+const mergeResources = (response: SiweResponse): ConnectResult<SiweResponse & FarcasterResourceParams> => {
   return parseResources(response.data).andThen((resources) => {
     return ok({ ...resources, ...response });
   });

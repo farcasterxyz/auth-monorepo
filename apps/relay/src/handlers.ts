@@ -64,7 +64,7 @@ export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>,
 
 export async function authenticate(request: FastifyRequest<{ Body: AuthenticateRequest }>, reply: FastifyReply) {
   const channelToken = request.channelToken;
-  const { message, signature } = request.body;
+  const { message, signature, fid, username, displayName, bio, pfpUrl } = request.body;
 
   const channel = await request.channels.read(channelToken);
   if (channel.isOk()) {
@@ -73,6 +73,11 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
       state: "completed",
       message,
       signature,
+      fid,
+      username,
+      displayName,
+      bio,
+      pfpUrl,
     });
     if (update.isOk()) {
       reply.code(201).send(update.value);

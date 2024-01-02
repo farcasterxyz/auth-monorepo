@@ -1,7 +1,7 @@
 import { Ethereum } from "../clients/ethereum/viem";
 
 export interface CreateClientArgs {
-  relayURI: string;
+  relayURI?: string;
   version?: string;
   ethereum: Ethereum;
 }
@@ -17,6 +17,7 @@ export interface Client {
 }
 
 const configDefaults = {
+  relayURI: "https://connect.farcaster.xyz",
   version: "v1",
 };
 

@@ -4,7 +4,6 @@ import { viem } from "./ethereum/viem";
 describe("createClient", () => {
   const ethereum = viem();
   const config = {
-    relayURI: "https://connect.farcaster.xyz",
     ethereum,
   };
 
@@ -14,7 +13,7 @@ describe("createClient", () => {
     client = createClient(config);
   });
 
-  test("adds version to config", () => {
+  test("adds defaults to config", () => {
     expect(client.config).toEqual({
       relayURI: "https://connect.farcaster.xyz",
       version: "v1",
@@ -30,6 +29,18 @@ describe("createClient", () => {
     expect(client.config).toEqual({
       relayURI: "https://connect.farcaster.xyz",
       version: "v2",
+    });
+  });
+
+  test("overrides relayURI", () => {
+    client = createClient({
+      ...config,
+      relayURI: "https://custom-server.example.com",
+    });
+
+    expect(client.config).toEqual({
+      relayURI: "https://custom-server.example.com",
+      version: "v1",
     });
   });
 

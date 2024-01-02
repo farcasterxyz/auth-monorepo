@@ -6,12 +6,10 @@ import { ConnectError } from "../../errors";
 
 describe("verifySignInMessage", () => {
   const client = createAppClient({
-    relayURI: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 
   const authClient = createAuthClient({
-    relayURI: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 

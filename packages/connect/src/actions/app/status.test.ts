@@ -4,7 +4,6 @@ import { viem } from "../../clients/ethereum/viem";
 
 describe("status", () => {
   const client = createAppClient({
-    relayURI: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 

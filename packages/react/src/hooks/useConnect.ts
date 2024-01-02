@@ -22,7 +22,7 @@ function useConnect(args: UseConnectArgs) {
   const connect = useCallback(async () => {
     if (appClient && !channelToken) {
       const {
-        data: { channelToken, connectURI },
+        data,
         isError: isConnectError,
         error: connectError,
       } = await appClient.connect({
@@ -33,8 +33,8 @@ function useConnect(args: UseConnectArgs) {
         setIsError(true);
         setError(connectError);
       } else {
-        setChannelToken(channelToken);
-        setConnectURI(connectURI);
+        setChannelToken(data.channelToken);
+        setConnectURI(data.connectURI);
         setIsSuccess(true);
       }
     }

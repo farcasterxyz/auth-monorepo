@@ -18,7 +18,6 @@ export function Demo() {
 
   return (
     <div>
-      {isError && <div>{error?.message}</div>}
       {!channelToken && <SignInButton onClick={() => signIn?.signIn()} />}
       {qrCodeURI && !isError && !isSuccess && (
         <div>
@@ -51,6 +50,7 @@ export function Demo() {
       ) : (
         <>{data?.state === "completed" && <div>Unauthorized</div>}</>
       )}
+      {isError && <div style={{ color: "red" }}>Error: {error?.message}</div>}
       <hr />
       <div>
         <strong>Channel Token: </strong>

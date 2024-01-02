@@ -19,8 +19,8 @@ const defaults = {
 
 function useSignIn(args: UseSignInArgs) {
   const { relayURI, siweUri, domain, timeout, interval } = {
-    ...args,
     ...defaults,
+    ...args,
   };
 
   const { appClient } = useAppClient({

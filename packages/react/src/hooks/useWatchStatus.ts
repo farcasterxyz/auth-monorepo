@@ -28,8 +28,8 @@ const defaults = {
 
 function useWatchStatus(args: UseWatchStatusArgs) {
   const { appClient, channelToken, timeout, interval } = {
-    ...args,
     ...defaults,
+    ...args,
   };
 
   const [statusData, setStatusData] = useState<StatusAPIResponse>();

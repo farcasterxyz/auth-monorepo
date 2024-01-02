@@ -5,7 +5,6 @@ import { ConnectError } from "../../errors";
 
 describe("connect", () => {
   const client = createAppClient({
-    relayURI: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 

@@ -1,12 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import {
-  AppClient,
-  ConnectError,
-  createAppClient,
-  viem,
-} from "@farcaster/connect";
-import { JsonRpcProvider } from "ethers";
-import QRCode from "qrcode";
+import useConnect from "./useConnect";
+import useWatchStatus from "./useWatchStatus";
+import useVerifySignInMessage from "./useVerifySignInMessage";
+import useAppClient from "./useAppClient";
 
 interface UseSignInArgs {
   siweUri: string;
@@ -14,19 +9,6 @@ interface UseSignInArgs {
   relayURI?: string;
   timeout?: number;
   interval?: number;
-}
-
-interface StatusAPIResponse {
-  state: "" | "pending" | "completed";
-  nonce: string;
-  connectURI: string;
-  message?: string;
-  signature?: `0x${string}`;
-  fid?: number;
-  username?: string;
-  bio?: string;
-  displayName?: string;
-  pfpUrl?: string;
 }
 
 const defaults = {
@@ -41,128 +23,45 @@ function useSignIn(args: UseSignInArgs) {
     ...defaults,
   };
 
-  const [enabled, setEnabled] = useState<boolean>(false);
-  const [appClient, setAppClient] = useState<AppClient>();
-  const [channelToken, setChannelToken] = useState<string>();
-  const [connectURI, setConnectURI] = useState<string>();
-  const [qrCodeURI, setQrCodeURI] = useState<string>();
-  const [statusData, setStatusData] = useState<StatusAPIResponse>();
-  const [validSignature, setValidSignature] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isPolling, setIsPolling] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<ConnectError>();
+  const { appClient } = useAppClient({
+    relayURI,
+  });
 
-  const verifySignInMessage = useCallback(async () => {
-    if (appClient && statusData?.message && statusData?.signature) {
-      const {
-        success,
-        isError: isVerifyError,
-        error: verifyError,
-      } = await appClient.verifySignInMessage({
-        message: statusData?.message,
-        signature: statusData?.signature,
-      });
-      if (isVerifyError) {
-        setIsError(true);
-        setError(verifyError);
-      } else {
-        setValidSignature(success);
-      }
-    }
-  }, [appClient, statusData?.message, statusData?.signature]);
+  const {
+    connect,
+    data: { channelToken, connectURI, qrCodeURI },
+    isError: isConnectError,
+    error: connectError,
+  } = useConnect({ appClient, siweUri, domain });
 
-  const generateQRCode = useCallback(async () => {
-    if (connectURI) {
-      const qrCode = await QRCode.toDataURL(connectURI);
-      setQrCodeURI(qrCode);
-    }
-  }, [connectURI]);
+  const {
+    isPolling,
+    data: statusData,
+    isError: isWatchStatusError,
+    error: watchStatusError,
+  } = useWatchStatus({
+    appClient,
+    channelToken,
+    timeout,
+    interval,
+  });
 
-  const watchStatus = useCallback(async () => {
-    if (appClient && channelToken) {
-      setIsPolling(true);
-      const {
-        data,
-        isError: isWatchStatusError,
-        error: watchStatusError,
-      } = await appClient.watchStatus({
-        channelToken,
-        timeout,
-        interval,
-        onResponse: ({ data }) => {
-          setStatusData(data);
-        },
-      });
-      if (isWatchStatusError) {
-        setIsError(true);
-        setIsPolling(false);
-        setError(watchStatusError);
-      } else {
-        setIsSuccess(true);
-        setIsPolling(false);
-        setStatusData(data);
-      }
-    }
-  }, [appClient, channelToken, timeout, interval]);
+  const {
+    isSuccess,
+    data: { validSignature },
+    isError: isVerifyError,
+    error: verifyError,
+  } = useVerifySignInMessage({
+    appClient,
+    message: statusData?.message,
+    signature: statusData?.signature,
+  });
 
-  const connect = useCallback(async () => {
-    if (appClient && !channelToken) {
-      const {
-        data: { channelToken, connectURI },
-        isError: isConnectError,
-        error: connectError,
-      } = await appClient.connect({
-        siweUri,
-        domain,
-      });
-      if (isConnectError) {
-        setIsError(true);
-        setError(connectError);
-      } else {
-        setChannelToken(channelToken);
-        setConnectURI(connectURI);
-      }
-    }
-  }, [appClient, domain, siweUri, channelToken]);
-
-  useEffect(() => {
-    if (statusData?.message && statusData?.signature) {
-      verifySignInMessage();
-    }
-  }, [statusData?.message, statusData?.signature, verifySignInMessage]);
-
-  useEffect(() => {
-    if (connectURI) {
-      generateQRCode();
-    }
-  }, [connectURI, generateQRCode]);
-
-  useEffect(() => {
-    if (channelToken) {
-      watchStatus();
-    }
-  }, [channelToken, watchStatus]);
-
-  useEffect(() => {
-    if (enabled) {
-      connect();
-    }
-  }, [enabled, connect]);
-
-  useEffect(() => {
-    const client = createAppClient({
-      relayURI,
-      ethereum: viem(),
-    });
-    client.ethereum.provider = new JsonRpcProvider(
-      "https://mainnet.optimism.io"
-    );
-    setAppClient(client);
-  }, [relayURI]);
+  const isError = isConnectError || isWatchStatusError || isVerifyError;
+  const error = connectError || watchStatusError || verifyError;
 
   const signIn = () => {
-    setEnabled(true);
+    connect();
   };
 
   return {

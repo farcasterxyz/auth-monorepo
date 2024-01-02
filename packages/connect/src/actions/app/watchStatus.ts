@@ -33,7 +33,7 @@ export const watchStatus = async (client: Client, args: WatchStatusArgs): WatchS
     client,
     path,
     {
-      timeout: args?.timeout ?? 10000,
+      timeout: args?.timeout ?? 300_000,
       interval: args?.interval ?? 1000,
       onResponse: args?.onResponse ?? voidCallback,
     },

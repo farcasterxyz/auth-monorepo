@@ -190,7 +190,7 @@ Type: `string`
 
 Example: `"210f1718-427e-46a4-99e3-2207f21f83ec"`
 
-###### timeout
+###### timeout (optional)
 
 Polling timeout, in milliseconds. If the connect request is not completed before the timeout, `watchStatus` returns an error.
 
@@ -198,7 +198,7 @@ Type: `number`
 
 Example: `60_000`
 
-###### interval
+###### interval (optional)
 
 Polling interval, in milliseconds. The client will check for updates at this frequency.
 
@@ -206,7 +206,7 @@ Type: `number`
 
 Example: `1_000`
 
-###### onResponse
+###### onResponse (optional)
 
 Callback function invoked each time the client polls for an update and receives a response from the relay server. Receives the return value of the latest `status` request.
 

@@ -3,7 +3,6 @@ import { viem } from "./ethereum/viem";
 
 describe("createAuthClient", () => {
   const config = {
-    relayURI: "https://connect.farcaster.xyz",
     ethereum: viem(),
   };
 

@@ -4,7 +4,6 @@ import { viem } from "../../clients/ethereum/viem";
 
 describe("status", () => {
   const client = createAppClient({
-    relayURI: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 
@@ -12,7 +11,7 @@ describe("status", () => {
     jest.restoreAllMocks();
   });
 
-  test("", async () => {
+  test("polls for status changes", async () => {
     const pending1 = new Response(JSON.stringify({ state: "pending" }), {
       status: 202,
     });

@@ -12,8 +12,8 @@ const defaults = {
 
 function useAppClient(args: UseAppClientArgs) {
   const { relayURI } = {
-    ...args,
     ...defaults,
+    ...args,
   };
 
   const [appClient, setAppClient] = useState<AppClient>();

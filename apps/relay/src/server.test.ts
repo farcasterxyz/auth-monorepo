@@ -203,14 +203,30 @@ describe("relay server", () => {
 
     test("POST with valid token", async () => {
       const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
-        headers: { Authorization: `Bearer ${channelToken}` },
+        headers: {
+          Authorization: `Bearer ${channelToken}`,
+          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+        },
       });
       expect(response.status).toBe(201);
     });
 
     test("POST with invalid token", async () => {
       const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
-        headers: { Authorization: "Bearer abc-123-def" },
+        headers: {
+          Authorization: "Bearer abc-123-def",
+          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+        },
+      });
+      expect(response.status).toBe(401);
+    });
+
+    test("POST with invalid key", async () => {
+      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+        headers: {
+          Authorization: "Bearer abc-123-def",
+          "X-Farcaster-Connect-Auth-Key": "invalid-shared-secret",
+        },
       });
       expect(response.status).toBe(401);
     });
@@ -271,7 +287,10 @@ describe("relay server", () => {
         throw new Error("read error");
       });
       const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
-        headers: { Authorization: `Bearer ${channelToken}` },
+        headers: {
+          Authorization: `Bearer ${channelToken}`,
+          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+        },
       });
       expect(response.status).toBe(500);
       expect(response.data).toStrictEqual({ error: "read error" });
@@ -282,7 +301,10 @@ describe("relay server", () => {
         throw new Error("update error");
       });
       const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
-        headers: { Authorization: `Bearer ${channelToken}` },
+        headers: {
+          Authorization: `Bearer ${channelToken}`,
+          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+        },
       });
       expect(response.status).toBe(500);
       expect(response.data).toStrictEqual({ error: "update error" });
@@ -373,7 +395,12 @@ describe("relay server", () => {
       expect(response.status).toBe(202);
       expect(response.data.state).toBe("pending");
 
-      response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, authHeaders);
+      response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+        headers: {
+          Authorization: `Bearer ${channelToken}`,
+          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+        },
+      });
       expect(response.status).toBe(201);
 
       response = await http.get(getFullUrl("/v1/connect/status"), authHeaders);

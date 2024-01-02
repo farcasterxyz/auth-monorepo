@@ -8,8 +8,8 @@
     "build": "tsc --project ./tsconfig.json",
     "lint": "biome format src/ --write && biome check src/ --apply",
     "lint:ci": "biome ci src/",
-    "test": "yarn build && jest",
-    "test:ci": "yarn build && ENVIRONMENT=test NODE_OPTIONS=\"--max-old-space-size=4096\" jest --ci --forceExit --coverage",
+    "test": "yarn build && DOTENV_CONFIG_PATH=.env.test jest",
+    "test:ci": "yarn build && ENVIRONMENT=test NODE_OPTIONS=\"--max-old-space-size=4096\" DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage",
     "start": "yarn build && node build/app.js start"
   },
   "engines": {

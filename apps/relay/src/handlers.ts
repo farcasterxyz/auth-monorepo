@@ -1,4 +1,5 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
+import { AUTH_KEY } from "./env";
 import { Logger } from "logger";
 import { generateNonce } from "siwe";
 
@@ -63,6 +64,9 @@ export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>,
 }
 
 export async function authenticate(request: FastifyRequest<{ Body: AuthenticateRequest }>, reply: FastifyReply) {
+  const authKey = request.headers["x-farcaster-connect-auth-key"];
+  if (authKey !== AUTH_KEY) reply.code(401).send({ error: "Unauthorized" });
+
   const channelToken = request.channelToken;
   const { message, signature, fid, username, displayName, bio, pfpUrl } = request.body;
 

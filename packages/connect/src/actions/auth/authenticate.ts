@@ -13,10 +13,10 @@ interface AuthenticateRequest {
   message: string;
   signature: `0x${string}`;
   fid: number;
-  username: string;
-  bio: string;
-  displayName: string;
-  pfpUrl: string;
+  username?: string;
+  bio?: string;
+  displayName?: string;
+  pfpUrl?: string;
 }
 
 type AuthenticateAPIResponse = StatusResponse;

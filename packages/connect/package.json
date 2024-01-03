@@ -26,7 +26,7 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
-    "@farcaster/hub-web": "^0.7.1",
+    "@farcaster/core": "^0.13.4",
     "siwe": "^2.1.4"
   },
   "peerDependencies": {

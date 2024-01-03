@@ -1,7 +1,7 @@
 import { Hex, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
 import { JsonRpcProvider } from "ethers";
-import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/hub-web";
+import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/core";
 
 export interface Ethereum {
   getFid: (custody: Hex) => Promise<BigInt>;

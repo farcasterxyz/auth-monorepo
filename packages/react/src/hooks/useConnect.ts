@@ -19,6 +19,13 @@ function useConnect(args: UseConnectArgs) {
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<ConnectError>();
 
+  const resetState = async () => {
+    setChannelToken(undefined);
+    setIsError(false);
+    setIsSuccess(false);
+    setError(undefined);
+  };
+
   const connect = useCallback(async () => {
     if (appClient && !channelToken) {
       const {
@@ -30,6 +37,7 @@ function useConnect(args: UseConnectArgs) {
         domain,
       });
       if (isConnectError) {
+        console.log(connectError);
         setIsError(true);
         setError(connectError);
       } else {
@@ -39,6 +47,11 @@ function useConnect(args: UseConnectArgs) {
       }
     }
   }, [appClient, domain, siweUri, channelToken]);
+
+  const reconnect = useCallback(async () => {
+    await resetState();
+    connect();
+  }, [connect]);
 
   const generateQRCode = useCallback(async () => {
     if (connectURI) {
@@ -61,6 +74,7 @@ function useConnect(args: UseConnectArgs) {
 
   return {
     connect: () => setEnabled(true),
+    reconnect,
     isSuccess,
     isError,
     error,

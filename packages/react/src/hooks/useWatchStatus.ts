@@ -38,8 +38,16 @@ function useWatchStatus(args: UseWatchStatusArgs) {
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<ConnectError>();
 
+  const resetState = () => {
+    setStatusData(undefined);
+    setIsError(false);
+    setIsSuccess(false);
+    setError(undefined);
+  };
+
   const watchStatus = useCallback(async () => {
     if (appClient && channelToken) {
+      resetState();
       setIsPolling(true);
       const {
         data,

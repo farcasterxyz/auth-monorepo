@@ -12,7 +12,7 @@ interface UseSignInArgs {
 }
 
 const defaults = {
-  relayURI: "http://localhost:8000",
+  relayURI: "https://connect.farcaster.xyz",
   timeout: 300_000,
   interval: 1_500,
 };
@@ -29,6 +29,7 @@ function useSignIn(args: UseSignInArgs) {
 
   const {
     connect,
+    reconnect,
     data: { channelToken, connectURI, qrCodeURI },
     isError: isConnectError,
     error: connectError,
@@ -66,6 +67,7 @@ function useSignIn(args: UseSignInArgs) {
 
   return {
     signIn,
+    reconnect,
     isSuccess,
     isPolling,
     isError,

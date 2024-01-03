@@ -243,6 +243,17 @@ describe("relay server", () => {
       });
     });
 
+    test("optional body param", async () => {
+      const { username, ...missingUsername } = authenticateParams;
+      const response = await http.post(getFullUrl("/v1/connect/authenticate"), missingUsername, {
+        headers: {
+          Authorization: `Bearer ${channelToken}`,
+          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+        },
+      });
+      expect(response.status).toBe(201);
+    });
+
     test("invalid username", async () => {
       const response = await http.post(
         getFullUrl("/v1/connect/authenticate"),

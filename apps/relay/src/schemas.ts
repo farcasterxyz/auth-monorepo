@@ -58,6 +58,6 @@ export const authenticateRequestSchema = {
       format: "uri",
     },
   },
-  required: ["message", "signature", "fid", "username", "bio", "displayName", "pfpUrl"],
+  required: ["message", "signature", "fid"],
   additionalProperties: false,
 };

@@ -15,6 +15,12 @@ function useVerifySignInMessage(args: UseVerifySignInMessageArgs) {
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<ConnectError>();
 
+  const resetState = async () => {
+    setIsError(false);
+    setIsSuccess(false);
+    setError(undefined);
+  };
+
   const verifySignInMessage = useCallback(async () => {
     if (appClient && message && signature) {
       const {
@@ -36,6 +42,7 @@ function useVerifySignInMessage(args: UseVerifySignInMessageArgs) {
   }, [appClient, message, signature]);
 
   useEffect(() => {
+    resetState();
     if (message && signature) {
       verifySignInMessage();
     }

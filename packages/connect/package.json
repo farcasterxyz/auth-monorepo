@@ -26,7 +26,7 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
-    "@farcaster/core": "^0.13.4",
+    "neverthrow": "^6.1.0",
     "siwe": "^2.1.4"
   },
   "peerDependencies": {

@@ -6,7 +6,7 @@ import { useAppClient } from "./useAppClient";
 export interface UseConnectArgs {
   siweUri: string;
   domain: string;
-  nonce?: string;
+  nonce?: string | (() => Promise<string>);
   notBefore?: string;
   expirationTime?: string;
   requestId?: string;
@@ -32,7 +32,15 @@ export function useConnect(args: UseConnectArgs) {
 
   const connect = useCallback(async () => {
     if (appClient && !channelToken) {
-      const { data, isError: isConnectError, error: connectError } = await appClient.connect(args);
+      const { nonce, ...restArgs } = args;
+      const {
+        data,
+        isError: isConnectError,
+        error: connectError,
+      } = await appClient.connect({
+        nonce: typeof nonce === "function" ? await nonce() : nonce,
+        ...restArgs,
+      });
       if (isConnectError) {
         console.error(connectError);
         setIsError(true);

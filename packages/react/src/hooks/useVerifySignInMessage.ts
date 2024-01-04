@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { AppClient, ConnectError } from "@farcaster/connect";
+import { ConnectError } from "@farcaster/connect";
+import useAppClient from "./useAppClient";
 
 interface UseVerifySignInMessageArgs {
-  appClient?: AppClient;
   message?: string;
   signature?: `0x${string}`;
 }
 
-function useVerifySignInMessage(args: UseVerifySignInMessageArgs) {
-  const { appClient, message, signature } = args;
+function useVerifySignInMessage({ message, signature }: UseVerifySignInMessageArgs) {
+  const appClient = useAppClient();
 
   const [validSignature, setValidSignature] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);

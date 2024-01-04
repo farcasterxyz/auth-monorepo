@@ -1,3 +1,5 @@
+import { useSignIn } from "../..";
+import useSignInMessage from "../../hooks/useSignInMessage";
 import useUserData from "../../hooks/useUserData";
 import { ConnectButton } from "../ConnectButton";
 import { ConnectKitProvider } from "../ConnectKitProvider";
@@ -27,6 +29,7 @@ function UserProfile() {
     isAuthenticated,
     userData: { fid, bio, displayName },
   } = useUserData();
+  const { message, signature } = useSignInMessage();
 
   return (
     <div style={{ fontFamily: "sans-serif" }}>

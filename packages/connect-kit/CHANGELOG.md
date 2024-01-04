@@ -1,5 +1,13 @@
 # connect-kit
 
+## 0.0.11
+
+### Patch Changes
+
+- support nonce getter fn
+- Updated dependencies
+  - @farcaster/connect@0.0.9
+
 ## 0.0.10
 
 ### Patch Changes

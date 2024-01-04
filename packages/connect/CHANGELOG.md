@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.9
+
+### Patch Changes
+
+- add authKey to authenticate
+
 ## 0.0.8
 
 ### Patch Changes

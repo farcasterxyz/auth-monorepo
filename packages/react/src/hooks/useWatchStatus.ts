@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { AppClient, ConnectError } from "@farcaster/connect";
+import { ConnectError } from "@farcaster/connect";
+import useAppClient from "./useAppClient";
 
 interface UseWatchStatusArgs {
-  appClient?: AppClient;
   channelToken?: string;
   timeout?: number;
   interval?: number;
 }
 
-interface StatusAPIResponse {
+export interface StatusAPIResponse {
   state: "" | "pending" | "completed";
   nonce: string;
   connectURI: string;
@@ -27,7 +27,8 @@ const defaults = {
 };
 
 function useWatchStatus(args: UseWatchStatusArgs) {
-  const { appClient, channelToken, timeout, interval } = {
+  const appClient = useAppClient();
+  const { channelToken, timeout, interval } = {
     ...defaults,
     ...args,
   };

@@ -4,22 +4,20 @@ import { SignInButton } from "../SignInButton";
 import { ProfileButton } from "../ProfileButton";
 import { QRCodeDialog } from "../QRCodeDialog";
 
-interface ConnectConfig {
-  siweUri: string;
-  domain: string;
-  relayURI?: string;
-  timeout?: number;
-  interval?: number;
-}
-
 export function ConnectButton({
-  config,
+  siweUri,
+  domain,
+  timeout,
+  interval,
   debug,
 }: {
-  config: ConnectConfig;
+  siweUri: string;
+  domain: string;
+  timeout?: number;
+  interval?: number;
   debug?: boolean;
 }) {
-  const signInState = useSignIn(config);
+  const signInState = useSignIn({ siweUri, domain, timeout, interval });
   const {
     signIn,
     reconnect,

@@ -2,30 +2,29 @@ import useConnect from "./useConnect";
 import useWatchStatus from "./useWatchStatus";
 import useVerifySignInMessage from "./useVerifySignInMessage";
 import useAppClient from "./useAppClient";
+import useConnectContext from "./useConnectKitContext";
+import { useEffect } from "react";
 
 interface UseSignInArgs {
   siweUri: string;
   domain: string;
-  relayURI?: string;
   timeout?: number;
   interval?: number;
 }
 
 const defaults = {
-  relayURI: "https://connect.farcaster.xyz",
   timeout: 300_000,
   interval: 1_500,
 };
 
 function useSignIn(args: UseSignInArgs) {
-  const { relayURI, siweUri, domain, timeout, interval } = {
+  const appClient = useAppClient();
+  const ctx = useConnectContext();
+  const { onSignIn } = ctx;
+  const { siweUri, domain, timeout, interval } = {
     ...defaults,
     ...args,
   };
-
-  const { appClient } = useAppClient({
-    relayURI,
-  });
 
   const {
     connect,
@@ -33,7 +32,7 @@ function useSignIn(args: UseSignInArgs) {
     data: { channelToken, connectURI, qrCodeURI },
     isError: isConnectError,
     error: connectError,
-  } = useConnect({ appClient, siweUri, domain });
+  } = useConnect({ siweUri, domain });
 
   const {
     isPolling,
@@ -41,7 +40,6 @@ function useSignIn(args: UseSignInArgs) {
     isError: isWatchStatusError,
     error: watchStatusError,
   } = useWatchStatus({
-    appClient,
     channelToken,
     timeout,
     interval,
@@ -53,7 +51,6 @@ function useSignIn(args: UseSignInArgs) {
     isError: isVerifyError,
     error: verifyError,
   } = useVerifySignInMessage({
-    appClient,
     message: statusData?.message,
     signature: statusData?.signature,
   });
@@ -64,6 +61,12 @@ function useSignIn(args: UseSignInArgs) {
   const signIn = () => {
     connect();
   };
+
+  useEffect(() => {
+    if (isSuccess && statusData && validSignature) {
+      onSignIn(statusData);
+    }
+  }, [isSuccess, statusData, validSignature, onSignIn]);
 
   return {
     signIn,

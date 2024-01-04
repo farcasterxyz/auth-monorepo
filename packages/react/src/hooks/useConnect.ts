@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { AppClient, ConnectError } from "@farcaster/connect";
+import { ConnectError } from "@farcaster/connect";
 import QRCode from "qrcode";
+import { useAppClient } from "./useAppClient";
 
 interface UseConnectArgs {
   siweUri: string;
   domain: string;
-  appClient?: AppClient;
 }
 
-function useConnect(args: UseConnectArgs) {
-  const { appClient, siweUri, domain } = args;
+function useConnect({ siweUri, domain }: UseConnectArgs) {
+  const appClient = useAppClient();
 
   const [qrCodeURI, setQrCodeURI] = useState<string>();
   const [enabled, setEnabled] = useState<boolean>(false);
@@ -37,7 +37,7 @@ function useConnect(args: UseConnectArgs) {
         domain,
       });
       if (isConnectError) {
-        console.log(connectError);
+        console.error(connectError);
         setIsError(true);
         setError(connectError);
       } else {

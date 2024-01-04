@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.3
+
+### Patch Changes
+
+- 07597c6: Fix: include /dist in package
+
 ## 0.0.2
 
 ### Patch Changes

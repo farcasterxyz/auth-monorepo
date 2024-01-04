@@ -22,10 +22,16 @@ export interface UserData {
   bio?: string;
 }
 
+export interface SignInMessage {
+  message?: string;
+  signature?: string;
+}
+
 export interface ConnectKitContextValues {
   isAuthenticated: boolean;
   config: ConnectKitConfig;
   userData: UserData;
+  signInMessage: SignInMessage;
   appClient?: AppClient;
   onSignIn: (signInData: StatusAPIResponse) => void;
 }
@@ -39,6 +45,7 @@ export const ConnectKitContext = createContext<ConnectKitContextValues>({
   isAuthenticated: false,
   config: configDefaults,
   userData: {},
+  signInMessage: {},
   onSignIn: () => {},
 });
 
@@ -52,6 +59,7 @@ export function ConnectKitProvider({
   const [appClient, setAppClient] = useState<AppClient>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserData>({});
+  const [signInMessage, setSignInMessage] = useState<SignInMessage>({});
 
   const connectConfig = {
     ...configDefaults,
@@ -70,9 +78,10 @@ export function ConnectKitProvider({
   }, [relay, rpcUrl, version]);
 
   const onSignIn = useCallback((signInData: StatusAPIResponse) => {
-    const { fid, username, bio, displayName, pfpUrl } = signInData;
+    const { message, signature, fid, username, bio, displayName, pfpUrl } = signInData;
     setIsAuthenticated(true);
     setUserData({ fid, username, bio, displayName, pfpUrl });
+    setSignInMessage({ message, signature });
   }, []);
 
   return (
@@ -81,6 +90,7 @@ export function ConnectKitProvider({
         appClient,
         isAuthenticated,
         userData,
+        signInMessage,
         config: connectConfig,
         onSignIn,
       }}

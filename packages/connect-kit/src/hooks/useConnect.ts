@@ -12,11 +12,10 @@ export interface UseConnectArgs {
   requestId?: string;
 }
 
-export function useConnect(args: UseConnectArgs) {
+export function useConnect({ siweUri, domain, nonce, notBefore, expirationTime, requestId }: UseConnectArgs) {
   const appClient = useAppClient();
 
   const [qrCodeUri, setqrCodeUri] = useState<string>();
-  const [enabled, setEnabled] = useState<boolean>(false);
   const [channelToken, setChannelToken] = useState<string>();
   const [connectUri, setconnectUri] = useState<string>();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -32,14 +31,17 @@ export function useConnect(args: UseConnectArgs) {
 
   const connect = useCallback(async () => {
     if (appClient && !channelToken) {
-      const { nonce, ...restArgs } = args;
       const {
         data,
         isError: isConnectError,
         error: connectError,
       } = await appClient.connect({
         nonce: typeof nonce === "function" ? await nonce() : nonce,
-        ...restArgs,
+        siweUri,
+        domain,
+        notBefore,
+        expirationTime,
+        requestId,
       });
       if (isConnectError) {
         console.error(connectError);
@@ -51,7 +53,7 @@ export function useConnect(args: UseConnectArgs) {
         setIsSuccess(true);
       }
     }
-  }, [appClient, args, channelToken]);
+  }, [appClient, channelToken, siweUri, domain, nonce, notBefore, expirationTime, requestId]);
 
   const reconnect = useCallback(async () => {
     await resetState();
@@ -71,14 +73,8 @@ export function useConnect(args: UseConnectArgs) {
     }
   }, [connectUri, generateQRCode]);
 
-  useEffect(() => {
-    if (enabled) {
-      connect();
-    }
-  }, [enabled, connect]);
-
   return {
-    connect: () => setEnabled(true),
+    connect,
     reconnect,
     isSuccess,
     isError,

@@ -1,10 +1,10 @@
 {
-  "name": "connect-react",
+  "name": "connect-kit",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "./dist/connect-react.umd.cjs",
-  "module": "./dist/connect-react.js",
+  "main": "./dist/connect-kit.umd.cjs",
+  "module": "./dist/connect-kit.js",
   "exports": {
     ".": {
       "import": "./dist/my-lib.js",

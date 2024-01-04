@@ -9,14 +9,13 @@
       "import": "./dist/connect-kit.js",
       "require": "./dist/connect-kit.umd.cjs"
     },
-    "./dist/*.css": {
-      "import": "./dist/*.css",
-      "require": "./dist/*.css"
+    "./styles.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "files": [
-    "dist",
-    "dist/style.css"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",

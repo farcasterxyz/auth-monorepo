@@ -20,7 +20,7 @@ export interface UserData {
   bio?: string;
 }
 
-interface ConnectKitContextValues {
+export interface ConnectKitContextValues {
   isAuthenticated: boolean;
   config: ConnectKitConfig;
   userData: UserData;

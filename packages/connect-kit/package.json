@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/connect-kit",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "main": "./dist/connect-kit.umd.cjs",
   "module": "./dist/connect-kit.js",
@@ -45,6 +45,7 @@
     "typescript": "^5.2.2",
     "viem": "^1.19.11",
     "vite": "^4.4.11",
+    "vite-plugin-dts": "^3.7.0",
     "vite-plugin-node-polyfills": "^0.17.0"
   },
   "peerDependencies": {

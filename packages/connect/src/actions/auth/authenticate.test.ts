@@ -23,7 +23,7 @@ describe("authenticate", () => {
   const statusResponseDataStub = {
     state: "completed",
     nonce: "abcd1234",
-    connectUri: "farcaster://connect?nonce=abcd1234[...]",
+    connectUri: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
     message,
     signature,
     fid,

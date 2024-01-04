@@ -29,12 +29,12 @@ describe("clients", () => {
   describe("e2e", () => {
     test("end to end connect flow", async () => {
       const appClient = createAppClient({
-        relayURI: httpServerAddress,
+        relay: httpServerAddress,
         ethereum: viem(),
       });
 
       const authClient = createAuthClient({
-        relayURI: httpServerAddress,
+        relay: httpServerAddress,
         ethereum: viem(),
       });
 
@@ -43,7 +43,7 @@ describe("clients", () => {
       // 1. App client opens a sign in channel
       const {
         response: connectResponse,
-        data: { channelToken, connectURI },
+        data: { channelToken, connectUri },
       } = await appClient.connect({
         siweUri: "https://example.com",
         domain: "example.com",
@@ -63,7 +63,7 @@ describe("clients", () => {
 
       // 3a. Parse connect URI to get channel token and SIWE message params
       const { channelToken: token, params } = authClient.parseSignInURI({
-        uri: connectURI,
+        uri: connectUri,
       });
       expect(token).toBe(channelToken);
 

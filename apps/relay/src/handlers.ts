@@ -1,5 +1,5 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { AUTH_KEY } from "./env";
+import { AUTH_KEY, CONNECT_URI_BASE } from "./env";
 import { Logger } from "logger";
 import { generateNonce } from "siwe";
 
@@ -25,7 +25,7 @@ export type AuthenticateRequest = {
 export type RelaySession = {
   state: "pending" | "completed";
   nonce: string;
-  connectURI: string;
+  connectUri: string;
   message?: string;
   signature?: string;
   fid?: number;
@@ -38,7 +38,7 @@ export type RelaySession = {
 const constructConnectURI = (channelToken: string, nonce: string, extraParams: ConnectRequest): string => {
   const params = { channelToken, nonce, ...extraParams };
   const query = new URLSearchParams(params);
-  return `farcaster://connect?${query.toString()}`;
+  return `${CONNECT_URI_BASE}?${query.toString()}`;
 };
 
 export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>, reply: FastifyReply) {
@@ -46,15 +46,15 @@ export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>,
   if (channel.isOk()) {
     const channelToken = channel.value;
     const nonce = request.body.nonce ?? generateNonce();
-    const connectURI = constructConnectURI(channelToken, nonce, request.body);
+    const connectUri = constructConnectURI(channelToken, nonce, request.body);
 
     const update = await request.channels.update(channelToken, {
       state: "pending",
       nonce,
-      connectURI,
+      connectUri,
     });
     if (update.isOk()) {
-      reply.code(201).send({ channelToken, connectURI });
+      reply.code(201).send({ channelToken, connectUri });
     } else {
       reply.code(500).send({ error: update.error.message });
     }
@@ -97,7 +97,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
 export async function status(request: FastifyRequest, reply: FastifyReply) {
   const channel = await request.channels.read(request.channelToken);
   if (channel.isOk()) {
-    const { connectURI, ...res } = channel.value;
+    const { connectUri, ...res } = channel.value;
     if (res.state === "completed") {
       const close = await request.channels.close(request.channelToken);
       if (close.isErr()) {

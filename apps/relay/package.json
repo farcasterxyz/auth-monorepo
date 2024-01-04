@@ -16,15 +16,14 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@farcaster/hub-nodejs": "^0.10.19",
     "@fastify/cors": "^8.4.2",
     "@fastify/rate-limit": "^9.0.1",
     "dotenv": "^16.3.1",
-    "ethers": "^6.9.0",
     "fastify": "^4.24.3",
     "ioredis": "^5.3.2",
     "neverthrow": "^6.1.0",
-    "siwe": "^2.1.4"
+    "siwe": "^2.1.4",
+    "ethers": "^6.0.8"
   },
   "devDependencies": {
     "axios": "^1.6.2",

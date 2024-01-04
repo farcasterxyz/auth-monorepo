@@ -95,6 +95,7 @@ describe("clients", () => {
       // 3e. Send back signed message
       const { response: authResponse } = await authClient.authenticate({
         channelToken,
+        authKey: "farcaster-connect-auth-key",
         message: messageString,
         signature: sig,
         ...userData,

@@ -10,6 +10,9 @@
       "require": "./dist/connect-kit.umd.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

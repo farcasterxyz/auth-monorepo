@@ -1,6 +1,6 @@
 import { SiweMessage, SiweResponse, SiweError } from "siwe";
 import { ResultAsync, err, ok } from "neverthrow";
-import { Provider } from "ethers";
+import type { Provider } from "ethers";
 import { ConnectAsyncResult, ConnectResult, ConnectError } from "../errors";
 
 import { validate, parseResources } from "./validate";

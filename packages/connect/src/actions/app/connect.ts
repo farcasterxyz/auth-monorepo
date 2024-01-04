@@ -16,7 +16,7 @@ interface ConnectRequest {
 
 interface ConnectAPIResponse {
   channelToken: string;
-  connectURI: string;
+  connectUri: string;
 }
 
 const path = "connect";

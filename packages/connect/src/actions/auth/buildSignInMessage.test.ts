@@ -3,7 +3,7 @@ import { viem } from "../../clients/ethereum/viem";
 
 describe("buildSignInMessage", () => {
   const client = createAuthClient({
-    relayURI: "https://connect.farcaster.xyz",
+    relay: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 

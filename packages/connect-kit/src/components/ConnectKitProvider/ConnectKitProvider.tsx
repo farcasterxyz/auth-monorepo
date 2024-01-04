@@ -9,7 +9,9 @@ import { AppClient, createAppClient, viem } from "@farcaster/connect";
 import { StatusAPIResponse } from "../../hooks/useWatchStatus";
 
 export interface ConnectKitConfig {
-  relayURI: string;
+  relay: string;
+  rpcUrl?: string;
+  version?: string;
 }
 
 export interface UserData {
@@ -29,7 +31,8 @@ export interface ConnectKitContextValues {
 }
 
 const configDefaults = {
-  relayURI: "https://connect.farcaster.xyz",
+  relay: "https://connect.farcaster.xyz",
+  version: "v1",
 };
 
 export const ConnectKitContext = createContext<ConnectKitContextValues>({
@@ -54,15 +57,17 @@ export function ConnectKitProvider({
     ...configDefaults,
     ...config,
   };
-  const { relayURI } = connectConfig;
+  const { relay, rpcUrl, version } = connectConfig;
 
   useEffect(() => {
+    const ethereum = rpcUrl ? viem({ rpcUrl }) : viem();
     const client = createAppClient({
-      relayURI,
-      ethereum: viem(),
+      relay,
+      ethereum,
+      version,
     });
     setAppClient(client);
-  }, [relayURI]);
+  }, [relay, rpcUrl, version]);
 
   const onSignIn = useCallback((signInData: StatusAPIResponse) => {
     const { fid, username, bio, displayName, pfpUrl } = signInData;

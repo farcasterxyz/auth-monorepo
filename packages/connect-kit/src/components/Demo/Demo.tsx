@@ -4,12 +4,19 @@ import { ConnectKitProvider } from "../ConnectKitProvider";
 
 export function Demo() {
   const connectConfig = {
-    relayURI: "http://localhost:8000",
+    relay: "http://localhost:8000",
+    rpcUrl: "https://mainnet.optimism.io",
   };
 
   return (
     <ConnectKitProvider config={connectConfig}>
-      <ConnectButton siweUri="http://example.com" domain="example.com" debug />
+      <ConnectButton
+        siweUri="http://example.com"
+        domain="example.com"
+        nonce="abcd1234"
+        requestId="some-unique-request-id"
+        debug
+      />
       <UserProfile />
     </ConnectKitProvider>
   );

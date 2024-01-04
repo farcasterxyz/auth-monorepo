@@ -14,7 +14,7 @@ describe("status", () => {
   const statusResponseDataStub = {
     state: "pending",
     nonce: "abcd1234",
-    connectURI: "farcaster://connect?nonce=abcd1234[...]",
+    connectUri: "farcaster://connect?nonce=abcd1234[...]",
   };
 
   test("constructs API request", async () => {

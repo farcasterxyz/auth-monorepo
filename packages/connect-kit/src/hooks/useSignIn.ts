@@ -1,16 +1,14 @@
-import useConnect from "./useConnect";
+import useConnect, { UseConnectArgs } from "./useConnect";
 import useWatchStatus from "./useWatchStatus";
 import useVerifySignInMessage from "./useVerifySignInMessage";
 import useAppClient from "./useAppClient";
 import useConnectContext from "./useConnectKitContext";
 import { useEffect } from "react";
 
-export interface UseSignInArgs {
-  siweUri: string;
-  domain: string;
+export type UseSignInArgs = UseConnectArgs & {
   timeout?: number;
   interval?: number;
-}
+};
 
 const defaults = {
   timeout: 300_000,
@@ -19,9 +17,8 @@ const defaults = {
 
 export function useSignIn(args: UseSignInArgs) {
   const appClient = useAppClient();
-  const ctx = useConnectContext();
-  const { onSignIn } = ctx;
-  const { siweUri, domain, timeout, interval } = {
+  const { onSignIn } = useConnectContext();
+  const { timeout, interval, ...connectArgs } = {
     ...defaults,
     ...args,
   };
@@ -29,10 +26,10 @@ export function useSignIn(args: UseSignInArgs) {
   const {
     connect,
     reconnect,
-    data: { channelToken, connectURI, qrCodeURI },
+    data: { channelToken, connectUri, qrCodeUri },
     isError: isConnectError,
     error: connectError,
-  } = useConnect({ siweUri, domain });
+  } = useConnect(connectArgs);
 
   const {
     isPolling,
@@ -76,8 +73,8 @@ export function useSignIn(args: UseSignInArgs) {
     isError,
     error,
     channelToken,
-    connectURI,
-    qrCodeURI,
+    connectUri,
+    qrCodeUri,
     appClient,
     data: statusData,
     validSignature,

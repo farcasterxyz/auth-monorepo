@@ -6,15 +6,19 @@ import { useAppClient } from "./useAppClient";
 export interface UseConnectArgs {
   siweUri: string;
   domain: string;
+  nonce?: string;
+  notBefore?: string;
+  expirationTime?: string;
+  requestId?: string;
 }
 
-export function useConnect({ siweUri, domain }: UseConnectArgs) {
+export function useConnect(args: UseConnectArgs) {
   const appClient = useAppClient();
 
-  const [qrCodeURI, setQrCodeURI] = useState<string>();
+  const [qrCodeUri, setqrCodeUri] = useState<string>();
   const [enabled, setEnabled] = useState<boolean>(false);
   const [channelToken, setChannelToken] = useState<string>();
-  const [connectURI, setConnectURI] = useState<string>();
+  const [connectUri, setconnectUri] = useState<string>();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<ConnectError>();
@@ -28,25 +32,18 @@ export function useConnect({ siweUri, domain }: UseConnectArgs) {
 
   const connect = useCallback(async () => {
     if (appClient && !channelToken) {
-      const {
-        data,
-        isError: isConnectError,
-        error: connectError,
-      } = await appClient.connect({
-        siweUri,
-        domain,
-      });
+      const { data, isError: isConnectError, error: connectError } = await appClient.connect(args);
       if (isConnectError) {
         console.error(connectError);
         setIsError(true);
         setError(connectError);
       } else {
         setChannelToken(data.channelToken);
-        setConnectURI(data.connectURI);
+        setconnectUri(data.connectUri);
         setIsSuccess(true);
       }
     }
-  }, [appClient, domain, siweUri, channelToken]);
+  }, [appClient, args, channelToken]);
 
   const reconnect = useCallback(async () => {
     await resetState();
@@ -54,17 +51,17 @@ export function useConnect({ siweUri, domain }: UseConnectArgs) {
   }, [connect]);
 
   const generateQRCode = useCallback(async () => {
-    if (connectURI) {
-      const qrCode = await QRCode.toDataURL(connectURI);
-      setQrCodeURI(qrCode);
+    if (connectUri) {
+      const qrCode = await QRCode.toDataURL(connectUri);
+      setqrCodeUri(qrCode);
     }
-  }, [connectURI]);
+  }, [connectUri]);
 
   useEffect(() => {
-    if (connectURI) {
+    if (connectUri) {
       generateQRCode();
     }
-  }, [connectURI, generateQRCode]);
+  }, [connectUri, generateQRCode]);
 
   useEffect(() => {
     if (enabled) {
@@ -78,7 +75,7 @@ export function useConnect({ siweUri, domain }: UseConnectArgs) {
     isSuccess,
     isError,
     error,
-    data: { channelToken, connectURI, qrCodeURI },
+    data: { channelToken, connectUri, qrCodeUri },
   };
 }
 

@@ -6,15 +6,15 @@ import { button } from "../styles.css.ts";
 export function QRCodeDialog({
   open,
   onClose,
-  qrCodeURI,
-  connectURI,
+  qrCodeUri,
+  connectUri,
   isError,
   error,
 }: {
   open: boolean;
   onClose: () => void;
-  qrCodeURI: string;
-  connectURI: string;
+  qrCodeUri: string;
+  connectUri: string;
   isError: boolean;
   error?: ConnectError;
 }) {
@@ -42,7 +42,7 @@ export function QRCodeDialog({
             <img
               width="256"
               height="256"
-              src={qrCodeURI}
+              src={qrCodeUri}
               alt="Sign in With Farcaster QR Code"
             />
             <div>
@@ -51,7 +51,7 @@ export function QRCodeDialog({
                 style={{
                   textDecoration: "none",
                 }}
-                href={connectURI}
+                href={connectUri}
                 target="_blank"
                 rel="noreferrer"
               >

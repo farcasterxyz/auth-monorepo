@@ -1,31 +1,21 @@
 import { useCallback, useState } from "react";
-import useSignIn from "../../hooks/useSignIn.ts";
+import useSignIn, { UseSignInArgs } from "../../hooks/useSignIn.ts";
 import { SignInButton } from "../SignInButton";
 import { ProfileButton } from "../ProfileButton";
 import { QRCodeDialog } from "../QRCodeDialog";
 
-export function ConnectButton({
-  siweUri,
-  domain,
-  timeout,
-  interval,
-  debug,
-}: {
-  siweUri: string;
-  domain: string;
-  timeout?: number;
-  interval?: number;
-  debug?: boolean;
-}) {
-  const signInState = useSignIn({ siweUri, domain, timeout, interval });
+type ConnectButtonProps = UseSignInArgs & { debug?: boolean };
+
+export function ConnectButton({ debug, ...signInArgs }: ConnectButtonProps) {
+  const signInState = useSignIn(signInArgs);
   const {
     signIn,
     reconnect,
     isSuccess,
     isError,
     error,
-    qrCodeURI,
-    connectURI,
+    qrCodeUri,
+    connectUri,
     data,
     validSignature,
   } = signInState;
@@ -38,7 +28,7 @@ export function ConnectButton({
   }, [isError, reconnect, signIn]);
 
   const authenticated = isSuccess && validSignature;
-  const connected = qrCodeURI && connectURI;
+  const connected = qrCodeUri && connectUri;
 
   return (
     <div>
@@ -51,8 +41,8 @@ export function ConnectButton({
             <QRCodeDialog
               open={showDialog}
               onClose={() => setShowDialog(false)}
-              qrCodeURI={qrCodeURI}
-              connectURI={connectURI}
+              qrCodeUri={qrCodeUri}
+              connectUri={connectUri}
               isError={isError}
               error={error}
             />

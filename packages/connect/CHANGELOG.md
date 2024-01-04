@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.4
+
+### Patch Changes
+
+- 02959e9: Use @farcaster/core
+
 ## 0.0.3
 
 ### Patch Changes

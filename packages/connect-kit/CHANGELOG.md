@@ -1,5 +1,12 @@
 # connect-kit
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [02959e9]
+  - @farcaster/connect@0.0.4
+
 ## 0.0.1
 
 ### Patch Changes

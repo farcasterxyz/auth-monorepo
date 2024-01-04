@@ -10,8 +10,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "ConnectReact",
-      fileName: "connect-react",
+      name: "ConnectKit",
+      fileName: "connect-kit",
     },
     rollupOptions: {
       external: ["react", "react/jsx-runtime", "react-dom"],

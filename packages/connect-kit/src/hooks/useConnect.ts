@@ -3,12 +3,12 @@ import { ConnectError } from "@farcaster/connect";
 import QRCode from "qrcode";
 import { useAppClient } from "./useAppClient";
 
-interface UseConnectArgs {
+export interface UseConnectArgs {
   siweUri: string;
   domain: string;
 }
 
-function useConnect({ siweUri, domain }: UseConnectArgs) {
+export function useConnect({ siweUri, domain }: UseConnectArgs) {
   const appClient = useAppClient();
 
   const [qrCodeURI, setQrCodeURI] = useState<string>();

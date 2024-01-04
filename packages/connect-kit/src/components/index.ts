@@ -1,2 +1,3 @@
-export * from "./SignInButton";
+export * from "./ConnectButton";
+export * from "./ConnectKitProvider";
 export * from "./Demo";

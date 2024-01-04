@@ -3,8 +3,8 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "test": "jest",
-    "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
+    "test": " DOTENV_CONFIG_PATH=.env.test jest",
+    "test:ci": "ENVIRONMENT=test DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage",
     "lint": "biome format src/ --write && biome check src/ --apply",
     "lint:ci": "biome ci src/"
   },

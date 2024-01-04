@@ -4,6 +4,7 @@ import { Client } from "../../clients/createClient";
 import { AsyncUnwrapped, unwrap } from "../../errors";
 
 export interface AuthenticateArgs extends AuthenticateRequest {
+  authKey: string;
   channelToken: string;
 }
 
@@ -25,10 +26,13 @@ const path = "connect/authenticate";
 
 export const authenticate = async (
   client: Client,
-  { channelToken, ...request }: AuthenticateArgs,
+  { channelToken, authKey, ...request }: AuthenticateArgs,
 ): AuthenticateResponse => {
   const result = await post<AuthenticateRequest, AuthenticateAPIResponse>(client, path, request, {
     authToken: channelToken,
+    headers: {
+      "X-Farcaster-Connect-Auth-Key": authKey,
+    },
   });
   return unwrap(result);
 };

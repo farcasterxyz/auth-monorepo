@@ -38,6 +38,7 @@ describe("authenticate", () => {
     const spy = jest.spyOn(global, "fetch").mockResolvedValue(response);
 
     const res = await client.authenticate({
+      authKey: "some-auth-key",
       channelToken: "some-channel-token",
       message,
       signature,
@@ -64,6 +65,7 @@ describe("authenticate", () => {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer some-channel-token",
+        "X-Farcaster-Connect-Auth-Key": "some-auth-key",
       },
     });
   });

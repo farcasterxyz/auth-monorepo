@@ -1,4 +1,4 @@
-# connect-react
+# connect-kit
 
 ## 0.0.1
 

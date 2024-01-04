@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ConnectError } from "@farcaster/connect";
 import useAppClient from "./useAppClient";
 
-interface UseWatchStatusArgs {
+export interface UseWatchStatusArgs {
   channelToken?: string;
   timeout?: number;
   interval?: number;
@@ -26,7 +26,7 @@ const defaults = {
   interval: 1_500,
 };
 
-function useWatchStatus(args: UseWatchStatusArgs) {
+export function useWatchStatus(args: UseWatchStatusArgs) {
   const appClient = useAppClient();
   const { channelToken, timeout, interval } = {
     ...defaults,

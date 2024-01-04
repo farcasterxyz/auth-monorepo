@@ -1,1 +1,1 @@
-export * from "./ConnectKitProvider";
+export { ConnectKitProvider } from "./ConnectKitProvider";

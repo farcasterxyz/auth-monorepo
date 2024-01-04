@@ -5,7 +5,7 @@ import useAppClient from "./useAppClient";
 import useConnectContext from "./useConnectKitContext";
 import { useEffect } from "react";
 
-interface UseSignInArgs {
+export interface UseSignInArgs {
   siweUri: string;
   domain: string;
   timeout?: number;
@@ -17,7 +17,7 @@ const defaults = {
   interval: 1_500,
 };
 
-function useSignIn(args: UseSignInArgs) {
+export function useSignIn(args: UseSignInArgs) {
   const appClient = useAppClient();
   const ctx = useConnectContext();
   const { onSignIn } = ctx;

@@ -73,7 +73,7 @@ describe("relay server", () => {
       const response = await http.post(getFullUrl("/v1/connect"), connectParams);
 
       expect(response.status).toBe(201);
-      const { channelToken, connectURI, ...rest } = response.data;
+      const { channelToken, connectUri, ...rest } = response.data;
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
       expect(rest).toStrictEqual({});
     });
@@ -92,9 +92,9 @@ describe("relay server", () => {
       });
 
       expect(response.status).toBe(201);
-      const { channelToken, connectURI, ...rest } = response.data;
+      const { channelToken, connectUri, ...rest } = response.data;
       // parse query params from URI
-      const params = new URLSearchParams(connectURI.split("?")[1]);
+      const params = new URLSearchParams(connectUri.split("?")[1]);
       expect(params.get("siweUri")).toBe(connectParams.siweUri);
       expect(params.get("domain")).toBe(connectParams.domain);
       expect(params.get("nonce")).toBe(nonce);

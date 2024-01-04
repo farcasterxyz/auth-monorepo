@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.6
+
+### Patch Changes
+
+- d906f3c: Chore: prune bundles
+
 ## 0.0.5
 
 ### Patch Changes

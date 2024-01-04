@@ -1,5 +1,13 @@
 # connect-kit
 
+## 0.0.8
+
+### Patch Changes
+
+- d906f3c: Chore: prune bundles
+- Updated dependencies [d906f3c]
+  - @farcaster/connect@0.0.6
+
 ## 0.0.7
 
 ### Patch Changes

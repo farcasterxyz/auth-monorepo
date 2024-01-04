@@ -10,12 +10,12 @@ import * as repl from "repl";
     createAuthClient,
     viem,
     appClient: createAppClient({
-      relayURI: "http://localhost:8000",
+      relay: "http://localhost:8000",
       ethereum: viem(),
     }),
 
     authClient: createAuthClient({
-      relayURI: "http://localhost:8000",
+      relay: "http://localhost:8000",
       ethereum: viem(),
     }),
   };

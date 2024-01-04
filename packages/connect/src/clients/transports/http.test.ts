@@ -5,7 +5,7 @@ import { jest } from "@jest/globals";
 
 describe("http", () => {
   const config = {
-    relayURI: "https://connect.farcaster.xyz",
+    relay: "https://connect.farcaster.xyz",
     ethereum: viem(),
   };
 

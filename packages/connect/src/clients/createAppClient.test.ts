@@ -14,7 +14,7 @@ describe("createAppClient", () => {
 
   test("adds version to config", () => {
     expect(appClient.config).toEqual({
-      relayURI: "https://connect.farcaster.xyz",
+      relay: "https://connect.farcaster.xyz",
       version: "v1",
     });
   });
@@ -26,7 +26,7 @@ describe("createAppClient", () => {
     });
 
     expect(appClient.config).toEqual({
-      relayURI: "https://connect.farcaster.xyz",
+      relay: "https://connect.farcaster.xyz",
       version: "v2",
     });
   });

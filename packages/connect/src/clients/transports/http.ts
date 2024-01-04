@@ -103,7 +103,7 @@ export const poll = async <ResponseDataType>(
 };
 
 const getURI = (client: Client, path: string) => {
-  return `${client.config.relayURI}/${client.config.version}/${path}`;
+  return `${client.config.relay}/${client.config.version}/${path}`;
 };
 
 const getHeaders = (opts?: HttpOpts) => {

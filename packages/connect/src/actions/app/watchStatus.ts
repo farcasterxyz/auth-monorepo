@@ -14,7 +14,7 @@ export type WatchStatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>
 interface StatusAPIResponse {
   state: "pending" | "completed";
   nonce: string;
-  connectURI: string;
+  connectUri: string;
   message?: string;
   signature?: `0x${string}`;
   fid?: number;

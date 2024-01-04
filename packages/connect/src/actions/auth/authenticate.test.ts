@@ -4,7 +4,7 @@ import { viem } from "../../clients/ethereum/viem";
 
 describe("authenticate", () => {
   const client = createAuthClient({
-    relayURI: "https://connect.farcaster.xyz",
+    relay: "https://connect.farcaster.xyz",
     ethereum: viem(),
   });
 
@@ -23,7 +23,7 @@ describe("authenticate", () => {
   const statusResponseDataStub = {
     state: "completed",
     nonce: "abcd1234",
-    connectURI: "farcaster://connect?nonce=abcd1234[...]",
+    connectUri: "farcaster://connect?nonce=abcd1234[...]",
     message,
     signature,
     fid,

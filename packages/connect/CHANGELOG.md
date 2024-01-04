@@ -1,5 +1,12 @@
 # @farcaster/connect
 
+## 0.0.7
+
+### Patch Changes
+
+- 7694d67: Use Warpcast URLs
+- 394e75e: Lowercase URL/URI, add props to ConnectButton
+
 ## 0.0.6
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/connect-relay",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Farcaster Connect relay server",
   "private": true,
   "type": "commonjs",

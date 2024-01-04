@@ -1,5 +1,15 @@
 # connect-kit
 
+## 0.0.9
+
+### Patch Changes
+
+- 6de7239: Add useSignInMessage hook
+- 394e75e: Lowercase URL/URI, add props to ConnectButton
+- Updated dependencies [7694d67]
+- Updated dependencies [394e75e]
+  - @farcaster/connect@0.0.7
+
 ## 0.0.8
 
 ### Patch Changes

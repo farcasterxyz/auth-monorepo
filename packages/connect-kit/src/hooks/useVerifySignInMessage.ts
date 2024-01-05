@@ -3,17 +3,28 @@ import { ConnectError } from "@farcaster/connect";
 import useAppClient from "./useAppClient";
 
 export interface UseVerifySignInMessageArgs {
+  nonce?: string;
+  domain?: string;
   message?: string;
   signature?: `0x${string}`;
   onSuccess?: (statusData: UseVerifySignInMessageData) => void;
   onError?: (error?: ConnectError) => void;
 }
 
-export type UseVerifySignInMessageData = UseVerifySignInMessageArgs & {
+export interface UseVerifySignInMessageData {
+  message?: string;
+  signature?: `0x${string}`;
   validSignature: boolean;
-};
+}
 
-export function useVerifySignInMessage({ message, signature, onSuccess, onError }: UseVerifySignInMessageArgs) {
+export function useVerifySignInMessage({
+  nonce,
+  domain,
+  message,
+  signature,
+  onSuccess,
+  onError,
+}: UseVerifySignInMessageArgs) {
   const appClient = useAppClient();
 
   const [validSignature, setValidSignature] = useState<boolean>(false);
@@ -28,12 +39,14 @@ export function useVerifySignInMessage({ message, signature, onSuccess, onError 
   };
 
   const verifySignInMessage = useCallback(async () => {
-    if (appClient && message && signature) {
+    if (appClient && nonce && domain && message && signature) {
       const {
         success,
         isError: isVerifyError,
         error: verifyError,
       } = await appClient.verifySignInMessage({
+        nonce,
+        domain,
         message,
         signature,
       });
@@ -47,14 +60,14 @@ export function useVerifySignInMessage({ message, signature, onSuccess, onError 
         onSuccess?.({ message, signature, validSignature: success });
       }
     }
-  }, [appClient, message, signature, onSuccess, onError]);
+  }, [appClient, nonce, domain, message, signature, onSuccess, onError]);
 
   useEffect(() => {
     resetState();
-    if (message && signature) {
+    if (nonce && domain && message && signature) {
       verifySignInMessage();
     }
-  }, [message, signature, verifySignInMessage]);
+  }, [nonce, domain, message, signature, verifySignInMessage]);
 
   return {
     isSuccess,

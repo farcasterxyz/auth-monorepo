@@ -16,10 +16,18 @@ export interface UseConnectArgs {
 export interface UseConnectData {
   channelToken?: string;
   connectUri?: string;
+  nonce?: string;
   qrCodeUri?: string;
 }
 
-export function useConnect({ nonce, notBefore, expirationTime, requestId, onSuccess, onError }: UseConnectArgs) {
+export function useConnect({
+  nonce: customNonce,
+  notBefore,
+  expirationTime,
+  requestId,
+  onSuccess,
+  onError,
+}: UseConnectArgs) {
   const { config } = useConnectKitContext();
   const { siweUri, domain } = config;
   const appClient = useAppClient();
@@ -27,6 +35,7 @@ export function useConnect({ nonce, notBefore, expirationTime, requestId, onSucc
   const [qrCodeUri, setqrCodeUri] = useState<string>();
   const [channelToken, setChannelToken] = useState<string>();
   const [connectUri, setConnectUri] = useState<string>();
+  const [nonce, setNonce] = useState<string>();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<ConnectError>();
@@ -38,7 +47,7 @@ export function useConnect({ nonce, notBefore, expirationTime, requestId, onSucc
         isError: isConnectError,
         error: connectError,
       } = await appClient.connect({
-        nonce: typeof nonce === "function" ? await nonce() : nonce,
+        nonce: typeof customNonce === "function" ? await customNonce() : customNonce,
         siweUri,
         domain,
         notBefore,
@@ -50,16 +59,18 @@ export function useConnect({ nonce, notBefore, expirationTime, requestId, onSucc
         setError(connectError);
         onError?.(connectError);
       } else {
-        setChannelToken(data.channelToken);
-        setConnectUri(data.connectUri);
+        const { channelToken, connectUri, nonce } = data;
+        setChannelToken(channelToken);
+        setConnectUri(connectUri);
+        setNonce(nonce);
 
-        const qrCode = await QRCode.toDataURL(data.connectUri, { width: 360 });
-        setqrCodeUri(qrCode);
+        const qrCodeUri = await QRCode.toDataURL(connectUri, { width: 360 });
+        setqrCodeUri(qrCodeUri);
         setIsSuccess(true);
-        onSuccess?.({ channelToken: data.channelToken, connectUri: data.connectUri, qrCodeUri: qrCode });
+        onSuccess?.({ channelToken, connectUri, qrCodeUri, nonce });
       }
     }
-  }, [appClient, siweUri, domain, channelToken, nonce, notBefore, expirationTime, requestId, onError, onSuccess]);
+  }, [appClient, siweUri, domain, channelToken, customNonce, notBefore, expirationTime, requestId, onError, onSuccess]);
 
   const reconnect = useCallback(async () => {
     setChannelToken(undefined);
@@ -76,7 +87,7 @@ export function useConnect({ nonce, notBefore, expirationTime, requestId, onSucc
     isSuccess,
     isError,
     error,
-    data: { channelToken, connectUri, qrCodeUri },
+    data: { channelToken, connectUri, qrCodeUri, nonce },
   };
 }
 

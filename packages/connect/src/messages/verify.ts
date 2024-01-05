@@ -20,6 +20,8 @@ const voidVerifyFid = (_custody: Hex) => Promise.reject(new Error("Not implement
  * message is invalid or the signature is invalid.
  */
 export const verify = async (
+  nonce: string,
+  domain: string,
   message: string | Partial<SiweMessage>,
   signature: string,
   options: SignInOpts = {
@@ -27,7 +29,9 @@ export const verify = async (
   },
 ): ConnectAsyncResult<VerifyResponse> => {
   const { getFid, provider } = options;
-  const valid = validate(message);
+  const valid = validate(message)
+    .andThen((message) => validateNonce(message, nonce))
+    .andThen((message) => validateDomain(message, domain));
   if (valid.isErr()) return err(valid.error);
 
   const siwe = (await verifySiweMessage(valid.value, signature, provider)).andThen(mergeResources);
@@ -45,6 +49,22 @@ export const verify = async (
   }
   const { error, ...response } = fid.value;
   return ok(response);
+};
+
+const validateNonce = (message: SiweMessage, nonce: string): ConnectResult<SiweMessage> => {
+  if (message.nonce !== nonce) {
+    return err(new ConnectError("unauthorized", "Invalid nonce"));
+  } else {
+    return ok(message);
+  }
+};
+
+const validateDomain = (message: SiweMessage, domain: string): ConnectResult<SiweMessage> => {
+  if (message.domain !== domain) {
+    return err(new ConnectError("unauthorized", "Invalid domain"));
+  } else {
+    return ok(message);
+  }
 };
 
 const verifySiweMessage = async (

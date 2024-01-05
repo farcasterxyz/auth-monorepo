@@ -20,7 +20,9 @@ describe("verifySignInMessage", () => {
     uri: "https://example.com/login",
     version: "1",
     issuedAt: "2023-10-01T00:00:00.000Z",
+    nonce: "abcd1234",
   };
+  const { nonce, domain } = siweParams;
 
   test("verifies sign in message", async () => {
     const { message } = authClient.buildSignInMessage({
@@ -36,6 +38,8 @@ describe("verifySignInMessage", () => {
     const errMsg = `Invalid resource: signer ${account.address} does not own fid 1234.`;
     const err = new ConnectError("unauthorized", errMsg);
     const { isError, error } = await client.verifySignInMessage({
+      nonce,
+      domain,
       message,
       signature,
     });
@@ -58,6 +62,8 @@ describe("verifySignInMessage", () => {
     const errMsg = `Invalid resource: signer ${LGTM} does not own fid 1234.`;
     const err = new ConnectError("unauthorized", errMsg);
     const { isError, error } = await client.verifySignInMessage({
+      nonce,
+      domain,
       message,
       signature,
     });

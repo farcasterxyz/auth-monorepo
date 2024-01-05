@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/connect-kit",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "type": "module",
   "main": "./dist/connect-kit.umd.cjs",
   "module": "./dist/connect-kit.js",
@@ -23,7 +23,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "@farcaster/connect": "^0.0.10",
+    "@farcaster/connect": "^0.0.11",
     "@vanilla-extract/css": "^1.14.0",
     "qrcode": "^1.5.3",
     "react-remove-scroll": "^2.5.7"
@@ -44,8 +44,7 @@
     "typescript": "^5.2.2",
     "viem": "^1.19.11",
     "vite": "^4.4.11",
-    "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-node-polyfills": "^0.17.0"
+    "vite-plugin-dts": "^3.7.0"
   },
   "peerDependencies": {
     "react": ">= 17",

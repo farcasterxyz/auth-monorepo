@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/connect-kit",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "type": "module",
   "main": "./dist/connect-kit.umd.cjs",
   "module": "./dist/connect-kit.js",

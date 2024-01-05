@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.18
+
+### Patch Changes
+
+- 603f005: fix re-opening of modal
+
 ## 0.0.17
 
 ### Patch Changes

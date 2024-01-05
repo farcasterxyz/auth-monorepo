@@ -15,6 +15,7 @@ export function ConnectButton({ debug, ...signInArgs }: ConnectButtonProps) {
 
   const onClick = useCallback(() => {
     isError ? reconnect() : signIn();
+    setShowDialog(true);
   }, [isError, reconnect, signIn]);
 
   const authenticated = isSuccess && validSignature;
@@ -39,8 +40,6 @@ export function ConnectButton({ debug, ...signInArgs }: ConnectButtonProps) {
         } else {
           window.location.href = connectUri;
         }
-      } else {
-        setShowDialog(true);
       }
     }
   }, [connectUri, setShowDialog]);
@@ -54,7 +53,7 @@ export function ConnectButton({ debug, ...signInArgs }: ConnectButtonProps) {
           <SignInButton onClick={onClick} />
           {qrCodeUri && connectUri && (
             <QRCodeDialog
-              open={showDialog}
+              open={showDialog && !isMobile()}
               onClose={() => setShowDialog(false)}
               qrCodeUri={qrCodeUri}
               connectUri={connectUri}

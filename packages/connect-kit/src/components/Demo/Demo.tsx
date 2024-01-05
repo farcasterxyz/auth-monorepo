@@ -7,7 +7,7 @@ export function Demo() {
     relay: "http://localhost:8000",
     rpcUrl: "https://mainnet.optimism.io",
     siweUri: "https://example.com",
-    domain: "example.com"
+    domain: "example.com",
   };
 
   return (

@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { AppClient, createAppClient, viem } from "@farcaster/connect";
 import { UseSignInData } from "../../hooks/useSignIn";
 

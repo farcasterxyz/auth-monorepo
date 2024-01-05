@@ -13,12 +13,7 @@ export type UseVerifySignInMessageData = UseVerifySignInMessageArgs & {
   validSignature: boolean;
 };
 
-export function useVerifySignInMessage({
-  message,
-  signature,
-  onSuccess,
-  onError,
-}: UseVerifySignInMessageArgs) {
+export function useVerifySignInMessage({ message, signature, onSuccess, onError }: UseVerifySignInMessageArgs) {
   const appClient = useAppClient();
 
   const [validSignature, setValidSignature] = useState<boolean>(false);

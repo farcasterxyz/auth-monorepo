@@ -8,17 +8,7 @@ type ConnectButtonProps = UseSignInArgs & { debug?: boolean };
 
 export function ConnectButton({ debug, ...signInArgs }: ConnectButtonProps) {
   const signInState = useSignIn(signInArgs);
-  const {
-    signIn,
-    reconnect,
-    isSuccess,
-    isError,
-    error,
-    qrCodeUri,
-    connectUri,
-    data,
-    validSignature,
-  } = signInState;
+  const { signIn, reconnect, isSuccess, isError, error, qrCodeUri, connectUri, data, validSignature } = signInState;
 
   const [showDialog, setShowDialog] = useState(false);
 

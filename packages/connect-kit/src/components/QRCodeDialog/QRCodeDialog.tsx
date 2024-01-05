@@ -2,6 +2,7 @@ import { ConnectError } from "@farcaster/connect";
 import { Dialog } from "../Dialog/index.ts";
 import { ErrorMessage } from "../ErrorMessage/index.ts";
 import { button } from "../styles.css.ts";
+import { body, qrCodeImage, siwfHeading } from "./QRCodeDialog.css.ts";
 
 export function QRCodeDialog({
   open,
@@ -20,31 +21,14 @@ export function QRCodeDialog({
 }) {
   return (
     <Dialog open={open} titleId="Sign In With Farcaster" onClose={onClose}>
-      <div
-        style={{
-          fontFamily: "sans-serif",
-          backgroundColor: "white",
-          padding: "24px 36px",
-          width: 360,
-          height: 360,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-        }}
-      >
+      <div className={body}>
         {isError ? (
           <ErrorMessage error={error} />
         ) : (
           <>
+            <div className={siwfHeading}>Sign in with Farcaster</div>
             <div>Scan with your phone's camera</div>
-            <img
-              width="256"
-              height="256"
-              src={qrCodeUri}
-              alt="Sign in With Farcaster QR Code"
-            />
+            <img src={qrCodeUri} className={qrCodeImage} alt="Sign in With Farcaster QR Code" />
             <div>
               On your phone already?{" "}
               <a

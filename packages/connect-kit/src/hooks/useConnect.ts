@@ -60,7 +60,7 @@ export function useConnect({
         setChannelToken(data.channelToken);
         setConnectUri(data.connectUri); 
 
-        const qrCode = await QRCode.toDataURL(data.connectUri);
+        const qrCode = await QRCode.toDataURL(data.connectUri, { width: 360 });
         setqrCodeUri(qrCode);
         setIsSuccess(true);
         onSuccess?.({ channelToken, connectUri, qrCodeUri });

@@ -24,7 +24,10 @@ const defaults = {
 
 export function useSignIn(args: UseSignInArgs) {
   const appClient = useAppClient();
-  const { onSignIn } = useConnectContext();
+  const {
+    onSignIn,
+    config: { domain },
+  } = useConnectContext();
   const { timeout, interval, onSuccess, onStatusResponse, onError, ...connectArgs } = {
     ...defaults,
     ...args,
@@ -33,7 +36,7 @@ export function useSignIn(args: UseSignInArgs) {
   const {
     connect,
     reconnect,
-    data: { channelToken, connectUri, qrCodeUri },
+    data: { channelToken, connectUri, qrCodeUri, nonce },
     isError: isConnectError,
     error: connectError,
   } = useConnect({ ...connectArgs, onError });
@@ -57,6 +60,8 @@ export function useSignIn(args: UseSignInArgs) {
     isError: isVerifyError,
     error: verifyError,
   } = useVerifySignInMessage({
+    nonce,
+    domain,
     message: statusData?.message,
     signature: statusData?.signature,
     onError,

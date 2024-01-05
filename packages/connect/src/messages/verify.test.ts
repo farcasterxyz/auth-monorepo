@@ -14,6 +14,7 @@ const siweParams = {
   nonce: "12345678",
   issuedAt: "2023-10-01T00:00:00.000Z",
 };
+const { nonce, domain } = siweParams;
 
 describe("verify", () => {
   test("verifies valid EOA signatures", async () => {
@@ -26,7 +27,7 @@ describe("verify", () => {
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const result = await verify(message, sig, { getFid });
+    const result = await verify(nonce, domain, message, sig, { getFid });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       data: siweMessage,
@@ -45,7 +46,7 @@ describe("verify", () => {
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const result = await verify(message, sig, { getFid });
+    const result = await verify(nonce, domain, message, sig, { getFid });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       data: siweMessage,
@@ -65,7 +66,7 @@ describe("verify", () => {
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const result = await verify(message, sig, { getFid, provider });
+    const result = await verify(nonce, domain, message, sig, { getFid, provider });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       data: siweMessage,
@@ -84,7 +85,7 @@ describe("verify", () => {
     });
     const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const result = await verify(message, sig, { getFid });
+    const result = await verify(nonce, domain, message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -103,7 +104,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(message, sig, { getFid });
+    const result = await verify(nonce, domain, message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -122,7 +123,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(message, sig, { getFid });
+    const result = await verify(nonce, domain, message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -141,7 +142,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(message, sig, { getFid });
+    const result = await verify(nonce, domain, message, sig, { getFid });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unavailable");
@@ -158,10 +159,44 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(message, sig);
+    const result = await verify(nonce, domain, message, sig);
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unavailable");
     expect(err.message).toBe("Not implemented: Must provide an fid verifier");
+  });
+
+  test("mismatched nonce", async () => {
+    const res = build({
+      ...siweParams,
+      address: account.address,
+      fid: 1234,
+    });
+    const { message } = res._unsafeUnwrap();
+    const sig = await account.signMessage({
+      message,
+    });
+    const result = await verify("mismatched-nonce", domain, message, sig);
+    expect(result.isOk()).toBe(false);
+    const err = result._unsafeUnwrapErr();
+    expect(err.errCode).toBe("unauthorized");
+    expect(err.message).toBe("Invalid nonce");
+  });
+
+  test("mismatched domain", async () => {
+    const res = build({
+      ...siweParams,
+      address: account.address,
+      fid: 1234,
+    });
+    const { message } = res._unsafeUnwrap();
+    const sig = await account.signMessage({
+      message,
+    });
+    const result = await verify(nonce, "mismatched-domain", message, sig);
+    expect(result.isOk()).toBe(false);
+    const err = result._unsafeUnwrapErr();
+    expect(err.errCode).toBe("unauthorized");
+    expect(err.message).toBe("Invalid domain");
   });
 });

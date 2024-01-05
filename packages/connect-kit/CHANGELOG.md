@@ -1,5 +1,16 @@
 # connect-kit
 
+## 0.0.12
+
+### Patch Changes
+
+- ace9fa1: Change Viem to peer dependency
+- 1afd3e9: minor react optimizations in ConnectButton
+- 683c5b2: Add callbacks to hooks/components
+- 5009879: Set siweUri and domain on config
+- Updated dependencies [ace9fa1]
+  - @farcaster/connect@0.0.10
+
 ## 0.0.11
 
 ### Patch Changes

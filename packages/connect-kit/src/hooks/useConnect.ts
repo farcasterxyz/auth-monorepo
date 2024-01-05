@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { ConnectError } from "@farcaster/connect";
 import QRCode from "qrcode";
 import { useAppClient } from "./useAppClient";
@@ -10,9 +10,26 @@ export interface UseConnectArgs {
   notBefore?: string;
   expirationTime?: string;
   requestId?: string;
+  onSuccess?: (connectData: UseConnectData) => void;
+  onError?: (error?: ConnectError) => void;
 }
 
-export function useConnect({ siweUri, domain, nonce, notBefore, expirationTime, requestId }: UseConnectArgs) {
+export interface UseConnectData {
+  channelToken?: string;
+  connectUri?: string;
+  qrCodeUri?: string;
+}
+
+export function useConnect({
+  siweUri,
+  domain,
+  nonce,
+  notBefore,
+  expirationTime,
+  requestId,
+  onSuccess,
+  onError,
+}: UseConnectArgs) {
   const appClient = useAppClient();
 
   const [qrCodeUri, setqrCodeUri] = useState<string>();
@@ -44,34 +61,36 @@ export function useConnect({ siweUri, domain, nonce, notBefore, expirationTime, 
         requestId,
       });
       if (isConnectError) {
-        console.error(connectError);
         setIsError(true);
         setError(connectError);
+        onError?.(connectError);
       } else {
-        setChannelToken(data.channelToken);
-        setconnectUri(data.connectUri);
+        const { channelToken, connectUri } = data;
+        setChannelToken(channelToken);
+        setconnectUri(connectUri);
+        const qrCodeUri = await QRCode.toDataURL(connectUri);
+        setqrCodeUri(qrCodeUri);
         setIsSuccess(true);
+        onSuccess?.({ channelToken, connectUri, qrCodeUri });
       }
     }
-  }, [appClient, channelToken, siweUri, domain, nonce, notBefore, expirationTime, requestId]);
+  }, [
+    appClient,
+    channelToken,
+    nonce,
+    siweUri,
+    domain,
+    notBefore,
+    expirationTime,
+    requestId,
+    onError,
+    onSuccess,
+  ]);
 
   const reconnect = useCallback(async () => {
     await resetState();
     connect();
   }, [connect]);
-
-  const generateQRCode = useCallback(async () => {
-    if (connectUri) {
-      const qrCode = await QRCode.toDataURL(connectUri);
-      setqrCodeUri(qrCode);
-    }
-  }, [connectUri]);
-
-  useEffect(() => {
-    if (connectUri) {
-      generateQRCode();
-    }
-  }, [connectUri, generateQRCode]);
 
   return {
     connect,

@@ -1,14 +1,21 @@
-import useConnect, { UseConnectArgs } from "./useConnect";
-import useWatchStatus from "./useWatchStatus";
-import useVerifySignInMessage from "./useVerifySignInMessage";
-import useAppClient from "./useAppClient";
-import useConnectContext from "./useConnectKitContext";
+import { ConnectError } from "@farcaster/connect";
 import { useEffect } from "react";
+
+import useAppClient from "./useAppClient";
+import useConnect, { UseConnectArgs } from "./useConnect";
+import useConnectContext from "./useConnectKitContext";
+import useVerifySignInMessage from "./useVerifySignInMessage";
+import useWatchStatus, { StatusAPIResponse, UseWatchStatusData } from "./useWatchStatus";
 
 export type UseSignInArgs = UseConnectArgs & {
   timeout?: number;
   interval?: number;
+  onSuccess?: (res: UseSignInData) => void;
+  onStatusResponse?: (statusData: UseWatchStatusData) => void;
+  onError?: (error?: ConnectError) => void;
 };
+
+export type UseSignInData = StatusAPIResponse;
 
 const defaults = {
   timeout: 300_000,
@@ -18,7 +25,7 @@ const defaults = {
 export function useSignIn(args: UseSignInArgs) {
   const appClient = useAppClient();
   const { onSignIn } = useConnectContext();
-  const { timeout, interval, ...connectArgs } = {
+  const { timeout, interval, onSuccess, onStatusResponse, onError, ...connectArgs } = {
     ...defaults,
     ...args,
   };
@@ -29,7 +36,7 @@ export function useSignIn(args: UseSignInArgs) {
     data: { channelToken, connectUri, qrCodeUri },
     isError: isConnectError,
     error: connectError,
-  } = useConnect(connectArgs);
+  } = useConnect({ ...connectArgs, onError });
 
   const {
     isPolling,
@@ -40,6 +47,8 @@ export function useSignIn(args: UseSignInArgs) {
     channelToken,
     timeout,
     interval,
+    onError,
+    onResponse: onStatusResponse,
   });
 
   const {
@@ -50,6 +59,7 @@ export function useSignIn(args: UseSignInArgs) {
   } = useVerifySignInMessage({
     message: statusData?.message,
     signature: statusData?.signature,
+    onError,
   });
 
   const isError = isConnectError || isWatchStatusError || isVerifyError;
@@ -62,8 +72,9 @@ export function useSignIn(args: UseSignInArgs) {
   useEffect(() => {
     if (isSuccess && statusData && validSignature) {
       onSignIn(statusData);
+      onSuccess?.(statusData);
     }
-  }, [isSuccess, statusData, validSignature, onSignIn]);
+  }, [isSuccess, statusData, validSignature, onSignIn, onSuccess]);
 
   return {
     signIn,

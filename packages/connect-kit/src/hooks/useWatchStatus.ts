@@ -6,7 +6,12 @@ export interface UseWatchStatusArgs {
   channelToken?: string;
   timeout?: number;
   interval?: number;
+  onSuccess?: (statusData: UseWatchStatusData) => void;
+  onError?: (error?: ConnectError) => void;
+  onResponse?: (statusData: UseWatchStatusData) => void;
 }
+
+export type UseWatchStatusData = StatusAPIResponse;
 
 export interface StatusAPIResponse {
   state: "" | "pending" | "completed";
@@ -28,7 +33,7 @@ const defaults = {
 
 export function useWatchStatus(args: UseWatchStatusArgs) {
   const appClient = useAppClient();
-  const { channelToken, timeout, interval } = {
+  const { channelToken, timeout, interval, onSuccess, onError, onResponse } = {
     ...defaults,
     ...args,
   };
@@ -60,19 +65,22 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
         interval,
         onResponse: ({ data }) => {
           setStatusData(data);
+          onResponse?.(data);
         },
       });
       if (isWatchStatusError) {
         setIsError(true);
         setIsPolling(false);
         setError(watchStatusError);
+        onError?.(watchStatusError);
       } else {
         setIsSuccess(true);
         setIsPolling(false);
         setStatusData(data);
+        onSuccess?.(data);
       }
     }
-  }, [appClient, channelToken, timeout, interval]);
+  }, [appClient, channelToken, timeout, interval, onSuccess, onError, onResponse]);
 
   useEffect(() => {
     if (channelToken) {

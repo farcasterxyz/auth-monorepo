@@ -1,6 +1,6 @@
 import { SiweMessage, SiweResponse, SiweError } from "siwe";
 import { ResultAsync, err, ok } from "neverthrow";
-import type { Provider } from "ethers";
+import type { providers } from "ethers";
 import { ConnectAsyncResult, ConnectResult, ConnectError } from "../errors";
 
 import { validate, parseResources } from "./validate";
@@ -9,7 +9,7 @@ import { FarcasterResourceParams } from "./build";
 type Hex = `0x${string}`;
 type SignInOpts = {
   getFid: (custody: Hex) => Promise<BigInt>;
-  provider?: Provider;
+  provider?: providers.Provider;
 };
 export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 
@@ -37,14 +37,15 @@ export const verify = async (
   const siwe = (await verifySiweMessage(valid.value, signature, provider)).andThen(mergeResources);
   if (siwe.isErr()) return err(siwe.error);
   if (!siwe.value.success) {
-    const errMessage = siwe.value.error?.type ?? "Unknown error";
+    console.log(siwe.value);
+    const errMessage = siwe.value.error?.type ?? "Failed to verify SIWE message";
     return err(new ConnectError("unauthorized", errMessage));
   }
 
   const fid = await verifyFidOwner(siwe.value, getFid);
   if (fid.isErr()) return err(fid.error);
   if (!fid.value.success) {
-    const errMessage = siwe.value.error?.type ?? "Unknown error";
+    const errMessage = siwe.value.error?.type ?? "Failed to validate fid owner";
     return err(new ConnectError("unauthorized", errMessage));
   }
   const { error, ...response } = fid.value;
@@ -70,7 +71,7 @@ const validateDomain = (message: SiweMessage, domain: string): ConnectResult<Siw
 const verifySiweMessage = async (
   message: SiweMessage,
   signature: string,
-  provider?: Provider,
+  provider?: providers.Provider,
 ): ConnectAsyncResult<SiweResponse> => {
   return ResultAsync.fromPromise(message.verify({ signature }, { provider, suppressExceptions: true }), (e) => {
     return new ConnectError("unauthorized", e as Error);

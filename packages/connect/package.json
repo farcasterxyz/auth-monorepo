@@ -31,10 +31,10 @@
   },
   "peerDependencies": {
     "viem": "^1.19.11",
-    "ethers": "^5.6.8 || ^6.0.8"
+    "ethers": "^5.6.8"
   },
   "devDependencies": {
-    "ethers": "^6.0.8",
+    "ethers": "^5.6.8",
     "viem": "^1.19.11"
   }
 }

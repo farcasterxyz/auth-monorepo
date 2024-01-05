@@ -4,7 +4,8 @@ This monorepo contains packages and applications related to [Farcaster Connect](
 
 ## Packages
 
-| Package Name                             | Description                      |
-| ---------------------------------------- | -------------------------------- |
-| [@farcaster/connect-relay](./apps/relay) | Farcaster Connect relay server   |
-| [@farcaster/connect](./packages/connect) | Farcaster Connect client library |
+| Package Name                                     | Description                |
+| ------------------------------------------------ | -------------------------- |
+| [@farcaster/connect-kit](./packages/connect-kit) | React components and hooks |
+| [@farcaster/connect](./packages/connect)         | Client library             |
+| [@farcaster/connect-relay](./apps/relay)         | HTTP relay server          |

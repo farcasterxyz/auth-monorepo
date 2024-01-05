@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.13
+
+### Patch Changes
+
+- use ethersv5
+
 ## 0.0.12
 
 ### Patch Changes

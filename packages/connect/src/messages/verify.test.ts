@@ -2,7 +2,7 @@ import { build } from "./build";
 import { verify } from "./verify";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { Hex, zeroAddress } from "viem";
-import { getDefaultProvider } from "ethers";
+import { getDefaultProvider, providers } from "ethers";
 
 const account = privateKeyToAccount(generatePrivateKey());
 
@@ -57,7 +57,7 @@ describe("verify", () => {
 
   test("verifies valid 1271 signatures", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(1234n);
-    const provider = getDefaultProvider(10);
+    const provider = getDefaultProvider("https://mainnet.optimism.io");
 
     const res = build({
       ...siweParams,

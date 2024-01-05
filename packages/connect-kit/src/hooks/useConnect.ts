@@ -33,17 +33,10 @@ export function useConnect({
 
   const [qrCodeUri, setqrCodeUri] = useState<string>();
   const [channelToken, setChannelToken] = useState<string>();
-  const [connectUri, setconnectUri] = useState<string>();
+  const [connectUri, setConnectUri] = useState<string>();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<ConnectError>();
-
-  const resetState = async () => {
-    setChannelToken(undefined);
-    setIsError(false);
-    setIsSuccess(false);
-    setError(undefined);
-  };
 
   const connect = useCallback(async () => {
     if (appClient && siweUri && domain && !channelToken) {
@@ -66,30 +59,23 @@ export function useConnect({
       } else {
         const { channelToken, connectUri } = data;
         setChannelToken(channelToken);
-        setconnectUri(connectUri);
+        setConnectUri(connectUri);
         const qrCodeUri = await QRCode.toDataURL(connectUri);
         setqrCodeUri(qrCodeUri);
         setIsSuccess(true);
         onSuccess?.({ channelToken, connectUri, qrCodeUri });
       }
     }
-  }, [
-    appClient,
-    channelToken,
-    nonce,
-    siweUri,
-    domain,
-    notBefore,
-    expirationTime,
-    requestId,
-    onError,
-    onSuccess,
-  ]);
+  }, [appClient, siweUri, domain, channelToken, nonce, notBefore, expirationTime, requestId, onError, onSuccess]);
 
   const reconnect = useCallback(async () => {
-    await resetState();
+    setChannelToken(undefined);
+    setIsSuccess(false);
+    setIsError(false);
+    setError(undefined);
+
     connect();
-  }, [connect]);
+  }, [connect, setChannelToken, setIsSuccess, setIsError, setError]);
 
   return {
     connect,

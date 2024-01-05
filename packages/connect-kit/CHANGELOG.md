@@ -1,5 +1,13 @@
 # connect-kit
 
+## 0.0.17
+
+### Patch Changes
+
+- remove unused vite-plugin-node-polyfills dependency
+- Updated dependencies
+  - @farcaster/connect@0.0.11
+
 ## 0.0.16
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.11
+
+### Patch Changes
+
+- move ethers to a peer dependency
+
 ## 0.0.10
 
 ### Patch Changes

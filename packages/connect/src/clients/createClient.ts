@@ -17,7 +17,7 @@ export interface Client {
 }
 
 const configDefaults = {
-  relay: "https://connect.farcaster.xyz",
+  relay: "https://relay.farcaster.xyz",
   version: "v1",
 };
 

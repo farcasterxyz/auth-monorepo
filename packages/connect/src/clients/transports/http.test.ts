@@ -5,7 +5,7 @@ import { jest } from "@jest/globals";
 
 describe("http", () => {
   const config = {
-    relay: "https://connect.farcaster.xyz",
+    relay: "https://relay.farcaster.xyz",
     ethereum: viem(),
   };
 
@@ -47,7 +47,7 @@ describe("http", () => {
       await get(client, "path");
 
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith("https://connect.farcaster.xyz/v1/path", {
+      expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/path", {
         headers: { "Content-Type": "application/json" },
       });
     });
@@ -61,7 +61,7 @@ describe("http", () => {
       });
 
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith("https://connect.farcaster.xyz/v1/path", {
+      expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/path", {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer some-auth-token",
@@ -102,7 +102,7 @@ describe("http", () => {
       });
 
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith("https://connect.farcaster.xyz/v1/path", {
+      expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/path", {
         method: "POST",
         body: JSON.stringify(requestData),
         headers: {

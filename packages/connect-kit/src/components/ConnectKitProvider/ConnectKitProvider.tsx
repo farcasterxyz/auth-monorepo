@@ -10,6 +10,8 @@ import { UseSignInData } from "../../hooks/useSignIn";
 
 export interface ConnectKitConfig {
   relay: string;
+  domain?: string;
+  siweUri?: string;
   rpcUrl?: string;
   version?: string;
 }

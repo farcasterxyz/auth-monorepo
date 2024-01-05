@@ -2,10 +2,9 @@ import { useCallback, useState } from "react";
 import { ConnectError } from "@farcaster/connect";
 import QRCode from "qrcode";
 import { useAppClient } from "./useAppClient";
+import useConnectKitContext from "./useConnectKitContext";
 
 export interface UseConnectArgs {
-  siweUri: string;
-  domain: string;
   nonce?: string | (() => Promise<string>);
   notBefore?: string;
   expirationTime?: string;
@@ -21,8 +20,6 @@ export interface UseConnectData {
 }
 
 export function useConnect({
-  siweUri,
-  domain,
   nonce,
   notBefore,
   expirationTime,
@@ -30,6 +27,8 @@ export function useConnect({
   onSuccess,
   onError,
 }: UseConnectArgs) {
+  const { config } = useConnectKitContext();
+  const { siweUri, domain } = config;
   const appClient = useAppClient();
 
   const [qrCodeUri, setqrCodeUri] = useState<string>();
@@ -47,7 +46,7 @@ export function useConnect({
   };
 
   const connect = useCallback(async () => {
-    if (appClient && !channelToken) {
+    if (appClient && siweUri && domain && !channelToken) {
       const {
         data,
         isError: isConnectError,

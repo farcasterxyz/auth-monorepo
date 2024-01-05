@@ -6,13 +6,13 @@ export function Demo() {
   const connectConfig = {
     relay: "http://localhost:8000",
     rpcUrl: "https://mainnet.optimism.io",
+    siweUri: "https://example.com",
+    domain: "example.com"
   };
 
   return (
     <ConnectKitProvider config={connectConfig}>
       <ConnectButton
-        siweUri="http://example.com"
-        domain="example.com"
         nonce="abcd1234"
         requestId="some-unique-request-id"
         onError={(error) => console.error("error callback:", error)}

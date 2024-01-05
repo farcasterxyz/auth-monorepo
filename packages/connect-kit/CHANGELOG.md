@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.13
+
+### Patch Changes
+
+- f148b73: open links if on mobile
+
 ## 0.0.12
 
 ### Patch Changes

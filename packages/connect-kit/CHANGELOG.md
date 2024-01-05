@@ -1,5 +1,13 @@
 # connect-kit
 
+## 0.0.20
+
+### Patch Changes
+
+- 76c2185: Use relay.farcaster.xyz as default relay URL
+- Updated dependencies [76c2185]
+  - @farcaster/connect@0.0.12
+
 ## 0.0.19
 
 ### Patch Changes

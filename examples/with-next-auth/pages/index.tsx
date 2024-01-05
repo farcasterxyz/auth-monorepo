@@ -2,12 +2,14 @@ import '@farcaster/connect-kit/styles.css';
 
 import Head from "next/head";
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react";
-import { ConnectButton, ConnectKitProvider, useSignInMessage, useUserData } from "@farcaster/connect-kit";
-import { useCallback, useEffect } from "react";
+import { ConnectButton, ConnectKitProvider, StatusAPIResponse } from "@farcaster/connect-kit";
+import { useCallback, useState } from "react";
 
 const config = {
   relay: 'https://connect.farcaster.xyz',
   rpcUrl: "https://mainnet.optimism.io",
+  siweUri: "http://example.com",
+  domain: "example.com",
 };
 
 export default function Home() {
@@ -27,8 +29,7 @@ export default function Home() {
 
 function Content() {
   const { data: session } = useSession();
-  const message = useSignInMessage();
-  const userData = useUserData();
+  const [error, setError] = useState(false);
 
   const getNonce = useCallback(async () => {
     const nonce = await getCsrfToken();
@@ -36,17 +37,15 @@ function Content() {
     return nonce;
   }, []);
 
-  useEffect(() => {
-    if (message.message && message.signature) {
-      signIn("credentials", {
-        message: message.message,
-        signature: message.signature + "0123123",
-        name: userData.userData.username,
-        pfp: userData.userData.pfpUrl,
-        redirect: false
-      })
-    }
-  }, [message]);
+  const handleSuccess = useCallback((res: StatusAPIResponse) => {
+    signIn("credentials", {
+      message: res.message,
+      signature: res.signature,
+      name: res.username,
+      pfp: res.pfpUrl,
+      redirect: false
+    })
+  }, [signIn]);
 
   if (session) {
     return (
@@ -60,7 +59,8 @@ function Content() {
   return (
     <>
       Not signed in <br />
-      <ConnectButton siweUri="http://example.com" domain="example.com" debug nonce={getNonce} />
+      <ConnectButton nonce={getNonce} onSuccess={handleSuccess} onError={() => setError(true)} />
+      {error && <div>Unable to sign in at this time.</div>}
     </>
   );
 }

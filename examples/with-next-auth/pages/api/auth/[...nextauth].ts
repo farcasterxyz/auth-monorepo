@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { createAppClient, viem } from "@farcaster/connect";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, {
@@ -42,7 +43,8 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
           const verifyResponse = await appClient.verifySignInMessage({
             message: credentials?.message as string,
             signature: credentials?.signature as `0x${string}`,
-            // nonce: await getCsrfToken({ req }),
+            nonce: (await getCsrfToken({ req })) as string,
+            domain: "example.com",
           });
           console.log(verifyResponse);
           const { success, fid } = verifyResponse;

@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.15
+
+### Patch Changes
+
+- fix onSuccess type
+
 ## 0.0.14
 
 ### Patch Changes

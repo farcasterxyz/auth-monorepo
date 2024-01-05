@@ -4,7 +4,7 @@ import { viem } from "../../clients/ethereum/viem";
 
 describe("authenticate", () => {
   const client = createAuthClient({
-    relay: "https://connect.farcaster.xyz",
+    relay: "https://relay.farcaster.xyz",
     ethereum: viem(),
   });
 
@@ -51,7 +51,7 @@ describe("authenticate", () => {
 
     expect(res.response).toEqual(response);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith("https://connect.farcaster.xyz/v1/connect/authenticate", {
+    expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/connect/authenticate", {
       method: "POST",
       body: JSON.stringify({
         message,

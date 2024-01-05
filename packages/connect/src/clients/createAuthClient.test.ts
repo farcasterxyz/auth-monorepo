@@ -14,7 +14,7 @@ describe("createAuthClient", () => {
 
   test("adds version to config", () => {
     expect(authClient.config).toEqual({
-      relay: "https://connect.farcaster.xyz",
+      relay: "https://relay.farcaster.xyz",
       version: "v1",
     });
   });
@@ -26,7 +26,7 @@ describe("createAuthClient", () => {
     });
 
     expect(authClient.config).toEqual({
-      relay: "https://connect.farcaster.xyz",
+      relay: "https://relay.farcaster.xyz",
       version: "v2",
     });
   });

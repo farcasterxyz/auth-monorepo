@@ -15,7 +15,7 @@ describe("createClient", () => {
 
   test("adds defaults to config", () => {
     expect(client.config).toEqual({
-      relay: "https://connect.farcaster.xyz",
+      relay: "https://relay.farcaster.xyz",
       version: "v1",
     });
   });
@@ -27,7 +27,7 @@ describe("createClient", () => {
     });
 
     expect(client.config).toEqual({
-      relay: "https://connect.farcaster.xyz",
+      relay: "https://relay.farcaster.xyz",
       version: "v2",
     });
   });
@@ -52,7 +52,7 @@ describe("createClient", () => {
 
     expect(client).toEqual({
       config: {
-        relay: "https://connect.farcaster.xyz",
+        relay: "https://relay.farcaster.xyz",
         version: "v2",
       },
       ethereum,

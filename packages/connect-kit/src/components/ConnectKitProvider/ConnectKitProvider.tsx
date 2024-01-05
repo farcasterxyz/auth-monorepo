@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { AppClient, createAppClient, viem } from "@farcaster/connect";
 import { UseSignInData } from "../../hooks/useSignIn";
 
@@ -33,7 +39,7 @@ export interface ConnectKitContextValues {
 }
 
 const configDefaults = {
-  relay: "https://connect.farcaster.xyz",
+  relay: "https://relay.farcaster.xyz",
   version: "v1",
 };
 
@@ -74,7 +80,8 @@ export function ConnectKitProvider({
   }, [relay, rpcUrl, version]);
 
   const onSignIn = useCallback((signInData: UseSignInData) => {
-    const { message, signature, fid, username, bio, displayName, pfpUrl } = signInData;
+    const { message, signature, fid, username, bio, displayName, pfpUrl } =
+      signInData;
     setIsAuthenticated(true);
     setUserData({ fid, username, bio, displayName, pfpUrl });
     setSignInMessage({ message, signature });

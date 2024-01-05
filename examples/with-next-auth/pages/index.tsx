@@ -1,12 +1,16 @@
-import '@farcaster/connect-kit/styles.css';
+import "@farcaster/connect-kit/styles.css";
 
 import Head from "next/head";
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react";
-import { ConnectButton, ConnectKitProvider, StatusAPIResponse } from "@farcaster/connect-kit";
+import {
+  ConnectButton,
+  ConnectKitProvider,
+  StatusAPIResponse,
+} from "@farcaster/connect-kit";
 import { useCallback, useState } from "react";
 
 const config = {
-  relay: 'https://connect.farcaster.xyz',
+  relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
   siweUri: "http://example.com",
   domain: "example.com",
@@ -37,15 +41,18 @@ function Content() {
     return nonce;
   }, []);
 
-  const handleSuccess = useCallback((res: StatusAPIResponse) => {
-    signIn("credentials", {
-      message: res.message,
-      signature: res.signature,
-      name: res.username,
-      pfp: res.pfpUrl,
-      redirect: false
-    })
-  }, [signIn]);
+  const handleSuccess = useCallback(
+    (res: StatusAPIResponse) => {
+      signIn("credentials", {
+        message: res.message,
+        signature: res.signature,
+        name: res.username,
+        pfp: res.pfpUrl,
+        redirect: false,
+      });
+    },
+    [signIn]
+  );
 
   if (session) {
     return (
@@ -59,7 +66,11 @@ function Content() {
   return (
     <>
       Not signed in <br />
-      <ConnectButton nonce={getNonce} onSuccess={handleSuccess} onError={() => setError(true)} />
+      <ConnectButton
+        nonce={getNonce}
+        onSuccess={handleSuccess}
+        onError={() => setError(true)}
+      />
       {error && <div>Unable to sign in at this time.</div>}
     </>
   );

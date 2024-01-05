@@ -12,7 +12,7 @@ You can use an app client to create a Farcaster Connect relay channel, generate 
 import { createAppClient, viem } from "@farcaster/connect";
 
 const appClient = createAppClient({
-  relayURI: "https://connect.farcaster.xyz",
+  relayURI: "https://relay.farcaster.xyz",
   ethereum: viem(),
 });
 ```
@@ -274,7 +274,7 @@ You can use an auth client to parse an incoming Sign In With Farcaster request U
 import { createAuthClient, viem } from "@farcaster/connect";
 
 const authClient = createAuthClient({
-  relayURI: "https://connect.farcaster.xyz",
+  relayURI: "https://relay.farcaster.xyz",
   ethereum: viem(),
 });
 ```

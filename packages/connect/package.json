@@ -28,7 +28,12 @@
   "dependencies": {
     "neverthrow": "^6.1.0",
     "siwe": "^2.1.4",
-    "ethers": "^6.0.8",
+    "ethers": "^6.0.8"
+  },
+  "peerDependencies": {
+    "viem": "^1.19.11"
+  },
+  "devDependencies": {
     "viem": "^1.19.11"
   }
 }

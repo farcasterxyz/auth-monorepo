@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.19
+
+### Patch Changes
+
+- ad62c7e: ship a polyfill for Buffer
+
 ## 0.0.18
 
 ### Patch Changes

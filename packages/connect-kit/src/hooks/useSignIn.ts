@@ -7,7 +7,7 @@ import useConnectContext from "./useConnectKitContext";
 import useVerifySignInMessage from "./useVerifySignInMessage";
 import useWatchStatus, { StatusAPIResponse, UseWatchStatusData } from "./useWatchStatus";
 
-export type UseSignInArgs = UseConnectArgs & {
+export type UseSignInArgs = Omit<UseConnectArgs, "onSuccess" | "onError"> & {
   timeout?: number;
   interval?: number;
   onSuccess?: (res: UseSignInData) => void;

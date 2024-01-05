@@ -33,7 +33,7 @@ describe("connect", () => {
 
     expect(res.response).toEqual(response);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith("https://connect.farcaster.xyz/v1/connect", {
+    expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/connect", {
       method: "POST",
       body: JSON.stringify({
         siweUri,

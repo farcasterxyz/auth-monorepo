@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.12
+
+### Patch Changes
+
+- 76c2185: Use relay.farcaster.xyz as default relay URL
+
 ## 0.0.11
 
 ### Patch Changes

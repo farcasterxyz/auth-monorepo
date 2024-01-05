@@ -15,6 +15,9 @@ export function Demo() {
         domain="example.com"
         nonce="abcd1234"
         requestId="some-unique-request-id"
+        onError={(error) => console.error("error callback:", error)}
+        onSuccess={(data) => console.log("success callback:", data)}
+        onStatusResponse={(res) => console.log("status callback:", res)}
         debug
       />
       <UserProfile />

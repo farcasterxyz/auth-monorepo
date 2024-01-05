@@ -5,9 +5,20 @@ import useAppClient from "./useAppClient";
 export interface UseVerifySignInMessageArgs {
   message?: string;
   signature?: `0x${string}`;
+  onSuccess?: (statusData: UseVerifySignInMessageData) => void;
+  onError?: (error?: ConnectError) => void;
 }
 
-export function useVerifySignInMessage({ message, signature }: UseVerifySignInMessageArgs) {
+export type UseVerifySignInMessageData = UseVerifySignInMessageArgs & {
+  validSignature: boolean;
+};
+
+export function useVerifySignInMessage({
+  message,
+  signature,
+  onSuccess,
+  onError,
+}: UseVerifySignInMessageArgs) {
   const appClient = useAppClient();
 
   const [validSignature, setValidSignature] = useState<boolean>(false);
@@ -34,12 +45,14 @@ export function useVerifySignInMessage({ message, signature }: UseVerifySignInMe
       if (isVerifyError) {
         setIsError(true);
         setError(verifyError);
+        onError?.(verifyError);
       } else {
         setValidSignature(success);
         setIsSuccess(true);
+        onSuccess?.({ message, signature, validSignature: success });
       }
     }
-  }, [appClient, message, signature]);
+  }, [appClient, message, signature, onSuccess, onError]);
 
   useEffect(() => {
     resetState();
@@ -52,7 +65,7 @@ export function useVerifySignInMessage({ message, signature }: UseVerifySignInMe
     isSuccess,
     isError,
     error,
-    data: { validSignature },
+    data: { message, signature, validSignature },
   };
 }
 

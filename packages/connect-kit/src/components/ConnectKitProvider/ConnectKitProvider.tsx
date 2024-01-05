@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { AppClient, createAppClient, viem } from "@farcaster/connect";
-import { StatusAPIResponse } from "../../hooks/useWatchStatus";
+import { UseSignInData } from "../../hooks/useSignIn";
 
 export interface ConnectKitConfig {
   relay: string;
@@ -33,7 +33,7 @@ export interface ConnectKitContextValues {
   userData: UserData;
   signInMessage: SignInMessage;
   appClient?: AppClient;
-  onSignIn: (signInData: StatusAPIResponse) => void;
+  onSignIn: (signInData: UseSignInData) => void;
 }
 
 const configDefaults = {
@@ -77,7 +77,7 @@ export function ConnectKitProvider({
     setAppClient(client);
   }, [relay, rpcUrl, version]);
 
-  const onSignIn = useCallback((signInData: StatusAPIResponse) => {
+  const onSignIn = useCallback((signInData: UseSignInData) => {
     const { message, signature, fid, username, bio, displayName, pfpUrl } = signInData;
     setIsAuthenticated(true);
     setUserData({ fid, username, bio, displayName, pfpUrl });

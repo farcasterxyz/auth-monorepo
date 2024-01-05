@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.16
+
+### Patch Changes
+
+- d2d6cb8: fix bad build
+
 ## 0.0.15
 
 ### Patch Changes

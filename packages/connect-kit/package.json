@@ -4,6 +4,7 @@
   "type": "module",
   "main": "./dist/connect-kit.umd.cjs",
   "module": "./dist/connect-kit.js",
+  "type": "./dist/connect-kit.d.ts",
   "exports": {
     ".": {
       "import": "./dist/connect-kit.js",

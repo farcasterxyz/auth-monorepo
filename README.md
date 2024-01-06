@@ -4,8 +4,8 @@ This monorepo contains packages and applications related to [Farcaster Connect](
 
 ## Packages
 
-| Package Name                                     | Description                |
-| ------------------------------------------------ | -------------------------- |
-| [@farcaster/connect-kit](./packages/connect-kit) | React components and hooks |
-| [@farcaster/connect](./packages/connect)         | Client library             |
-| [@farcaster/connect-relay](./apps/relay)         | HTTP relay server          |
+| Package Name                                     | Description                | Use if…                                                                |
+| ------------------------------------------------ | -------------------------- | ---------------------------------------------------------------------- |
+| [@farcaster/connect-kit](./packages/connect-kit) | React components and hooks | You're building a React app and want to authenticate Farcaster users.  |
+| [@farcaster/connect](./packages/connect)         | Client library             | You're building a Typescript or JS app and want to authenticate users. |
+| [@farcaster/connect-relay](./apps/relay)         | HTTP relay server          | You want to relay connection requests. (You probably don't need this). |

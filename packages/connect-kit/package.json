@@ -3,7 +3,6 @@
   "version": "0.0.24",
   "main": "./dist/connect-kit.umd.cjs",
   "module": "./dist/connect-kit.js",
-  "types": "./dist/connect-kit.d.ts",
   "exports": {
     ".": {
       "import": "./dist/connect-kit.js",

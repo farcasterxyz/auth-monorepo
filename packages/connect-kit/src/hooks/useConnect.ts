@@ -42,12 +42,13 @@ export function useConnect({
 
   const connect = useCallback(async () => {
     if (appClient && siweUri && domain && !channelToken) {
+      const nonceVal = typeof customNonce === "function" ? await customNonce() : customNonce;
       const {
         data,
         isError: isConnectError,
         error: connectError,
       } = await appClient.connect({
-        nonce: typeof customNonce === "function" ? await customNonce() : customNonce,
+        nonce: nonceVal,
         siweUri,
         domain,
         notBefore,
@@ -59,10 +60,10 @@ export function useConnect({
         setError(connectError);
         onError?.(connectError);
       } else {
-        const { channelToken, connectUri, nonce } = data;
+        const { channelToken, connectUri } = data;
         setChannelToken(channelToken);
         setConnectUri(connectUri);
-        setNonce(nonce);
+        setNonce(nonceVal);
 
         const qrCodeUri = await QRCode.toDataURL(connectUri, { width: 360 });
         setqrCodeUri(qrCodeUri);

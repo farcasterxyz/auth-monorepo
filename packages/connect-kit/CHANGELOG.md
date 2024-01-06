@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.23
+
+### Patch Changes
+
+- 57fc065: use local nonce value
+
 ## 0.0.22
 
 ### Patch Changes

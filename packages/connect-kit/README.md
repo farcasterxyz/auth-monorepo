@@ -49,14 +49,14 @@ const App = () => {
 Projects using [Create React App (CRA)](https://create-react-app.dev/) may run into TypeScript version conflicts, as `react-scripts@5.0.1` expects a peer dependency of TypeScript version `^3.2.1 || ^4`, while both viem and ConnectKit require `>=5.0.4`.
 
 To resolve this issue:
-- install the latest version of TypeScript: `npm i typescript -D`
-- add an override for `react-scripts` to your package.json file, to remove the version ceiling:
+- Install the latest version of TypeScript: `npm i typescript -D`
+- Add an override for `react-scripts` to your package.json file, to remove the version ceiling:
 ```json
 "overrides": {
-    "react-scripts": {
-      "typescript": ">3.2.1"
-    }
-  },
+  "react-scripts": {
+    "typescript": ">3.2.1"
+  }
+}
 ```
 
 **Note**: Always be careful with overrides and ensure they are compatible with the packages using them. 

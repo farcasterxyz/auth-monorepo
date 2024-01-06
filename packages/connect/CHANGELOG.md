@@ -1,5 +1,12 @@
 # @farcaster/connect
 
+## 0.0.14
+
+### Patch Changes
+
+- fd65d37: use ethersv5
+- 1507332: re-export generateNonce
+
 ## 0.0.13
 
 ### Patch Changes

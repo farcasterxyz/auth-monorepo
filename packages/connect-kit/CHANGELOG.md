@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.24
+
+### Patch Changes
+
+- declare types in package.json
+
 ## 0.0.23
 
 ### Patch Changes

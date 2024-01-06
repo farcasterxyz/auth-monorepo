@@ -575,7 +575,7 @@ Wallet user's Farcaster username.
 
 Type: `string`
 
-Example: `"alice"``
+Example: `"alice"`
 
 ##### bio
 

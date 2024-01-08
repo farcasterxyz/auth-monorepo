@@ -73,35 +73,36 @@ describe("relay server", () => {
       const response = await http.post(getFullUrl("/v1/connect"), connectParams);
 
       expect(response.status).toBe(201);
-      const { channelToken, connectUri, ...rest } = response.data;
+      const { channelToken, connectUri, nonce, ...rest } = response.data;
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
       expect(rest).toStrictEqual({});
     });
 
     test("creates a channel with extra SIWE parameters", async () => {
-      const nonce = "some-custom-nonce";
+      const customNonce = "some-custom-nonce";
       const notBefore = "2023-01-01T00:00:00Z";
       const expirationTime = "2023-12-31T00:00:00Z";
       const requestId = "some-request-id";
       const response = await http.post(getFullUrl("/v1/connect"), {
         ...connectParams,
-        nonce,
+        nonce: customNonce,
         notBefore,
         expirationTime,
         requestId,
       });
 
       expect(response.status).toBe(201);
-      const { channelToken, connectUri, ...rest } = response.data;
+      const { channelToken, connectUri, nonce, ...rest } = response.data;
       // parse query params from URI
       const params = new URLSearchParams(connectUri.split("?")[1]);
       expect(params.get("siweUri")).toBe(connectParams.siweUri);
       expect(params.get("domain")).toBe(connectParams.domain);
-      expect(params.get("nonce")).toBe(nonce);
+      expect(params.get("nonce")).toBe(customNonce);
       expect(params.get("notBefore")).toBe(notBefore);
       expect(params.get("expirationTime")).toBe(expirationTime);
       expect(params.get("requestId")).toBe(requestId);
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
+      expect(nonce).toBe(customNonce);
       expect(rest).toStrictEqual({});
     });
 

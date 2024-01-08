@@ -54,7 +54,7 @@ export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>,
       connectUri,
     });
     if (update.isOk()) {
-      reply.code(201).send({ channelToken, connectUri });
+      reply.code(201).send({ channelToken, connectUri, nonce });
     } else {
       reply.code(500).send({ error: update.error.message });
     }

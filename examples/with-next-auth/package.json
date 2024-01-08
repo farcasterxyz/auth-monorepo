@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@farcaster/connect-kit": "^0.0.19",
-    "ethers": "^6.0.8",
+    "@farcaster/connect-kit": "^0.0.28",
+    "ethers": "5",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18",
-    "viem": "^1.19.11"
+    "viem": "^2.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",

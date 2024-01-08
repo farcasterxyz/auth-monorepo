@@ -10,18 +10,12 @@ export default defineConfig({
   plugins: [react(), vanillaExtractPlugin(), dts({ rollupTypes: true }), nodePolyfills({ include: ["buffer"] })],
   build: {
     lib: {
+      formats: ["es"],
       entry: resolve(__dirname, "src/index.ts"),
-      name: "ConnectKit",
       fileName: "connect-kit",
     },
     rollupOptions: {
-      external: ["react", "react/jsx-runtime", "react-dom"],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
+      external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/connect"],
     },
   },
 });

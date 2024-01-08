@@ -30,8 +30,8 @@
     "siwe": "^2.1.4"
   },
   "peerDependencies": {
-    "viem": "^1.19.11",
-    "ethers": "^5.6.8"
+    "viem": "1.x || 2.x",
+    "ethers": "5.x"
   },
   "devDependencies": {
     "ethers": "^5.6.8",

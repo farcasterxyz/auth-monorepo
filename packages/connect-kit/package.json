@@ -48,7 +48,6 @@
   },
   "peerDependencies": {
     "react": ">= 17",
-    "react-dom": "^18.2.0",
-    "viem": "^1.19.11"
+    "react-dom": ">= 17"
   }
 }

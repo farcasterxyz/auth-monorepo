@@ -1,17 +1,12 @@
 {
   "name": "@farcaster/connect-kit",
   "version": "0.0.25",
-  "main": "./dist/connect-kit.umd.cjs",
-  "module": "./dist/connect-kit.js",
+  "type": "module",
+  "main":"./dist/connect-kit.js",
+  "types": "./dist/connect-kit.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/connect-kit.js",
-      "require": "./dist/connect-kit.umd.cjs"
-    },
-    "./styles.css": {
-      "import": "./dist/style.css",
-      "require": "./dist/style.css"
-    }
+    ".": "./dist/connect-kit.js",
+    "./styles.css": "./dist/style.css"
   },
   "files": [
     "dist"

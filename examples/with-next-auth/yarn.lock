@@ -361,20 +361,20 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@farcaster/connect-kit@^0.0.26":
-  version "0.0.26"
-  resolved "https://registry.npmjs.org/@farcaster/connect-kit/-/connect-kit-0.0.26.tgz#1275420a164bfef1c62f43c9d1daf7a19ca246bb"
-  integrity sha512-vr1yCRqOPYCUS0T1eAwjRZLOAG2X9TIcLXb0gWs4QdUn5uByklBuI0Z5giM+jvjfecp0UYxyo1wYi9f6LdHoXw==
+"@farcaster/connect-kit@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.npmjs.org/@farcaster/connect-kit/-/connect-kit-0.0.28.tgz#16e78593c8faa08b5613a7ebb9a0b34f9a0a9ccf"
+  integrity sha512-gJT3FEMcHy4OoqEDr0AOFwaEZjoKQMQqk8Y3ZlIKxg6qmsC/n6Ylr2ZUmPvgYsP5WeMIjdN4+4gbCIHO/EPMZw==
   dependencies:
-    "@farcaster/connect" "^0.0.14"
+    "@farcaster/connect" "^0.0.15"
     "@vanilla-extract/css" "^1.14.0"
     qrcode "^1.5.3"
     react-remove-scroll "^2.5.7"
 
-"@farcaster/connect@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.npmjs.org/@farcaster/connect/-/connect-0.0.14.tgz#1f2862ab60a9231a5e8ddb3b8c82d26dfd112a70"
-  integrity sha512-IvJkrRDduulMIR0nKQ4SsCRzWv29q9vrPwC0bCcsP5Y3nP3lQF3R1V7+Y2Kz/ZIEeypTCpcGnLsvGKKGRPyRag==
+"@farcaster/connect@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.npmjs.org/@farcaster/connect/-/connect-0.0.15.tgz#00f2fb5e8c25d83e177ff48245daa1725e423983"
+  integrity sha512-1JCUYqJEp1YBm2VB0Rt8sn+g7j6Ti0tTkdG/3Luna20hL1MpcL2fFXuYlFuMh3IwlGocAg2JIVDVflc7gm25UQ==
   dependencies:
     neverthrow "^6.1.0"
     siwe "^2.1.4"

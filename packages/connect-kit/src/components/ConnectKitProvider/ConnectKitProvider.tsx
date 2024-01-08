@@ -9,7 +9,7 @@ import { AppClient, createAppClient, viem } from "@farcaster/connect";
 import { UseSignInData } from "../../hooks/useSignIn";
 
 export interface ConnectKitConfig {
-  relay: string;
+  relay?: string;
   domain?: string;
   siweUri?: string;
   rpcUrl?: string;

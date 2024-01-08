@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.27
+
+### Patch Changes
+
+- 55a674c: convert relay to optional arg in config
+
 ## 0.0.26
 
 ### Patch Changes

@@ -68,7 +68,7 @@ export function useConnect({
         const qrCodeUri = await QRCode.toDataURL(connectUri, { width: 360 });
         setqrCodeUri(qrCodeUri);
         setIsSuccess(true);
-        onSuccess?.({ channelToken, connectUri, qrCodeUri, nonce });
+        onSuccess?.({ channelToken, connectUri, qrCodeUri, nonce: nonceVal });
       }
     }
   }, [appClient, siweUri, domain, channelToken, customNonce, notBefore, expirationTime, requestId, onError, onSuccess]);

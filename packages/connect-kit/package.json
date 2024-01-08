@@ -1,8 +1,8 @@
 {
   "name": "@farcaster/connect-kit",
-  "version": "0.0.25",
+  "version": "0.0.27",
   "type": "module",
-  "main":"./dist/connect-kit.js",
+  "main": "./dist/connect-kit.js",
   "types": "./dist/connect-kit.d.ts",
   "exports": {
     ".": "./dist/connect-kit.js",

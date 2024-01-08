@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.15
+
+### Patch Changes
+
+- 23c673f: update Viem peer dependency
+
 ## 0.0.14
 
 ### Patch Changes

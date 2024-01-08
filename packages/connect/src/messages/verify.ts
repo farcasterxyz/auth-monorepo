@@ -37,7 +37,6 @@ export const verify = async (
   const siwe = (await verifySiweMessage(valid.value, signature, provider)).andThen(mergeResources);
   if (siwe.isErr()) return err(siwe.error);
   if (!siwe.value.success) {
-    console.log(siwe.value);
     const errMessage = siwe.value.error?.type ?? "Failed to verify SIWE message";
     return err(new ConnectError("unauthorized", errMessage));
   }

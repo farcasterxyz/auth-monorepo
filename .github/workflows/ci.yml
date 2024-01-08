@@ -68,6 +68,12 @@ jobs:
       - name: Run build
         run: yarn build
 
+      - name: Log in to Docker Hub to avoid rate limiting
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.FARCASTERXYZ_DOCKER_HUB_USER }}
+          password: ${{ secrets.FARCASTERXYZ_DOCKER_HUB_TOKEN }}
+
       - name: Start background services
         shell: bash
         run: docker compose -f ./apps/relay/docker-compose.yml up --build --detach redis

@@ -1,10 +1,7 @@
 import { Hex, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
-import {
-  providers,
-  // @ts-expect-error -- ethers v6 compatibility hack
-  JsonRpcProvider,
-} from "ethers";
+import * as ethers from "ethers";
+import type { providers } from "ethers";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry";
 
 export interface Ethereum {
@@ -38,7 +35,9 @@ export const viem = (args?: ViemConfigArgs): Ethereum => {
       name: chain.name,
     };
     const rpc = transport.url ?? chain.rpcUrls.default.http[0];
-    return providers ? new providers.JsonRpcProvider(rpc, network) : new JsonRpcProvider(rpc, network);
+
+    // @ts-expect-error -- ethers v6 compatibility hack
+    return new (ethers.providers ? ethers.providers.JsonRpcProvider : ethers.JsonRpcProvider)(rpc, network);
   };
 
   return {

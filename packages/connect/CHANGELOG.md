@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.17
+
+### Patch Changes
+
+- improve build compatibility of ethers v6 workaround
+
 ## 0.0.16
 
 ### Patch Changes

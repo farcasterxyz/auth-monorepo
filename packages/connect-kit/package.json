@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/connect-kit",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "type": "module",
   "main": "./dist/connect-kit.js",
   "types": "./dist/connect-kit.d.ts",
@@ -18,7 +18,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "@farcaster/connect": "^0.0.15",
+    "@farcaster/connect": "^0.0.16",
     "@vanilla-extract/css": "^1.14.0",
     "qrcode": "^1.5.3",
     "react-remove-scroll": "^2.5.7"

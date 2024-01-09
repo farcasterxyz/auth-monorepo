@@ -1,5 +1,11 @@
 # @farcaster/connect
 
+## 0.0.16
+
+### Patch Changes
+
+- 8f5c4c9: support ethers 5 or 6
+
 ## 0.0.15
 
 ### Patch Changes

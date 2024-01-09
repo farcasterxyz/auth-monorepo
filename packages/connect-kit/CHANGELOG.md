@@ -1,5 +1,11 @@
 # connect-kit
 
+## 0.0.31
+
+### Patch Changes
+
+- 65cc00f: Remove target="\_blank" workaround
+
 ## 0.0.30
 
 ### Patch Changes

@@ -32,7 +32,7 @@ afterEach(async () => {
 });
 
 describe("relay server", () => {
-  const connectParams = {
+  const channelParams = {
     siweUri: "https://example.com",
     domain: "example.com",
   };
@@ -68,13 +68,14 @@ describe("relay server", () => {
     });
   });
 
-  describe("/v1/connect", () => {
+  describe("/v1/channel", () => {
     test("POST creates a channel", async () => {
-      const response = await http.post(getFullUrl("/v1/connect"), connectParams);
+      const response = await http.post(getFullUrl("/v1/channel"), channelParams);
 
       expect(response.status).toBe(201);
-      const { channelToken, connectUri, nonce, ...rest } = response.data;
+      const { channelToken, url, nonce, ...rest } = response.data;
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
+      expect(url).toMatch("https://warpcast.com/~/sign-in-with-farcaster");
       expect(rest).toStrictEqual({});
     });
 
@@ -83,8 +84,8 @@ describe("relay server", () => {
       const notBefore = "2023-01-01T00:00:00Z";
       const expirationTime = "2023-12-31T00:00:00Z";
       const requestId = "some-request-id";
-      const response = await http.post(getFullUrl("/v1/connect"), {
-        ...connectParams,
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
         nonce: customNonce,
         notBefore,
         expirationTime,
@@ -92,11 +93,11 @@ describe("relay server", () => {
       });
 
       expect(response.status).toBe(201);
-      const { channelToken, connectUri, nonce, ...rest } = response.data;
+      const { channelToken, url, nonce, ...rest } = response.data;
       // parse query params from URI
-      const params = new URLSearchParams(connectUri.split("?")[1]);
-      expect(params.get("siweUri")).toBe(connectParams.siweUri);
-      expect(params.get("domain")).toBe(connectParams.domain);
+      const params = new URLSearchParams(url.split("?")[1]);
+      expect(params.get("siweUri")).toBe(channelParams.siweUri);
+      expect(params.get("domain")).toBe(channelParams.domain);
       expect(params.get("nonce")).toBe(customNonce);
       expect(params.get("notBefore")).toBe(notBefore);
       expect(params.get("expirationTime")).toBe(expirationTime);
@@ -108,8 +109,8 @@ describe("relay server", () => {
 
     test("validates extra SIWE parameters", async () => {
       const notBefore = "not a datetime";
-      const response = await http.post(getFullUrl("/v1/connect"), {
-        ...connectParams,
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
         notBefore,
       });
 
@@ -121,8 +122,8 @@ describe("relay server", () => {
     });
 
     test("missing siweUri", async () => {
-      const { siweUri, ...missingUri } = connectParams;
-      const response = await http.post(getFullUrl("/v1/connect"), missingUri);
+      const { siweUri, ...missingUri } = channelParams;
+      const response = await http.post(getFullUrl("/v1/channel"), missingUri);
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
@@ -132,8 +133,8 @@ describe("relay server", () => {
     });
 
     test("invalid siweUri", async () => {
-      const response = await http.post(getFullUrl("/v1/connect"), {
-        ...connectParams,
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
         siweUri: "not-a-uri",
       });
 
@@ -145,8 +146,8 @@ describe("relay server", () => {
     });
 
     test("missing domain", async () => {
-      const { domain, ...missingDomain } = connectParams;
-      const response = await http.post(getFullUrl("/v1/connect"), missingDomain);
+      const { domain, ...missingDomain } = channelParams;
+      const response = await http.post(getFullUrl("/v1/channel"), missingDomain);
 
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
@@ -156,8 +157,8 @@ describe("relay server", () => {
     });
 
     test("invalid domain", async () => {
-      const response = await http.post(getFullUrl("/v1/connect"), {
-        ...connectParams,
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
         domain: "not a domain",
       });
 
@@ -172,7 +173,7 @@ describe("relay server", () => {
       jest.spyOn(httpServer.channels, "open").mockImplementation(() => {
         throw new Error("open error");
       });
-      const response = await http.post(getFullUrl("/v1/connect"), connectParams);
+      const response = await http.post(getFullUrl("/v1/channel"), channelParams);
 
       expect(response.status).toBe(500);
       expect(response.data).toStrictEqual({ error: "open error" });
@@ -182,51 +183,51 @@ describe("relay server", () => {
       jest.spyOn(httpServer.channels, "update").mockImplementation(() => {
         throw new Error("update error");
       });
-      const response = await http.post(getFullUrl("/v1/connect"), connectParams);
+      const response = await http.post(getFullUrl("/v1/channel"), channelParams);
 
       expect(response.status).toBe(500);
       expect(response.data).toStrictEqual({ error: "update error" });
     });
   });
 
-  describe("/v1/connect/authenticate", () => {
+  describe("/v1/channel/authenticate", () => {
     let channelToken: string;
 
     beforeEach(async () => {
-      const response = await http.post(getFullUrl("/v1/connect"), connectParams);
+      const response = await http.post(getFullUrl("/v1/channel"), channelParams);
       channelToken = response.data.channelToken;
     });
 
     test("POST with no token", async () => {
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams);
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams);
       expect(response.status).toBe(401);
     });
 
     test("POST with valid token", async () => {
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: `Bearer ${channelToken}`,
-          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(201);
     });
 
     test("POST with invalid token", async () => {
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: "Bearer abc-123-def",
-          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(401);
     });
 
     test("POST with invalid key", async () => {
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: "Bearer abc-123-def",
-          "X-Farcaster-Connect-Auth-Key": "invalid-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "invalid-shared-secret",
         },
       });
       expect(response.status).toBe(401);
@@ -234,7 +235,7 @@ describe("relay server", () => {
 
     test("missing body param", async () => {
       const { fid, ...missingFid } = authenticateParams;
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), missingFid, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), missingFid, {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
       expect(response.status).toBe(400);
@@ -246,10 +247,10 @@ describe("relay server", () => {
 
     test("optional body param", async () => {
       const { username, ...missingUsername } = authenticateParams;
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), missingUsername, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), missingUsername, {
         headers: {
           Authorization: `Bearer ${channelToken}`,
-          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(201);
@@ -257,7 +258,7 @@ describe("relay server", () => {
 
     test("invalid username", async () => {
       const response = await http.post(
-        getFullUrl("/v1/connect/authenticate"),
+        getFullUrl("/v1/channel/authenticate"),
         { ...authenticateParams, username: "not a username" },
         { headers: { Authorization: `Bearer ${channelToken}` } },
       );
@@ -270,7 +271,7 @@ describe("relay server", () => {
 
     test("invalid signature", async () => {
       const response = await http.post(
-        getFullUrl("/v1/connect/authenticate"),
+        getFullUrl("/v1/channel/authenticate"),
         { ...authenticateParams, signature: "0x123" },
         { headers: { Authorization: `Bearer ${channelToken}` } },
       );
@@ -283,7 +284,7 @@ describe("relay server", () => {
 
     test("invalid pfpUrl", async () => {
       const response = await http.post(
-        getFullUrl("/v1/connect/authenticate"),
+        getFullUrl("/v1/channel/authenticate"),
         { ...authenticateParams, pfpUrl: "not a URL" },
         { headers: { Authorization: `Bearer ${channelToken}` } },
       );
@@ -298,10 +299,10 @@ describe("relay server", () => {
       jest.spyOn(httpServer.channels, "read").mockImplementation(() => {
         throw new Error("read error");
       });
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: `Bearer ${channelToken}`,
-          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(500);
@@ -312,10 +313,10 @@ describe("relay server", () => {
       jest.spyOn(httpServer.channels, "update").mockImplementation(() => {
         throw new Error("update error");
       });
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: `Bearer ${channelToken}`,
-          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(500);
@@ -324,28 +325,28 @@ describe("relay server", () => {
 
     test("expired channel", async () => {
       await httpServer.channels.close(channelToken);
-      const response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
       expect(response.status).toBe(401);
     });
   });
 
-  describe("/v1/connect/status", () => {
+  describe("/v1/channel/status", () => {
     let channelToken: string;
 
     beforeEach(async () => {
-      const response = await http.post(getFullUrl("/v1/connect"), connectParams);
+      const response = await http.post(getFullUrl("/v1/channel"), channelParams);
       channelToken = response.data.channelToken;
     });
 
     test("GET with no token", async () => {
-      const response = await http.get(getFullUrl("/v1/connect/status"));
+      const response = await http.get(getFullUrl("/v1/channel/status"));
       expect(response.status).toBe(401);
     });
 
     test("GET with valid token", async () => {
-      const response = await http.get(getFullUrl("/v1/connect/status"), {
+      const response = await http.get(getFullUrl("/v1/channel/status"), {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
       expect(response.status).toBe(202);
@@ -357,7 +358,7 @@ describe("relay server", () => {
     });
 
     test("GET with invalid token", async () => {
-      const response = await http.get(getFullUrl("/v1/connect/status"), {
+      const response = await http.get(getFullUrl("/v1/channel/status"), {
         headers: { Authorization: "Bearer abc-123-def" },
       });
       expect(response.status).toBe(401);
@@ -367,7 +368,7 @@ describe("relay server", () => {
       jest.spyOn(httpServer.channels, "read").mockImplementation(() => {
         throw new Error("read error");
       });
-      const response = await http.get(getFullUrl("/v1/connect/status"), {
+      const response = await http.get(getFullUrl("/v1/channel/status"), {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
       expect(response.status).toBe(500);
@@ -378,10 +379,10 @@ describe("relay server", () => {
       jest.spyOn(httpServer.channels, "close").mockImplementation(() => {
         throw new Error("close error");
       });
-      await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
-      const response = await http.get(getFullUrl("/v1/connect/status"), {
+      const response = await http.get(getFullUrl("/v1/channel/status"), {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
       expect(response.status).toBe(500);
@@ -390,10 +391,10 @@ describe("relay server", () => {
   });
 
   describe("e2e", () => {
-    test("end to end connect flow", async () => {
+    test("end to end channel flow", async () => {
       const nonce = "some-custom-nonce";
-      let response = await http.post(getFullUrl("/v1/connect"), {
-        ...connectParams,
+      let response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
         nonce,
       });
       expect(response.status).toBe(201);
@@ -403,26 +404,26 @@ describe("relay server", () => {
         headers: { Authorization: `Bearer ${channelToken}` },
       };
 
-      response = await http.get(getFullUrl("/v1/connect/status"), authHeaders);
+      response = await http.get(getFullUrl("/v1/channel/status"), authHeaders);
       expect(response.status).toBe(202);
       expect(response.data.state).toBe("pending");
 
-      response = await http.post(getFullUrl("/v1/connect/authenticate"), authenticateParams, {
+      response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: `Bearer ${channelToken}`,
-          "X-Farcaster-Connect-Auth-Key": "some-shared-secret",
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(201);
 
-      response = await http.get(getFullUrl("/v1/connect/status"), authHeaders);
+      response = await http.get(getFullUrl("/v1/channel/status"), authHeaders);
       expect(response.status).toBe(200);
       expect(response.data.state).toBe("completed");
       expect(response.data.message).toBe(authenticateParams.message);
       expect(response.data.signature).toBe(authenticateParams.signature);
       expect(response.data.nonce).toBe(nonce);
 
-      response = await http.get(getFullUrl("/v1/connect/status"), authHeaders);
+      response = await http.get(getFullUrl("/v1/channel/status"), authHeaders);
       expect(response.status).toBe(401);
     });
   });

@@ -1,9 +1,9 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { AUTH_KEY, CONNECT_URI_BASE } from "./env";
+import { AUTH_KEY, URL_BASE } from "./env";
 import { Logger } from "logger";
 import { generateNonce } from "siwe";
 
-export type ConnectRequest = {
+export type CreateChannelRequest = {
   siweUri: string;
   domain: string;
   nonce?: string;
@@ -25,7 +25,7 @@ export type AuthenticateRequest = {
 export type RelaySession = {
   state: "pending" | "completed";
   nonce: string;
-  connectUri: string;
+  url: string;
   message?: string;
   signature?: string;
   fid?: number;
@@ -35,26 +35,26 @@ export type RelaySession = {
   pfpUrl?: string;
 };
 
-const constructConnectURI = (channelToken: string, nonce: string, extraParams: ConnectRequest): string => {
+const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
   const params = { channelToken, nonce, ...extraParams };
   const query = new URLSearchParams(params);
-  return `${CONNECT_URI_BASE}?${query.toString()}`;
+  return `${URL_BASE}?${query.toString()}`;
 };
 
-export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>, reply: FastifyReply) {
+export async function createChannel(request: FastifyRequest<{ Body: CreateChannelRequest }>, reply: FastifyReply) {
   const channel = await request.channels.open();
   if (channel.isOk()) {
     const channelToken = channel.value;
     const nonce = request.body.nonce ?? generateNonce();
-    const connectUri = constructConnectURI(channelToken, nonce, request.body);
+    const url = constructUrl(channelToken, nonce, request.body);
 
     const update = await request.channels.update(channelToken, {
       state: "pending",
       nonce,
-      connectUri,
+      url,
     });
     if (update.isOk()) {
-      reply.code(201).send({ channelToken, connectUri, nonce });
+      reply.code(201).send({ channelToken, url, nonce });
     } else {
       reply.code(500).send({ error: update.error.message });
     }
@@ -64,7 +64,7 @@ export async function connect(request: FastifyRequest<{ Body: ConnectRequest }>,
 }
 
 export async function authenticate(request: FastifyRequest<{ Body: AuthenticateRequest }>, reply: FastifyReply) {
-  const authKey = request.headers["x-farcaster-connect-auth-key"];
+  const authKey = request.headers["x-farcaster-auth-relay-key"];
   if (authKey !== AUTH_KEY) reply.code(401).send({ error: "Unauthorized" });
 
   const channelToken = request.channelToken;
@@ -97,7 +97,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
 export async function status(request: FastifyRequest, reply: FastifyReply) {
   const channel = await request.channels.read(request.channelToken);
   if (channel.isOk()) {
-    const { connectUri, ...res } = channel.value;
+    const { url, ...res } = channel.value;
     if (res.state === "completed") {
       const close = await request.channels.close(request.channelToken);
       if (close.isErr()) {

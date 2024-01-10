@@ -1,5 +1,5 @@
-export const connectRequestSchema = {
-  $id: "connectRequestSchema",
+export const createChannelRequestSchema = {
+  $id: "createChannelRequestSchema",
   type: "object",
   properties: {
     siweUri: {

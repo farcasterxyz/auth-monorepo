@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 import { ResultAsync, err, ok } from "neverthrow";
 import { randomUUID } from "crypto";
-import { ConnectAsyncResult, ConnectError } from "./errors";
+import { RelayAsyncResult, RelayError } from "./errors";
 
 interface ChannelStoreOpts {
   redisUrl: string;
@@ -17,36 +17,36 @@ export class ChannelStore<T> {
     this.ttl = ttl ?? 3600;
   }
 
-  async open(state?: T): ConnectAsyncResult<string> {
+  async open(state?: T): RelayAsyncResult<string> {
     const channelToken = randomUUID();
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state ?? {}), "EX", this.ttl),
-      (err) => new ConnectError("unavailable", err as Error),
+      (err) => new RelayError("unavailable", err as Error),
     ).andThen(() => ok(channelToken));
   }
 
-  async update(channelToken: string, state: T): ConnectAsyncResult<T> {
+  async update(channelToken: string, state: T): RelayAsyncResult<T> {
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state), "KEEPTTL"),
-      (err) => new ConnectError("unavailable", err as Error),
+      (err) => new RelayError("unavailable", err as Error),
     ).andThen(() => ok(state));
   }
 
-  async read(channelToken: string): ConnectAsyncResult<T> {
+  async read(channelToken: string): RelayAsyncResult<T> {
     return ResultAsync.fromPromise(
       this.redis.get(channelToken),
-      (err) => new ConnectError("unavailable", err as Error),
+      (err) => new RelayError("unavailable", err as Error),
     ).andThen((channel) => {
       if (channel) {
         return ok(JSON.parse(channel));
       } else {
-        return err(new ConnectError("not_found", "Channel not found"));
+        return err(new RelayError("not_found", "Channel not found"));
       }
     });
   }
 
   async close(channelToken: string) {
-    return ResultAsync.fromPromise(this.redis.del(channelToken), (err) => new ConnectError("unknown", err as Error));
+    return ResultAsync.fromPromise(this.redis.del(channelToken), (err) => new RelayError("unknown", err as Error));
   }
 
   async clear() {

@@ -1,0 +1,108 @@
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import {
+  AppClient,
+  createAppClient,
+  viemConnector,
+} from "@farcaster/auth-client";
+import { UseSignInData } from "../../hooks/useSignIn";
+
+export interface AuthKitConfig {
+  relay?: string;
+  domain?: string;
+  siweUri?: string;
+  rpcUrl?: string;
+  version?: string;
+}
+
+export interface UserData {
+  fid?: number;
+  pfpUrl?: string;
+  username?: string;
+  displayName?: string;
+  bio?: string;
+}
+
+export interface SignInMessage {
+  message?: string;
+  signature?: string;
+}
+
+export interface AuthKitContextValues {
+  isAuthenticated: boolean;
+  config: AuthKitConfig;
+  userData: UserData;
+  signInMessage: SignInMessage;
+  appClient?: AppClient;
+  onSignIn: (signInData: UseSignInData) => void;
+}
+
+const configDefaults = {
+  relay: "https://relay.farcaster.xyz",
+  version: "v1",
+};
+
+export const AuthKitContext = createContext<AuthKitContextValues>({
+  isAuthenticated: false,
+  config: configDefaults,
+  userData: {},
+  signInMessage: {},
+  onSignIn: () => {},
+});
+
+export function AuthKitProvider({
+  config,
+  children,
+}: {
+  config: AuthKitConfig;
+  children: ReactNode;
+}) {
+  const [appClient, setAppClient] = useState<AppClient>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userData, setUserData] = useState<UserData>({});
+  const [signInMessage, setSignInMessage] = useState<SignInMessage>({});
+
+  const authKitConfig = {
+    ...configDefaults,
+    ...config,
+  };
+  const { relay, rpcUrl, version } = authKitConfig;
+
+  useEffect(() => {
+    const ethereum = rpcUrl ? viemConnector({ rpcUrl }) : viemConnector();
+    const client = createAppClient({
+      relay,
+      ethereum,
+      version,
+    });
+    setAppClient(client);
+  }, [relay, rpcUrl, version]);
+
+  const onSignIn = useCallback((signInData: UseSignInData) => {
+    const { message, signature, fid, username, bio, displayName, pfpUrl } =
+      signInData;
+    setIsAuthenticated(true);
+    setUserData({ fid, username, bio, displayName, pfpUrl });
+    setSignInMessage({ message, signature });
+  }, []);
+
+  return (
+    <AuthKitContext.Provider
+      value={{
+        appClient,
+        isAuthenticated,
+        userData,
+        signInMessage,
+        config: authKitConfig,
+        onSignIn,
+      }}
+    >
+      {children}
+    </AuthKitContext.Provider>
+  );
+}

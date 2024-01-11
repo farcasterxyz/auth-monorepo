@@ -1,1 +1,0 @@
-export { ConnectKitProvider } from "./ConnectKitProvider";

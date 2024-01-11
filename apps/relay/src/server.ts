@@ -59,6 +59,16 @@ export class RelayServer {
           next();
         });
 
+        v1.register(async (publicRoutes, _opts, next) => {
+          await publicRoutes.register(rateLimit);
+          publicRoutes.post<{ Body: CreateChannelRequest }>(
+            "/connect",
+            { schema: { body: createChannelRequestSchema } },
+            createChannel,
+          );
+          next();
+        });
+
         v1.register((protectedRoutes, _opts, next) => {
           protectedRoutes.decorateRequest("channelToken", "");
           protectedRoutes.addHook("preHandler", async (request, reply) => {
@@ -71,6 +81,12 @@ export class RelayServer {
               return;
             }
           });
+
+          protectedRoutes.post<{
+            Body: AuthenticateRequest;
+          }>("/connect/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
+
+          protectedRoutes.get("/connect/status", status);
 
           protectedRoutes.post<{
             Body: AuthenticateRequest;

@@ -26,6 +26,7 @@ export type RelaySession = {
   state: "pending" | "completed";
   nonce: string;
   url: string;
+  connectUri: string;
   message?: string;
   signature?: string;
   fid?: number;
@@ -52,9 +53,10 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       state: "pending",
       nonce,
       url,
+      connectUri: url,
     });
     if (update.isOk()) {
-      reply.code(201).send({ channelToken, url, nonce });
+      reply.code(201).send({ channelToken, url, connectUri: url, nonce });
     } else {
       reply.code(500).send({ error: update.error.message });
     }
@@ -64,7 +66,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
 }
 
 export async function authenticate(request: FastifyRequest<{ Body: AuthenticateRequest }>, reply: FastifyReply) {
-  const authKey = request.headers["x-farcaster-auth-relay-key"];
+  const authKey = request.headers["x-farcaster-auth-relay-key"] || request.headers["x-farcaster-connect-auth-key"];
   if (authKey !== AUTH_KEY) reply.code(401).send({ error: "Unauthorized" });
 
   const channelToken = request.channelToken;
@@ -97,7 +99,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
 export async function status(request: FastifyRequest, reply: FastifyReply) {
   const channel = await request.channels.read(request.channelToken);
   if (channel.isOk()) {
-    const { url, ...res } = channel.value;
+    const { url, connectUri, ...res } = channel.value;
     if (res.state === "completed") {
       const close = await request.channels.close(request.channelToken);
       if (close.isErr()) {

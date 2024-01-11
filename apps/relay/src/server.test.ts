@@ -73,9 +73,10 @@ describe("relay server", () => {
       const response = await http.post(getFullUrl("/v1/channel"), channelParams);
 
       expect(response.status).toBe(201);
-      const { channelToken, url, nonce, ...rest } = response.data;
+      const { channelToken, url, connectUri, nonce, ...rest } = response.data;
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
       expect(url).toMatch("https://warpcast.com/~/sign-in-with-farcaster");
+      expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
     });
 
@@ -93,7 +94,7 @@ describe("relay server", () => {
       });
 
       expect(response.status).toBe(201);
-      const { channelToken, url, nonce, ...rest } = response.data;
+      const { channelToken, url, connectUri, nonce, ...rest } = response.data;
       // parse query params from URI
       const params = new URLSearchParams(url.split("?")[1]);
       expect(params.get("siweUri")).toBe(channelParams.siweUri);
@@ -104,6 +105,7 @@ describe("relay server", () => {
       expect(params.get("requestId")).toBe(requestId);
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
       expect(nonce).toBe(customNonce);
+      expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
     });
 

@@ -1,15 +1,15 @@
 import { SiweMessage, SiweResponse, SiweError } from "siwe";
 import { ResultAsync, err, ok } from "neverthrow";
-import type { providers } from "ethers";
 import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../errors";
 
 import { validate, parseResources } from "./validate";
 import { FarcasterResourceParams } from "./build";
+import type { Provider } from "../clients/ethereum/ethers";
 
 type Hex = `0x${string}`;
 type SignInOpts = {
   getFid: (custody: Hex) => Promise<BigInt>;
-  provider?: providers.Provider;
+  provider?: Provider;
 };
 export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 
@@ -70,7 +70,7 @@ const validateDomain = (message: SiweMessage, domain: string): AuthClientResult<
 const verifySiweMessage = async (
   message: SiweMessage,
   signature: string,
-  provider?: providers.Provider,
+  provider?: Provider,
 ): AuthClientAsyncResult<SiweResponse> => {
   return ResultAsync.fromPromise(message.verify({ signature }, { provider, suppressExceptions: true }), (e) => {
     return new AuthClientError("unauthorized", e as Error);

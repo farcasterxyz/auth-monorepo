@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/auth-relay",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Farcaster Auth relay server",
   "private": true,
   "type": "commonjs",

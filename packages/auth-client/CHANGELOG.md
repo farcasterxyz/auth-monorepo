@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.0.18
+
+### Patch Changes
+
+- Rename packages.
+
 ## 0.0.17
 
 ### Patch Changes

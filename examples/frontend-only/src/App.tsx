@@ -1,5 +1,5 @@
-import "@farcaster/connect-kit/styles.css";
-import { ConnectKitProvider, ConnectButton } from "@farcaster/connect-kit";
+import "@farcaster/auth-kit/styles.css";
+import { AuthKitProvider, SignInButton } from "@farcaster/auth-kit";
 
 const config = {
   // For a production app, replace this with an Optimism Mainnet
@@ -17,9 +17,9 @@ export default function App() {
 
   return (
     <main>
-      <ConnectKitProvider config={config}>
-        <ConnectButton nonce={nonce} />
-      </ConnectKitProvider>
+      <AuthKitProvider config={config}>
+        <SignInButton nonce={nonce} />
+      </AuthKitProvider>
     </main>
   );
 }

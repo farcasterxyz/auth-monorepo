@@ -1,18 +1,18 @@
-import "@farcaster/connect-kit/styles.css";
+import "@farcaster/auth-kit/styles.css";
 
 import Head from "next/head";
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react";
 import {
-  ConnectButton,
-  ConnectKitProvider,
+  SignInButton,
+  AuthKitProvider,
   StatusAPIResponse,
-} from "@farcaster/connect-kit";
+} from "@farcaster/auth-kit";
 import { useCallback, useState } from "react";
 
 const config = {
   relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
-  siweUri: "http://example.com",
+  siweUri: "http://example.com/login",
   domain: "example.com",
 };
 
@@ -23,9 +23,9 @@ export default function Home() {
         <title>Next Auth Sign in with Farcaster Demo</title>
       </Head>
       <main>
-        <ConnectKitProvider config={config}>
+        <AuthKitProvider config={config}>
           <Content />
-        </ConnectKitProvider>
+        </AuthKitProvider>
       </main>
     </>
   );
@@ -66,7 +66,7 @@ function Content() {
   return (
     <>
       Not signed in <br />
-      <ConnectButton
+      <SignInButton
         nonce={getNonce}
         onSuccess={handleSuccess}
         onError={() => setError(true)}

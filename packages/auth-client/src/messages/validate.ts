@@ -39,7 +39,8 @@ export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
 };
 
 export const validateStatement = (message: SiweMessage): AuthClientResult<SiweMessage> => {
-  if (message.statement !== STATEMENT) {
+  const validStatement = message.statement === STATEMENT || message.statement === "Farcaster Connect";
+  if (!validStatement) {
     return err(new AuthClientError("bad_request.validation_failure", `Statement must be '${STATEMENT}'`));
   }
   return ok(message);

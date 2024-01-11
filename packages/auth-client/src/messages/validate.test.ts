@@ -44,6 +44,14 @@ describe("validate", () => {
     );
   });
 
+  test("statement allows 'Farcaster Connect'", () => {
+    const result = validate({
+      ...authParams,
+      statement: "Farcaster Connect",
+    });
+    expect(result.isOk()).toBe(true);
+  });
+
   test("message must include chainId 10", () => {
     const result = validate({
       ...authParams,

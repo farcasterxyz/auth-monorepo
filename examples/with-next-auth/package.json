@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@farcaster/auth-kit": "^0.0.32",
+    "@farcaster/auth-kit": "^0.0.33",
     "ethers": "5",
     "next": "14.0.4",
     "next-auth": "^4.24.5",

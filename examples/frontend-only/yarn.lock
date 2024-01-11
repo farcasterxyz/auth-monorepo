@@ -719,20 +719,20 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@farcaster/auth-client@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.npmjs.org/@farcaster/auth-client/-/auth-client-0.0.18.tgz#c4cc40bd57f79481ef36ed397a9546b129667044"
-  integrity sha512-QlBCjD0lT2U4c4Z6WVRX8Wx2EFkSoxQSh4lo0kaWBMcINsV9wJ5UlQLOS7Im7pThMGQMdqHNAFzP4BcDA+c4qw==
+"@farcaster/auth-client@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.npmjs.org/@farcaster/auth-client/-/auth-client-0.0.19.tgz#c88edd64791d96f081f9fe09c3138d4e9bf836e1"
+  integrity sha512-kAiMAoIafdqkoGTHX4jotP0bTTRkcawDTapisGMmHugkC+mUsEsjf8Xt9lhsROOz4IR0HF8vspvAXIkvlSoO5w==
   dependencies:
     neverthrow "^6.1.0"
     siwe "^2.1.4"
 
-"@farcaster/auth-kit@^0.0.28":
-  version "0.0.32"
-  resolved "https://registry.npmjs.org/@farcaster/auth-kit/-/auth-kit-0.0.32.tgz#8d444fba02c830e409ed8fa7ef8d9e25b83c68d8"
-  integrity sha512-v/yYz2X8LgHu+T7EAQOzyYGtSj4VZLSTXqsX5N+83mY406eMw449lg4SpNS6s6b0A+8CQ2rbsV7uCZkKUzvE2Q==
+"@farcaster/auth-kit@^0.0.33":
+  version "0.0.33"
+  resolved "https://registry.npmjs.org/@farcaster/auth-kit/-/auth-kit-0.0.33.tgz#61a10d80b77a64283fa279095aee4c4828247c9e"
+  integrity sha512-crZMCJ0xLLn6Hf/TkoBoMSdUdgX6GHtXE4JN5zu+j3tp6hFdknMaqc4MPgtF7UjjEDXFogJ92XUPoLPqIsH9hQ==
   dependencies:
-    "@farcaster/auth-client" "^0.0.18"
+    "@farcaster/auth-client" "^0.0.19"
     "@vanilla-extract/css" "^1.14.0"
     qrcode "^1.5.3"
     react-remove-scroll "^2.5.7"

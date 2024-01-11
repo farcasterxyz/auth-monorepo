@@ -43,13 +43,12 @@ export function useCreateChannel({
 
   const connect = useCallback(async () => {
     if (appClient && siweUri && domain && !channelToken) {
-      const nonceVal =
-        typeof customNonce === "function" ? await customNonce() : customNonce;
+      const nonceVal = typeof customNonce === "function" ? await customNonce() : customNonce;
       const {
         data,
         isError: isCreateChannelError,
         error: createChannelError,
-      } = await appClient.connect({
+      } = await appClient.createChannel({
         nonce: nonceVal,
         siweUri,
         domain,
@@ -73,18 +72,7 @@ export function useCreateChannel({
         onSuccess?.({ channelToken, url, qrCodeUri, nonce: nonceVal });
       }
     }
-  }, [
-    appClient,
-    siweUri,
-    domain,
-    channelToken,
-    customNonce,
-    notBefore,
-    expirationTime,
-    requestId,
-    onError,
-    onSuccess,
-  ]);
+  }, [appClient, siweUri, domain, channelToken, customNonce, notBefore, expirationTime, requestId, onError, onSuccess]);
 
   const reconnect = useCallback(async () => {
     setChannelToken(undefined);

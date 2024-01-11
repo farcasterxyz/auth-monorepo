@@ -1373,14 +1373,6 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@farcaster/connect@^0.0.17":
-  version "0.0.17"
-  resolved "https://registry.npmjs.org/@farcaster/connect/-/connect-0.0.17.tgz#8bd7d36c9a7186429b95d3f1ef6208a9883fb918"
-  integrity sha512-to9YKvMgPq/V64pUHqQ24tuxYIIvFcewRRwQYC72JKH+jbEar6BZ1mZn4hlkmkXUZyDBC3zd8gRJfVYk1H3ldg==
-  dependencies:
-    neverthrow "^6.1.0"
-    siwe "^2.1.4"
-
 "@fastify/ajv-compiler@^3.5.0":
   version "3.5.0"
   resolved "https://registry.npmjs.org/@fastify/ajv-compiler/-/ajv-compiler-3.5.0.tgz#459bff00fefbf86c96ec30e62e933d2379e46670"

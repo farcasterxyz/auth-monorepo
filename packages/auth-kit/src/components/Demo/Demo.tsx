@@ -1,10 +1,9 @@
-import useUserData from "../../hooks/useUserData";
+import useProfile from "../../hooks/useProfile";
 import { SignInButton } from "../SignInButton";
 import { AuthKitProvider } from "../AuthKitProvider";
 
 export function Demo() {
   const config = {
-    relay: "http://localhost:8000",
     rpcUrl: "https://mainnet.optimism.io",
     siweUri: "https://example.com",
     domain: "example.com",
@@ -28,8 +27,8 @@ export function Demo() {
 function UserProfile() {
   const {
     isAuthenticated,
-    userData: { fid, bio, displayName },
-  } = useUserData();
+    profile: { fid, bio, displayName },
+  } = useProfile();
 
   return (
     <div style={{ fontFamily: "sans-serif" }}>

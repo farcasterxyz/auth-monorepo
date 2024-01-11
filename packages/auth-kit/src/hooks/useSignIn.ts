@@ -1,19 +1,13 @@
-import { AuthClientError } from "@farcaster/auth-client";
+import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import { useEffect } from "react";
 
 import useAppClient from "./useAppClient";
 import useCreateChannel, { UseCreateChannelArgs } from "./useCreateChannel";
 import useAuthKitContext from "./useAuthKitContext";
 import useVerifySignInMessage from "./useVerifySignInMessage";
-import useWatchStatus, {
-  StatusAPIResponse,
-  UseWatchStatusData,
-} from "./useWatchStatus";
+import useWatchStatus, { UseWatchStatusData } from "./useWatchStatus";
 
-export type UseSignInArgs = Omit<
-  UseCreateChannelArgs,
-  "onSuccess" | "onError"
-> & {
+export type UseSignInArgs = Omit<UseCreateChannelArgs, "onSuccess" | "onError"> & {
   timeout?: number;
   interval?: number;
   onSuccess?: (res: UseSignInData) => void;
@@ -34,14 +28,7 @@ export function useSignIn(args: UseSignInArgs) {
     onSignIn,
     config: { domain },
   } = useAuthKitContext();
-  const {
-    timeout,
-    interval,
-    onSuccess,
-    onStatusResponse,
-    onError,
-    ...createChannelArgs
-  } = {
+  const { timeout, interval, onSuccess, onStatusResponse, onError, ...createChannelArgs } = {
     ...defaults,
     ...args,
   };

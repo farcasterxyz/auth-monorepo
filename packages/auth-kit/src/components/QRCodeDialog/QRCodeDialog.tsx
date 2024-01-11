@@ -28,11 +28,7 @@ export function QRCodeDialog({
           <>
             <div className={siwfHeading}>Sign in with Farcaster</div>
             <div>Scan with your phone's camera</div>
-            <img
-              src={qrCodeUri}
-              className={qrCodeImage}
-              alt="Sign in With Farcaster QR Code"
-            />
+            <img src={qrCodeUri} className={qrCodeImage} alt="Sign in With Farcaster QR Code" />
             <div>
               On your phone already?{" "}
               <a

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { AuthClientError } from "@farcaster/auth-client";
+import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import useAppClient from "./useAppClient";
 
 export interface UseWatchStatusArgs {
@@ -12,19 +12,6 @@ export interface UseWatchStatusArgs {
 }
 
 export type UseWatchStatusData = StatusAPIResponse;
-
-export interface StatusAPIResponse {
-  state: "" | "pending" | "completed";
-  nonce: string;
-  url: string;
-  message?: string;
-  signature?: `0x${string}`;
-  fid?: number;
-  username?: string;
-  bio?: string;
-  displayName?: string;
-  pfpUrl?: string;
-}
 
 const defaults = {
   timeout: 300_000,
@@ -80,15 +67,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
         onSuccess?.(data);
       }
     }
-  }, [
-    appClient,
-    channelToken,
-    timeout,
-    interval,
-    onSuccess,
-    onError,
-    onResponse,
-  ]);
+  }, [appClient, channelToken, timeout, interval, onSuccess, onError, onResponse]);
 
   useEffect(() => {
     if (channelToken) {

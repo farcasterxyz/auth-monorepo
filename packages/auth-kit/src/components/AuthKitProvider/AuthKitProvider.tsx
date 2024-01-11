@@ -1,15 +1,5 @@
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  AppClient,
-  createAppClient,
-  viemConnector,
-} from "@farcaster/auth-client";
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
+import { AppClient, createAppClient, viemConnector } from "@farcaster/auth-client";
 import { UseSignInData } from "../../hooks/useSignIn";
 
 export interface AuthKitConfig {
@@ -20,7 +10,7 @@ export interface AuthKitConfig {
   version?: string;
 }
 
-export interface UserData {
+export interface Profile {
   fid?: number;
   pfpUrl?: string;
   username?: string;
@@ -36,7 +26,7 @@ export interface SignInMessage {
 export interface AuthKitContextValues {
   isAuthenticated: boolean;
   config: AuthKitConfig;
-  userData: UserData;
+  profile: Profile;
   signInMessage: SignInMessage;
   appClient?: AppClient;
   onSignIn: (signInData: UseSignInData) => void;
@@ -50,7 +40,7 @@ const configDefaults = {
 export const AuthKitContext = createContext<AuthKitContextValues>({
   isAuthenticated: false,
   config: configDefaults,
-  userData: {},
+  profile: {},
   signInMessage: {},
   onSignIn: () => {},
 });
@@ -64,7 +54,7 @@ export function AuthKitProvider({
 }) {
   const [appClient, setAppClient] = useState<AppClient>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserData>({});
+  const [profile, setProfile] = useState<Profile>({});
   const [signInMessage, setSignInMessage] = useState<SignInMessage>({});
 
   const authKitConfig = {
@@ -84,10 +74,9 @@ export function AuthKitProvider({
   }, [relay, rpcUrl, version]);
 
   const onSignIn = useCallback((signInData: UseSignInData) => {
-    const { message, signature, fid, username, bio, displayName, pfpUrl } =
-      signInData;
+    const { message, signature, fid, username, bio, displayName, pfpUrl } = signInData;
     setIsAuthenticated(true);
-    setUserData({ fid, username, bio, displayName, pfpUrl });
+    setProfile({ fid, username, bio, displayName, pfpUrl });
     setSignInMessage({ message, signature });
   }, []);
 
@@ -96,7 +85,7 @@ export function AuthKitProvider({
       value={{
         appClient,
         isAuthenticated,
-        userData,
+        profile,
         signInMessage,
         config: authKitConfig,
         onSignIn,

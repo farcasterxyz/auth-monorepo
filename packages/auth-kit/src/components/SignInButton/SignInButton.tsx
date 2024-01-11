@@ -9,17 +9,7 @@ type SignInButtonProps = UseSignInArgs & { debug?: boolean };
 
 export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   const signInState = useSignIn(signInArgs);
-  const {
-    signIn,
-    reconnect,
-    isSuccess,
-    isError,
-    error,
-    qrCodeUri,
-    url,
-    data,
-    validSignature,
-  } = signInState;
+  const { signIn, reconnect, isSuccess, isError, error, qrCodeUri, url, data, validSignature } = signInState;
 
   const [showDialog, setShowDialog] = useState(false);
 

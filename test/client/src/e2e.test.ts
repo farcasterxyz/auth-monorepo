@@ -1,7 +1,7 @@
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { RelayServer } from "../../../apps/relay/src/server";
-import { createAppClient, createAuthClient } from "../../../packages/connect/src/clients";
-import { viem } from "../../../packages/connect/src/clients/ethereum/viem";
+import { createAppClient, createWalletClient } from "../../../packages/auth-client/src/clients";
+import { viemConnector } from "../../../packages/auth-client/src/clients/ethereum/viemConnector";
 import { jest } from "@jest/globals";
 
 let httpServer: RelayServer;
@@ -27,15 +27,15 @@ afterEach(async () => {
 
 describe("clients", () => {
   describe("e2e", () => {
-    test("end to end connect flow", async () => {
+    test("end to end auth flow", async () => {
       const appClient = createAppClient({
         relay: httpServerAddress,
-        ethereum: viem(),
+        ethereum: viemConnector(),
       });
 
-      const authClient = createAuthClient({
+      const walletClient = createWalletClient({
         relay: httpServerAddress,
-        ethereum: viem(),
+        ethereum: viemConnector(),
       });
 
       const account = privateKeyToAccount(generatePrivateKey());
@@ -43,8 +43,8 @@ describe("clients", () => {
       // 1. App client opens a sign in channel
       const {
         response: connectResponse,
-        data: { channelToken, connectUri },
-      } = await appClient.connect({
+        data: { channelToken, url },
+      } = await appClient.createChannel({
         siweUri: "https://example.com",
         domain: "example.com",
         nonce: "abcd1234",
@@ -62,8 +62,8 @@ describe("clients", () => {
       // 3. Auth client generates a sign in message
 
       // 3a. Parse connect URI to get channel token and SIWE message params
-      const { channelToken: token, params } = authClient.parseSignInURI({
-        uri: connectUri,
+      const { channelToken: token, params } = walletClient.parseSignInURI({
+        uri: url,
       });
       expect(token).toBe(channelToken);
 
@@ -72,7 +72,7 @@ describe("clients", () => {
       expect(params.nonce).toBe("abcd1234");
 
       // 3b. Build sign in message
-      const { message: messageString } = authClient.buildSignInMessage({
+      const { message: messageString } = walletClient.buildSignInMessage({
         ...params,
         address: account.address,
         fid: 1,
@@ -93,7 +93,7 @@ describe("clients", () => {
       };
 
       // 3e. Send back signed message
-      const { response: authResponse } = await authClient.authenticate({
+      const { response: authResponse } = await walletClient.authenticate({
         channelToken,
         authKey: "farcaster-connect-auth-key",
         message: messageString,

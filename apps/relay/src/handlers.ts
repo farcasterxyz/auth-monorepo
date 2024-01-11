@@ -56,7 +56,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       connectUri: url,
     });
     if (update.isOk()) {
-      reply.code(201).send({ channelToken, url, nonce });
+      reply.code(201).send({ channelToken, url, connectUri: url, nonce });
     } else {
       reply.code(500).send({ error: update.error.message });
     }
@@ -99,7 +99,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
 export async function status(request: FastifyRequest, reply: FastifyReply) {
   const channel = await request.channels.read(request.channelToken);
   if (channel.isOk()) {
-    const { url, ...res } = channel.value;
+    const { url, connectUri, ...res } = channel.value;
     if (res.state === "completed") {
       const close = await request.channels.close(request.channelToken);
       if (close.isErr()) {

@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.0.19
+
+### Patch Changes
+
+- Allow 'Farcaster Connect' as statement
+
 ## 0.0.18
 
 ### Patch Changes

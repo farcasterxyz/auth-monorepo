@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getCsrfToken } from "next-auth/react";
 import { createAppClient, viemConnector } from "@farcaster/auth-client";
 import { NextApiRequest, NextApiResponse } from "next";
+import { getCsrfToken } from "next-auth/react";
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, {
@@ -35,6 +35,10 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
           },
         },
         async authorize(credentials) {
+          const {
+            body: { csrfToken },
+          } = req;
+
           const appClient = createAppClient({
             ethereum: viemConnector(),
           });
@@ -42,10 +46,9 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
           const verifyResponse = await appClient.verifySignInMessage({
             message: credentials?.message as string,
             signature: credentials?.signature as `0x${string}`,
-            nonce: (await getCsrfToken({ req })) as string,
             domain: "example.com",
+            nonce: csrfToken,
           });
-          console.log(verifyResponse);
           const { success, fid } = verifyResponse;
 
           if (!success) {

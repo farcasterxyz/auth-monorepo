@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.0.32
+
+### Patch Changes
+
+- Rename package
+
 ## 0.0.31
 
 ### Patch Changes

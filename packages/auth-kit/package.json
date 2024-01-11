@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/auth-kit",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "type": "module",
   "main": "./dist/auth-kit.js",
   "types": "./dist/auth-kit.d.ts",
@@ -18,7 +18,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "@farcaster/auth-client": "^0.0.19",
+    "@farcaster/auth-client": "^0.0.20",
     "@vanilla-extract/css": "^1.14.0",
     "qrcode": "^1.5.3",
     "react-remove-scroll": "^2.5.7"

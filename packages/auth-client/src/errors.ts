@@ -1,23 +1,23 @@
 import { Result } from "neverthrow";
 
-interface RelayErrorOpts {
+interface AuthClientErrorOpts {
   message: string;
-  cause: Error | RelayError;
+  cause: Error | AuthClientError;
   presentable: boolean;
 }
 
-export class RelayError extends Error {
-  public readonly errCode: RelayErrorCode;
+export class AuthClientError extends Error {
+  public readonly errCode: AuthClientErrorCode;
 
   /* Indicates if error message can be presented to the user */
   public readonly presentable: boolean = false;
 
   /**
-   * @param errCode - the ConnectError code for this message
-   * @param context - a message, another Error, or a ConnectErrorOpts
+   * @param errCode - the AuthClientError code for this message
+   * @param context - a message, another Error, or a AuthClientErrorOpts
    */
-  constructor(errCode: RelayErrorCode, context: Partial<RelayErrorOpts> | string | Error) {
-    let parsedContext: string | Error | Partial<RelayErrorOpts>;
+  constructor(errCode: AuthClientErrorCode, context: Partial<AuthClientErrorOpts> | string | Error) {
+    let parsedContext: string | Error | Partial<AuthClientErrorOpts>;
 
     if (typeof context === "string") {
       parsedContext = { message: context };
@@ -33,19 +33,19 @@ export class RelayError extends Error {
 
     super(parsedContext.message, { cause: parsedContext.cause });
 
-    this.name = "ConnectError";
+    this.name = "AuthClientError";
     this.errCode = errCode;
   }
 }
 
 /**
- * RelayErrorCode defines all the types of errors that can be raised.
+ * AuthClientErrorCode defines all the types of errors that can be raised.
  *
  * A string union type is chosen over an enumeration since TS enums are unusual types that generate
  * javascript code and may cause downstream issues. See:
  * https://www.executeprogram.com/blog/typescript-features-to-avoid
  */
-export type RelayErrorCode =
+export type AuthClientErrorCode =
   /* The request did not have valid authentication credentials, retry with credentials  */
   | "unauthenticated"
   /* The authenticated request did not have the authority to perform this action  */
@@ -63,5 +63,26 @@ export type RelayErrorCode =
   | "unknown";
 
 /** Type alias for shorthand when handling errors */
-export type RelayResult<T> = Result<T, RelayError>;
-export type RelayAsyncResult<T> = Promise<RelayResult<T>>;
+export type AuthClientResult<T> = Result<T, AuthClientError>;
+export type AuthClientAsyncResult<T> = Promise<AuthClientResult<T>>;
+export type NoneOf<T> = {
+  [K in keyof T]: never;
+};
+export type Unwrapped<T> =
+  | (T & {
+      isError: false;
+      error?: never;
+    })
+  | (NoneOf<T> & {
+      isError: true;
+      error?: AuthClientError;
+    });
+export type AsyncUnwrapped<T> = Promise<Unwrapped<T>>;
+
+export const unwrap = <T>(result: AuthClientResult<T>): Unwrapped<T> => {
+  if (result.isErr()) {
+    return { error: result.error, isError: true };
+  } else {
+    return { ...result.value, isError: false };
+  }
+};

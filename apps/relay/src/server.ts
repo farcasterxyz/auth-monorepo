@@ -2,19 +2,19 @@ import fastify from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { err, ok } from "neverthrow";
-import { connectRequestSchema, authenticateRequestSchema } from "./schemas";
+import { createChannelRequestSchema, authenticateRequestSchema } from "./schemas";
 import { ChannelStore } from "./channels";
 import {
   AuthenticateRequest,
-  ConnectRequest,
+  CreateChannelRequest,
   RelaySession,
   authenticate,
-  connect,
+  createChannel,
   handleError,
   status,
 } from "./handlers";
 import { logger } from "./logger";
-import { ConnectError, ConnectAsyncResult } from "./errors";
+import { RelayError, RelayAsyncResult } from "./errors";
 
 const log = logger.child({ component: "RelayServer" });
 
@@ -41,7 +41,7 @@ export class RelayServer {
       request.channels = this.channels;
     });
     this.app.get("/healthcheck", async (_request, reply) => reply.send({ status: "OK" }));
-    this.app.addSchema(connectRequestSchema);
+    this.app.addSchema(createChannelRequestSchema);
     this.app.addSchema(authenticateRequestSchema);
     this.initHandlers();
   }
@@ -51,7 +51,11 @@ export class RelayServer {
       (v1, _opts, next) => {
         v1.register(async (publicRoutes, _opts, next) => {
           await publicRoutes.register(rateLimit);
-          publicRoutes.post<{ Body: ConnectRequest }>("/connect", { schema: { body: connectRequestSchema } }, connect);
+          publicRoutes.post<{ Body: CreateChannelRequest }>(
+            "/channel",
+            { schema: { body: createChannelRequestSchema } },
+            createChannel,
+          );
           next();
         });
 
@@ -70,9 +74,9 @@ export class RelayServer {
 
           protectedRoutes.post<{
             Body: AuthenticateRequest;
-          }>("/connect/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
+          }>("/channel/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
 
-          protectedRoutes.get("/connect/status", status);
+          protectedRoutes.get("/channel/status", status);
 
           next();
         });
@@ -82,12 +86,12 @@ export class RelayServer {
     );
   }
 
-  async start(ip = "0.0.0.0", port = 0): ConnectAsyncResult<string> {
+  async start(ip = "0.0.0.0", port = 0): RelayAsyncResult<string> {
     return new Promise((resolve) => {
       this.app.listen({ host: ip, port }, (e, address) => {
         if (e) {
           log.error({ err: e, errMsg: e.message }, "Failed to start http server");
-          resolve(err(new ConnectError("unavailable", `Failed to start http server: ${e.message}`)));
+          resolve(err(new RelayError("unavailable", `Failed to start http server: ${e.message}`)));
         }
 
         log.info({ address }, "Started relay server");

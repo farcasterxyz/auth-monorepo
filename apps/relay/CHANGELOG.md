@@ -1,4 +1,10 @@
-# @farcaster/connect-relay
+# @farcaster/auth-relay
+
+## 0.0.5
+
+### Patch Changes
+
+- Rename packages.
 
 ## 0.0.4
 

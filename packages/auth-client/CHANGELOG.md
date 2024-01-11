@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.0.21
+
+### Patch Changes
+
+- Fix: Ethers v5/v6 compatibility hack
+
 ## 0.0.20
 
 ### Patch Changes

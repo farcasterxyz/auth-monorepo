@@ -5,6 +5,7 @@ This example app shows how to use Sign In With Farcaster in a frontend app witho
 ## Getting Started
 
 ```sh
+$ git clone https://github.com/farcasterxyz/auth-monorepo.git && cd auth-monorepo/examples/frontend-only
 $ yarn install
 $ yarn dev
 ```

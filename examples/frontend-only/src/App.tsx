@@ -1,5 +1,5 @@
 import "@farcaster/auth-kit/styles.css";
-import { AuthKitProvider, SignInButton } from "@farcaster/auth-kit";
+import { AuthKitProvider, SignInButton, useProfile } from "@farcaster/auth-kit";
 
 const config = {
   // For a production app, replace this with an Optimism Mainnet
@@ -10,16 +10,59 @@ const config = {
   siweUri: "https://example.com/login",
 };
 
-export default function App() {
-  // In a production app with a backend, this should be provided
-  // by the server.
-  const nonce = "12345678";
-
+function App() {
   return (
-    <main>
+    <main style={{ fontFamily: 'Inter, "Inter Placeholder", sans-serif' }}>
       <AuthKitProvider config={config}>
-        <SignInButton nonce={nonce} />
+        <div style={{ position: "fixed", top: "12px", right: "12px" }}>
+          <SignInButton />
+        </div>
+        <div style={{ paddingTop: "33vh", textAlign: "center" }}>
+          <h1>
+            @farcaster/auth-kit + Vite
+          </h1>
+          <p>
+            This example app shows how to use{" "}
+            <a
+              href="https://docs.farcaster.xyz/auth-kit/introduction"
+              target="_blank"
+            >
+              Farcaster AuthKit
+            </a>
+            {" "}and{" "}
+            <a href="https://vitejs.dev/" target="_blank">
+              Vite
+            </a>
+            .
+          </p>
+          <Profile />
+        </div>
       </AuthKitProvider>
     </main>
   );
 }
+
+function Profile() {
+  const profile = useProfile();
+  const {
+    isAuthenticated,
+    profile: { fid, displayName },
+  } = profile;
+
+  return (
+    <>
+      {isAuthenticated ? (
+        <p>
+          Hello, {displayName}! Your FID is {fid}.
+        </p>
+      ) : (
+        <p>
+          Click the "Sign in with Farcaster" button above, then scan the QR code
+          to sign in.
+        </p>
+      )}
+    </>
+  );
+}
+
+export default App;

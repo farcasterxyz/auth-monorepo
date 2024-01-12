@@ -1,6 +1,6 @@
 {
-  "name": "connect-monorepo",
-  "description": "A monorepo for Farcaster Connect",
+  "name": "auth-monorepo",
+  "description": "A monorepo for Farcaster Auth",
   "version": "0.0.0",
   "private": true,
   "packageManager": "yarn@1.22.19",

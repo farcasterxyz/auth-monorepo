@@ -42,14 +42,14 @@ describe("clients", () => {
 
       // 1. App client opens a sign in channel
       const {
-        response: connectResponse,
+        response: createChannelResponse,
         data: { channelToken, url },
       } = await appClient.createChannel({
         siweUri: "https://example.com",
         domain: "example.com",
         nonce: "abcd1234",
       });
-      expect(connectResponse.status).toBe(201);
+      expect(createChannelResponse.status).toBe(201);
 
       // 1. App client checks channel status
       const {

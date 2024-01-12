@@ -20,9 +20,9 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Next Auth Sign in with Farcaster Demo</title>
+        <title>Farcaster AuthKit + NextAuth Demo</title>
       </Head>
-      <main>
+      <main style={{ fontFamily: "Inter, sans-serif" }}>
         <AuthKitProvider config={config}>
           <Content />
         </AuthKitProvider>
@@ -32,7 +32,6 @@ export default function Home() {
 }
 
 function Content() {
-  const { data: session } = useSession();
   const [error, setError] = useState(false);
 
   const getNonce = useCallback(async () => {
@@ -54,24 +53,57 @@ function Content() {
     [signIn]
   );
 
-  if (session) {
-    return (
-      <>
-        Signed in as {session.user?.name} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
+  return (
+    <div>
+      <div style={{ position: "fixed", top: "12px", right: "12px" }}>
+        <SignInButton
+          nonce={getNonce}
+          onSuccess={handleSuccess}
+          onError={() => setError(true)}
+        />
+        {error && <div>Unable to sign in at this time.</div>}
+      </div>
+      <div style={{ paddingTop: "33vh", textAlign: "center" }}>
+        <h1>
+          @farcaster/auth-kit + NextAuth
+        </h1>
+        <p>
+          This example app shows how to use{" "}
+          <a
+            href="https://docs.farcaster.xyz/auth-kit/introduction"
+            target="_blank"
+          >
+            Farcaster AuthKit
+          </a>
+          {" "}and{" "}
+          <a href="https://next-auth.js.org/" target="_blank">
+            NextAuth.js
+          </a>
+          .
+        </p>
+        <Profile />
+      </div>
+    </div>
+  );
+}
+
+function Profile() {
+  const { data: session } = useSession();
 
   return (
-    <>
-      Not signed in <br />
-      <SignInButton
-        nonce={getNonce}
-        onSuccess={handleSuccess}
-        onError={() => setError(true)}
-      />
-      {error && <div>Unable to sign in at this time.</div>}
-    </>
+    session ?
+   (
+      <div style={{ fontFamily: "sans-serif" }}>
+        <p>Signed in as {session.user?.name}</p>
+        <p>
+          <button style={{ padding: '6px 12px', cursor: 'pointer'}} onClick={() => signOut()}>Click here to sign out</button>
+        </p>
+      </div>
+    )
+    : (
+        <p>
+          Click the "Sign in with Farcaster" button above, then scan the QR code
+          to sign in.
+        </p>)
   );
 }

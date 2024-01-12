@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.0.39
+
+### Patch Changes
+
+- cf802f0: fix already on mobile button
+
 ## 0.0.38
 
 ### Patch Changes

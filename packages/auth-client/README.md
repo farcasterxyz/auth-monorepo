@@ -234,7 +234,7 @@ Example: `"210f1718-427e-46a4-99e3-2207f21f83ec"`
 
 ###### timeout (optional)
 
-Polling timeout, in milliseconds. If the connect request is not completed before the timeout, `watchStatus` returns an error.
+Polling timeout, in milliseconds. If the auth request is not completed before the timeout, `watchStatus` returns an error.
 
 Type: `number`
 
@@ -343,7 +343,7 @@ const walletClient = createWalletClient({
 
 ##### ethereum
 
-An Ethereum connector, used to query the Farcaster contracts and verify smart contract wallet signatures. `@farcaster/connect` currently provides only the `viem` connector type.
+An Ethereum connector, used to query the Farcaster contracts and verify smart contract wallet signatures. `@farcaster/auth-client` currently provides only the `viem` connector type.
 
 To use a custom RPC, pass an RPC URl to the viem connector.
 
@@ -361,7 +361,7 @@ Example: `"https://relay.farcaster.xyz"`
 
 ##### version (optional)
 
-Farcaster connect version. Defaults to `"v1"`
+Farcaster Auth version. Defaults to `"v1"`
 
 Type: `string`
 

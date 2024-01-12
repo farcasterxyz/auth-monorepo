@@ -2,7 +2,7 @@ import { Hex, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry";
 import { EthereumConnector } from "./connector";
-import { JsonRpcProvider } from "./ethers";
+import { JsonRpcProvider } from "ethers";
 
 interface ViemConfigArgs {
   rpcUrl?: string;

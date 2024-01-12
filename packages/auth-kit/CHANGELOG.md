@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.0.37
+
+### Patch Changes
+
+- Fix: read nonce from return value
+
 ## 0.0.36
 
 ### Patch Changes

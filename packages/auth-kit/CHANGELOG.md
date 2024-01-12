@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.0.38
+
+### Patch Changes
+
+- 86deffa: update sign in UI
+
 ## 0.0.37
 
 ### Patch Changes

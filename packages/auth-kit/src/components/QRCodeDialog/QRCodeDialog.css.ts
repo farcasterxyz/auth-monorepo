@@ -9,6 +9,7 @@ export const body = style({
   paddingTop: 32,
   paddingLeft: 32,
   paddingRight: 32,
+  paddingBottom: 20,
 });
 
 export const siwfHeading = style({

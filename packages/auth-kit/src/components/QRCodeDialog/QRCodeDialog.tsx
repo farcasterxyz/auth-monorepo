@@ -20,8 +20,17 @@ export function QRCodeDialog({
   return (
     <Dialog open={open} titleId="Sign In With Farcaster" onClose={onClose}>
       <div className={body}>
-        <Button kind="reset" onClick={onClose} style={{ position: "absolute", top: 19, right: 13 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} fill="none">
+        <Button
+          kind="reset"
+          onClick={onClose}
+          style={{ position: "absolute", top: 19, right: 13 }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={18}
+            height={18}
+            fill="none"
+          >
             <path
               fill="rgba(0,0,0,0.5)"
               fillRule="evenodd"
@@ -33,12 +42,16 @@ export function QRCodeDialog({
         {isError ? (
           <>
             <div className={siwfHeading}>Error</div>
-            <div className={instructions}>{error?.message ?? "Unknown error, please try again."}</div>
+            <div className={instructions}>
+              {error?.message ?? "Unknown error, please try again."}
+            </div>
           </>
         ) : (
           <>
             <div className={siwfHeading}>Sign in with Farcaster</div>
-            <div className={instructions}>Scan with your phone's camera to continue.</div>
+            <div className={instructions}>
+              Scan with your phone's camera to continue.
+            </div>
             <div
               style={{
                 display: "flex",
@@ -57,8 +70,16 @@ export function QRCodeDialog({
                   alignItems: "center",
                   fontWeight: 500,
                 }}
+                onClick={() => {
+                  window.location.href = url;
+                }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width={12} height={18} fill="none">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={12}
+                  height={18}
+                  fill="none"
+                >
                   <path
                     fill="#7C65C1"
                     fillRule="evenodd"

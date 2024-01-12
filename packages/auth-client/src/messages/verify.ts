@@ -4,7 +4,7 @@ import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../err
 
 import { validate, parseResources } from "./validate";
 import { FarcasterResourceParams } from "./build";
-import type { Provider } from "../clients/ethereum/ethers";
+import type { Provider } from "ethers";
 
 type Hex = `0x${string}`;
 type SignInOpts = {

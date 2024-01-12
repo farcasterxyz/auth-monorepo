@@ -1,5 +1,12 @@
 # @farcaster/auth-kit
 
+## 0.0.36
+
+### Patch Changes
+
+- Updated dependencies
+  - @farcaster/auth-client@0.0.22
+
 ## 0.0.35
 
 ### Patch Changes

@@ -64,9 +64,7 @@ function Content() {
         {error && <div>Unable to sign in at this time.</div>}
       </div>
       <div style={{ paddingTop: "33vh", textAlign: "center" }}>
-        <h1>
-          @farcaster/auth-kit + NextAuth
-        </h1>
+        <h1>@farcaster/auth-kit + NextAuth</h1>
         <p>
           This example app shows how to use{" "}
           <a
@@ -74,14 +72,37 @@ function Content() {
             target="_blank"
           >
             Farcaster AuthKit
-          </a>
-          {" "}and{" "}
+          </a>{" "}
+          and{" "}
           <a href="https://next-auth.js.org/" target="_blank">
             NextAuth.js
           </a>
           .
         </p>
         <Profile />
+        <div>
+          <h2>Run this demo:</h2>
+          <div
+            style={{
+              margin: "0 auto",
+              padding: "24px",
+              textAlign: "left",
+              maxWidth: "640px",
+              backgroundColor: "#fafafa",
+              fontFamily: "monospace",
+              fontSize: "1.25em",
+              border: "1px solid #eaeaea",
+            }}
+          >
+            git clone https://github.com/farcasterxyz/auth-monorepo.git &&
+            <br />
+            cd auth-monorepo/examples/with-next-auth &&
+            <br />
+            yarn install &&
+            <br />
+            yarn dev
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -90,20 +111,22 @@ function Content() {
 function Profile() {
   const { data: session } = useSession();
 
-  return (
-    session ?
-   (
-      <div style={{ fontFamily: "sans-serif" }}>
-        <p>Signed in as {session.user?.name}</p>
-        <p>
-          <button style={{ padding: '6px 12px', cursor: 'pointer'}} onClick={() => signOut()}>Click here to sign out</button>
-        </p>
-      </div>
-    )
-    : (
-        <p>
-          Click the "Sign in with Farcaster" button above, then scan the QR code
-          to sign in.
-        </p>)
+  return session ? (
+    <div style={{ fontFamily: "sans-serif" }}>
+      <p>Signed in as {session.user?.name}</p>
+      <p>
+        <button
+          style={{ padding: "6px 12px", cursor: "pointer" }}
+          onClick={() => signOut()}
+        >
+          Click here to sign out
+        </button>
+      </p>
+    </div>
+  ) : (
+    <p>
+      Click the "Sign in with Farcaster" button above, then scan the QR code to
+      sign in.
+    </p>
   );
 }

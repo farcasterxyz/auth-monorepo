@@ -9,7 +9,7 @@ type SignInButtonProps = UseSignInArgs & { debug?: boolean };
 
 export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   const signInState = useSignIn(signInArgs);
-  const { signIn, reconnect, isSuccess, isError, error, qrCodeUri, url, data, validSignature } = signInState;
+  const { signIn, reconnect, isSuccess, isError, error, url, data, validSignature } = signInState;
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -32,12 +32,11 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
         <ProfileButton userData={data} />
       ) : (
         <>
-          <ActionButton onClick={onClick} label="Sign in with Farcaster" />
-          {qrCodeUri && url && (
+          <ActionButton onClick={onClick} label="Sign in" />
+          {url && (
             <QRCodeDialog
               open={showDialog && !isMobile()}
               onClose={() => setShowDialog(false)}
-              qrCodeUri={qrCodeUri}
               url={url}
               isError={isError}
               error={error}

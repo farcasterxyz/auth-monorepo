@@ -3,25 +3,23 @@ import { style } from "@vanilla-extract/css";
 export const body = style({
   backgroundColor: "white",
   fontFamily: "sans-serif",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  padding: 16,
   borderRadius: 12,
   maxWidth: 360,
-  "@media": {
-    "(min-width: 640px)": {
-      padding: 24,
-    },
-  },
+  position: "relative",
+  paddingTop: 32,
+  paddingLeft: 32,
+  paddingRight: 32,
 });
 
 export const siwfHeading = style({
-  fontSize: 20,
-  fontWeight: "bold",
-  marginBottom: 9,
+  fontSize: 22,
+  fontWeight: 600,
+  marginBottom: 6,
+});
+
+export const instructions = style({
+  fontSize: 15.5,
+  color: "rgba(0, 0, 0, 0.5)",
 });
 
 export const qrCodeImage = style({

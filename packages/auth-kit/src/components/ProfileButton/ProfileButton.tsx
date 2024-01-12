@@ -1,4 +1,4 @@
-import { button } from "../styles.css.ts";
+import { primaryButton } from "../styles.css.ts";
 
 interface UserDataProps {
   fid?: number;
@@ -10,7 +10,7 @@ export function ProfileButton({ userData }: { userData?: UserDataProps }) {
   const name = userData?.username ?? `!${userData?.fid}`;
   const pfpUrl = userData?.pfpUrl ?? "https://warpcast.com/avatar.png";
   return (
-    <button type="button" className={button}>
+    <button type="button" className={primaryButton}>
       <img
         style={{
           objectFit: "cover",

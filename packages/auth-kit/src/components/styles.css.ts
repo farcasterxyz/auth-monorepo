@@ -25,14 +25,32 @@ const reset = {
   },
 } as const;
 
-export const button = style({
+export const button = {
   ...reset.button,
-  paddingLeft: 12,
-  paddingRight: 12,
-  paddingTop: 9,
-  paddingBottom: 9,
-  backgroundColor: "#855DCD",
-  color: "white",
+  paddingLeft: 21,
+  paddingRight: 21,
+  paddingTop: 13,
+  paddingBottom: 13,
+  borderRadius: 8,
+  fontSize: 18,
+  fontWeight: 600,
   display: "flex",
   alignItems: "center",
+};
+
+export const resetButton = style({
+  ...button,
+  backgroundColor: "transparent",
+});
+
+export const primaryButton = style({
+  ...button,
+  backgroundColor: "#7C65C1",
+  color: "white",
+});
+
+export const tertiaryButton = style({
+  ...button,
+  backgroundColor: "transparent",
+  color: "#7C65C1",
 });

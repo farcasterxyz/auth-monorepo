@@ -59,6 +59,23 @@ A Sign in with Farcaster button will be rendered. When the user clicks it they w
 
 You can find official examples [here](https://github.com/farcasterxyz/connect-monorepo/tree/main/examples).
 
+## Troubleshooting
+
+Projects using [Create React App (CRA)](https://create-react-app.dev/) may run into TypeScript version conflicts, as `react-scripts@5.0.1` expects a peer dependency of TypeScript version `^3.2.1 || ^4`, while both viem and AuthKit require `>=5.0.4`.
+
+To resolve this issue:
+- Install the latest version of TypeScript: `npm i typescript -D`
+- Add an override for `react-scripts` to your package.json file, to remove the version ceiling:
+```json
+"overrides": {
+  "react-scripts": {
+    "typescript": ">3.2.1"
+  }
+}
+```
+
+**Note**: Always be careful with overrides and ensure they are compatible with the packages using them.
+
 ## Components
 
 ### `AuthKitProvider`

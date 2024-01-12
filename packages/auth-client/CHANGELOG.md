@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.0.22
+
+### Patch Changes
+
+- Bundle Ethers v6
+
 ## 0.0.21
 
 ### Patch Changes

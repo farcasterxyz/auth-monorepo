@@ -61,15 +61,15 @@ export function useCreateChannel({
         setError(createChannelError);
         onError?.(createChannelError);
       } else {
-        const { channelToken, url } = data;
+        const { channelToken, url, nonce } = data;
         setChannelToken(channelToken);
         setUrl(url);
-        setNonce(nonceVal);
+        setNonce(nonce);
 
         const qrCodeUri = await QRCode.toDataURL(url, { width: 360 });
         setqrCodeUri(qrCodeUri);
         setIsSuccess(true);
-        onSuccess?.({ channelToken, url, qrCodeUri, nonce: nonceVal });
+        onSuccess?.({ channelToken, url, qrCodeUri, nonce });
       }
     }
   }, [appClient, siweUri, domain, channelToken, customNonce, notBefore, expirationTime, requestId, onError, onSuccess]);

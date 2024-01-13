@@ -28,10 +28,10 @@
     neverthrow "^6.1.0"
     siwe "^2.1.4"
 
-"@farcaster/auth-kit@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.npmjs.org/@farcaster/auth-kit/-/auth-kit-0.0.37.tgz#6f27f45fa4de3058e0d2b555308edc60271c9ace"
-  integrity sha512-0LPo0lgXq5armuT7UNQiV3zp4OOR8Bte2Neo4WOxk/LMH6zELRN2cVo+jTyN2t7K+i3hzqjX7+E7d18m9ZssKA==
+"@farcaster/auth-kit@^0.0.38":
+  version "0.0.38"
+  resolved "https://registry.npmjs.org/@farcaster/auth-kit/-/auth-kit-0.0.38.tgz#4c73d829c57833fda03fc9635503d713c67f4f62"
+  integrity sha512-kZr83YnYbgPaWJX7mGq+MLa6GO870zFLFs6nGPVbyt/K4ANXoWOzueo0yrnhDomkcZH+Wp/fW6IL5PDqSONyaQ==
   dependencies:
     "@farcaster/auth-client" "^0.0.22"
     "@vanilla-extract/css" "^1.14.0"

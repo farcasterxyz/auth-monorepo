@@ -18,9 +18,7 @@ function App() {
           <SignInButton />
         </div>
         <div style={{ paddingTop: "33vh", textAlign: "center" }}>
-          <h1>
-            @farcaster/auth-kit + Vite
-          </h1>
+          <h1>@farcaster/auth-kit + Vite</h1>
           <p>
             This example app shows how to use{" "}
             <a
@@ -28,14 +26,37 @@ function App() {
               target="_blank"
             >
               Farcaster AuthKit
-            </a>
-            {" "}and{" "}
+            </a>{" "}
+            and{" "}
             <a href="https://vitejs.dev/" target="_blank">
               Vite
             </a>
             .
           </p>
           <Profile />
+          <div>
+            <h2>Run this demo:</h2>
+            <div
+              style={{
+                margin: "0 auto",
+                padding: "24px",
+                textAlign: "left",
+                maxWidth: "640px",
+                backgroundColor: "#fafafa",
+                fontFamily: "monospace",
+                fontSize: "1.25em",
+                border: "1px solid #eaeaea",
+              }}
+            >
+              git clone https://github.com/farcasterxyz/auth-monorepo.git &&
+              <br />
+              cd auth-monorepo/examples/frontend-only &&
+              <br />
+              yarn install &&
+              <br />
+              yarn dev
+            </div>
+          </div>
         </div>
       </AuthKitProvider>
     </main>

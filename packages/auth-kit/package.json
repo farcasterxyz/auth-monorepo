@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/auth-kit",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "type": "module",
   "main": "./dist/auth-kit.js",
   "types": "./dist/auth-kit.d.ts",

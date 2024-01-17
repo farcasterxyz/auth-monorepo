@@ -8,7 +8,7 @@ export const createChannelRequestSchema = {
     },
     domain: {
       type: "string",
-      format: "hostname",
+      pattern: "^[a-zA-Z0-9.-]+(:[0-9]+)?$",
     },
     nonce: {
       type: "string",

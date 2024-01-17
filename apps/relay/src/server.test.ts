@@ -167,8 +167,17 @@ describe("relay server", () => {
       expect(response.status).toBe(400);
       expect(response.data).toStrictEqual({
         error: "Validation error",
-        message: 'body/domain must match format "hostname"',
+        message: 'body/domain must match pattern "^[a-zA-Z0-9.-]+(:[0-9]+)?$"',
       });
+    });
+
+    test("domain with port", async () => {
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        domain: "localhost:3000",
+      });
+
+      expect(response.status).toBe(201);
     });
 
     test("open channel error", async () => {

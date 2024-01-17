@@ -4,11 +4,31 @@ import { ActionButton } from "../ActionButton/index.ts";
 import { ProfileButton } from "../ProfileButton/index.ts";
 import { QRCodeDialog } from "../QRCodeDialog/index.tsx";
 import { isMobile } from "../../utils.ts";
+import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 
 type SignInButtonProps = UseSignInArgs & { debug?: boolean };
 
 export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
-  const signInState = useSignIn(signInArgs);
+  const { onSuccess, onStatusResponse, onError } = signInArgs;
+
+  const onSuccessCallback = useCallback((res: StatusAPIResponse) => {
+    onSuccess?.(res);
+  }, [onSuccess]);
+
+  const onStatusCallback = useCallback((res: StatusAPIResponse) => {
+    onStatusResponse?.(res);
+  }, [onStatusResponse]);
+
+  const onErrorCallback = useCallback((error?: AuthClientError) => {
+    onError?.(error);
+  }, [onError]);
+
+  const signInState = useSignIn({
+    ...signInArgs,
+    onSuccess: onSuccessCallback,
+    onStatusResponse: onStatusCallback,
+    onError: onErrorCallback
+  });
   const { signIn, signOut, reconnect, isSuccess, isError, error, url, data, validSignature } = signInState;
 
   const [showDialog, setShowDialog] = useState(false);

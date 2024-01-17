@@ -11,6 +11,7 @@ export function Demo() {
 
   return (
     <AuthKitProvider config={config}>
+      <div style={{ position: 'fixed', top: 12, right: 12, zIndex: 1000 }}>
       <SignInButton
         nonce="abcd1234"
         requestId="some-unique-request-id"
@@ -19,6 +20,7 @@ export function Demo() {
         onStatusResponse={(res) => console.log("status callback:", res)}
         debug
       />
+      </div>
       <UserProfile />
     </AuthKitProvider>
   );

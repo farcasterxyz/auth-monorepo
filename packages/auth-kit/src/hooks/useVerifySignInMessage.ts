@@ -35,6 +35,7 @@ export function useVerifySignInMessage({
   const resetState = async () => {
     setIsError(false);
     setIsSuccess(false);
+    setValidSignature(false);
     setError(undefined);
   };
 

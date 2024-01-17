@@ -9,7 +9,7 @@ type SignInButtonProps = UseSignInArgs & { debug?: boolean };
 
 export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   const signInState = useSignIn(signInArgs);
-  const { signIn, reconnect, isSuccess, isError, error, url, data, validSignature } = signInState;
+  const { signIn, signOut, reconnect, isSuccess, isError, error, url, data, validSignature } = signInState;
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -29,7 +29,7 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   return (
     <div>
       {authenticated ? (
-        <ProfileButton userData={data} />
+        <ProfileButton userData={data} signOut={signOut} />
       ) : (
         <>
           <ActionButton onClick={onClick} label="Sign in" />
@@ -51,6 +51,7 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
             position: "fixed",
             backgroundColor: "white",
             padding: 24,
+            left: 9,
             bottom: 9,
             boxShadow: "0 0 6px rgba(0, 0, 0, 0.3)",
             width: 600,

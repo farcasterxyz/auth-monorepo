@@ -40,7 +40,6 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
 
   const watchStatus = useCallback(async () => {
     if (appClient && channelToken) {
-      resetState();
       setIsPolling(true);
       const {
         data,
@@ -70,6 +69,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
   }, [appClient, channelToken, timeout, interval, onSuccess, onError, onResponse]);
 
   useEffect(() => {
+    resetState();
     if (channelToken) {
       watchStatus();
     }

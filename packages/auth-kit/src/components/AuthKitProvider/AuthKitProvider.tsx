@@ -30,6 +30,7 @@ export interface AuthKitContextValues {
   signInMessage: SignInMessage;
   appClient?: AppClient;
   onSignIn: (signInData: UseSignInData) => void;
+  onSignOut: () => void;
 }
 
 const configDefaults = {
@@ -43,6 +44,7 @@ export const AuthKitContext = createContext<AuthKitContextValues>({
   profile: {},
   signInMessage: {},
   onSignIn: () => {},
+  onSignOut: () => {},
 });
 
 export function AuthKitProvider({
@@ -80,6 +82,12 @@ export function AuthKitProvider({
     setSignInMessage({ message, signature });
   }, []);
 
+  const onSignOut = () => {
+    setIsAuthenticated(false);
+    setProfile({});
+    setSignInMessage({});
+  }
+
   return (
     <AuthKitContext.Provider
       value={{
@@ -89,6 +97,7 @@ export function AuthKitProvider({
         signInMessage,
         config: authKitConfig,
         onSignIn,
+        onSignOut
       }}
     >
       {children}

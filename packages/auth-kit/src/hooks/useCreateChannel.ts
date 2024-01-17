@@ -83,9 +83,19 @@ export function useCreateChannel({
     connect();
   }, [connect, setChannelToken, setIsSuccess, setIsError, setError]);
 
+  const reset = useCallback(async () => {
+    setChannelToken(undefined);
+    setUrl(undefined);
+    setqrCodeUri(undefined);
+    setIsSuccess(false);
+    setIsError(false);
+    setError(undefined);
+  }, [setChannelToken, setIsSuccess, setIsError, setError]);
+
   return {
     connect,
     reconnect,
+    reset,
     isSuccess,
     isError,
     error,

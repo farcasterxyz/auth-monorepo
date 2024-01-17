@@ -1,13 +1,13 @@
 import { ButtonHTMLAttributes } from "react";
-import { primaryButton, tertiaryButton, resetButton } from "./styles.css";
+import { primaryButton, secondaryButton, tertiaryButton, resetButton } from "./styles.css";
 
 export type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  kind?: "primary" | "tertiary" | "reset";
+  kind?: "primary" | "secondary" | "tertiary" | "reset";
 };
 
 export function Button({ kind = "primary", children, className, ...rest }: Props) {
   return (
-    <button className={kindClass[kind]} {...rest}>
+    <button className={kindClass[kind] || className} {...rest}>
       {children}
     </button>
   );
@@ -15,6 +15,7 @@ export function Button({ kind = "primary", children, className, ...rest }: Props
 
 const kindClass = {
   primary: primaryButton,
+  secondary: secondaryButton,
   tertiary: tertiaryButton,
   reset: resetButton,
 };

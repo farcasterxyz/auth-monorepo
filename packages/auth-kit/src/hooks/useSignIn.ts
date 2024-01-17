@@ -26,6 +26,7 @@ export function useSignIn(args: UseSignInArgs) {
   const appClient = useAppClient();
   const {
     onSignIn,
+    onSignOut,
     config: { domain },
   } = useAuthKitContext();
   const { timeout, interval, onSuccess, onStatusResponse, onError, ...createChannelArgs } = {
@@ -36,6 +37,7 @@ export function useSignIn(args: UseSignInArgs) {
   const {
     connect,
     reconnect,
+    reset,
     data: { channelToken, url, qrCodeUri, nonce },
     isError: isCreateChannelError,
     error: createChannelError,
@@ -74,6 +76,11 @@ export function useSignIn(args: UseSignInArgs) {
     connect();
   };
 
+  const signOut = () => {
+    onSignOut();
+    reset();
+  };
+
   useEffect(() => {
     if (isSuccess && statusData && validSignature) {
       onSignIn(statusData);
@@ -83,6 +90,7 @@ export function useSignIn(args: UseSignInArgs) {
 
   return {
     signIn,
+    signOut,
     reconnect,
     isSuccess,
     isPolling,

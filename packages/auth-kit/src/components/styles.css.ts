@@ -49,6 +49,14 @@ export const primaryButton = style({
   color: "white",
 });
 
+export const secondaryButton = style({
+  ...button,
+  backgroundColor: "rgba(0, 0, 0, 0.03)",
+  borderColor: "rgba(210, 210, 210, 1)",
+  borderWidth: "1px solid",
+  color: "black",
+});
+
 export const tertiaryButton = style({
   ...button,
   backgroundColor: "transparent",

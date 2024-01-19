@@ -62,3 +62,23 @@ export const tertiaryButton = style({
   backgroundColor: "transparent",
   color: "#7C65C1",
 });
+
+export const qrCodeContainer = style({
+  borderColor: "rgba(229, 231, 235, 0.333)",
+  padding: 24,
+  backgroundColor: "white",
+  borderWidth: 1,
+  borderStyle: "solid",
+  borderRadius: 12,
+});
+
+export const qrCodeWrapper = style({
+  userSelect: "none",
+});
+
+export const qrCode = style({
+  position: "relative",
+  display: "flex",
+  height: 0,
+  justifyContent: "center",
+});

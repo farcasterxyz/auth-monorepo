@@ -5,31 +5,51 @@ import { ProfileButton } from "../ProfileButton/index.ts";
 import { QRCodeDialog } from "../QRCodeDialog/index.tsx";
 import { isMobile } from "../../utils.ts";
 import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
+import { debugPanel } from "./SignInButton.css.ts";
 
 type SignInButtonProps = UseSignInArgs & { debug?: boolean };
 
 export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   const { onSuccess, onStatusResponse, onError } = signInArgs;
 
-  const onSuccessCallback = useCallback((res: StatusAPIResponse) => {
-    onSuccess?.(res);
-  }, [onSuccess]);
+  const onSuccessCallback = useCallback(
+    (res: StatusAPIResponse) => {
+      onSuccess?.(res);
+    },
+    [onSuccess]
+  );
 
-  const onStatusCallback = useCallback((res: StatusAPIResponse) => {
-    onStatusResponse?.(res);
-  }, [onStatusResponse]);
+  const onStatusCallback = useCallback(
+    (res: StatusAPIResponse) => {
+      onStatusResponse?.(res);
+    },
+    [onStatusResponse]
+  );
 
-  const onErrorCallback = useCallback((error?: AuthClientError) => {
-    onError?.(error);
-  }, [onError]);
+  const onErrorCallback = useCallback(
+    (error?: AuthClientError) => {
+      onError?.(error);
+    },
+    [onError]
+  );
 
   const signInState = useSignIn({
     ...signInArgs,
     onSuccess: onSuccessCallback,
     onStatusResponse: onStatusCallback,
-    onError: onErrorCallback
+    onError: onErrorCallback,
   });
-  const { signIn, signOut, reconnect, isSuccess, isError, error, url, data, validSignature } = signInState;
+  const {
+    signIn,
+    signOut,
+    reconnect,
+    isSuccess,
+    isError,
+    error,
+    url,
+    data,
+    validSignature,
+  } = signInState;
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -47,7 +67,7 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   }, [url, setShowDialog]);
 
   return (
-    <div>
+    <div className="fc-authkit-signin-button">
       {authenticated ? (
         <ProfileButton userData={data} signOut={signOut} />
       ) : (
@@ -65,19 +85,7 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
         </>
       )}
       {debug && (
-        <div
-          style={{
-            zIndex: 10,
-            position: "fixed",
-            backgroundColor: "white",
-            padding: 24,
-            left: 9,
-            bottom: 9,
-            boxShadow: "0 0 6px rgba(0, 0, 0, 0.3)",
-            width: 600,
-            overflow: "scroll",
-          }}
-        >
+        <div className={debugPanel}>
           <pre>{JSON.stringify(signInState, null, 2)}</pre>
         </div>
       )}

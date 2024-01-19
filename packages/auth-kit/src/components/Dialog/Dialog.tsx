@@ -1,11 +1,18 @@
-import { MouseEventHandler, ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  MouseEventHandler,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";
 import * as styles from "./Dialog.css";
 import { FocusTrap } from "./FocusTrap";
 import { isMobile } from "../../utils";
 
-const stopPropagation: MouseEventHandler<unknown> = (event) => event.stopPropagation();
+const stopPropagation: MouseEventHandler<unknown> = (event) =>
+  event.stopPropagation();
 
 interface DialogProps {
   open: boolean;
@@ -17,7 +24,8 @@ interface DialogProps {
 
 export function Dialog({ children, onClose, open, titleId }: DialogProps) {
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => open && event.key === "Escape" && onClose();
+    const handleEscape = (event: KeyboardEvent) =>
+      open && event.key === "Escape" && onClose();
 
     document.addEventListener("keydown", handleEscape);
 
@@ -26,7 +34,9 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
 
   const [bodyScrollable, setBodyScrollable] = useState(true);
   useEffect(() => {
-    setBodyScrollable(getComputedStyle(window.document.body).overflow !== "hidden");
+    setBodyScrollable(
+      getComputedStyle(window.document.body).overflow !== "hidden"
+    );
   }, []);
 
   const handleBackdropClick = useCallback(() => onClose(), [onClose]);
@@ -47,12 +57,16 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
                 onClick={handleBackdropClick}
                 role="dialog"
               >
-                <FocusTrap className={styles.content} onClick={stopPropagation} role="document">
+                <FocusTrap
+                  className={styles.content}
+                  onClick={stopPropagation}
+                  role="document"
+                >
                   {children}
                 </FocusTrap>
               </div>
             </RemoveScroll>,
-            document.body,
+            document.body
           )
         : null}
     </>

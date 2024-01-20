@@ -1,6 +1,6 @@
 import QRCode from "qrcode";
 import { AuthClientError } from "@farcaster/auth-client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useAppClient } from "./useAppClient";
 import useAuthKitContext from "./useAuthKitContext";
@@ -33,6 +33,7 @@ export function useCreateChannel({
   const { siweUri, domain } = config;
   const appClient = useAppClient();
 
+  const [connected, setConnected] = useState<boolean>(false);
   const [qrCodeUri, setqrCodeUri] = useState<string>();
   const [channelToken, setChannelToken] = useState<string>();
   const [url, setUrl] = useState<string>();
@@ -41,8 +42,8 @@ export function useCreateChannel({
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<AuthClientError>();
 
-  const connect = useCallback(async () => {
-    if (appClient && siweUri && domain && !channelToken) {
+  const createChannel = useCallback(async () => {
+    if (connected && appClient && siweUri && domain && !channelToken) {
       const nonceVal = typeof customNonce === "function" ? await customNonce() : customNonce;
       const {
         data,
@@ -72,25 +73,41 @@ export function useCreateChannel({
         onSuccess?.({ channelToken, url, qrCodeUri, nonce });
       }
     }
-  }, [appClient, siweUri, domain, channelToken, customNonce, notBefore, expirationTime, requestId, onError, onSuccess]);
+  }, [
+    connected,
+    appClient,
+    siweUri,
+    domain,
+    channelToken,
+    customNonce,
+    notBefore,
+    expirationTime,
+    requestId,
+    onError,
+    onSuccess,
+  ]);
 
-  const reconnect = useCallback(async () => {
-    setChannelToken(undefined);
-    setIsSuccess(false);
-    setIsError(false);
-    setError(undefined);
+  useEffect(() => {
+    createChannel();
+  }, [createChannel]);
 
-    connect();
-  }, [connect, setChannelToken, setIsSuccess, setIsError, setError]);
+  const connect = useCallback(async () => {
+    setConnected(true);
+  }, [setConnected]);
 
-  const reset = useCallback(async () => {
+  const reset = useCallback(() => {
     setChannelToken(undefined);
     setUrl(undefined);
     setqrCodeUri(undefined);
     setIsSuccess(false);
     setIsError(false);
     setError(undefined);
-  }, [setChannelToken, setIsSuccess, setIsError, setError]);
+  }, [setChannelToken, setUrl, setqrCodeUri, setIsSuccess, setIsError, setError]);
+
+  const reconnect = useCallback(() => {
+    reset();
+    connect();
+  }, [connect, reset]);
 
   return {
     connect,

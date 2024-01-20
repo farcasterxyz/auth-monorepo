@@ -15,6 +15,7 @@ export function Demo() {
         <SignInButton
           nonce="abcd1234"
           requestId="some-unique-request-id"
+          timeout={20000}
           onError={(error) => console.error("error callback:", error)}
           onSuccess={(data) => console.log("success callback:", data)}
           onStatusResponse={(res) => console.log("status callback:", res)}

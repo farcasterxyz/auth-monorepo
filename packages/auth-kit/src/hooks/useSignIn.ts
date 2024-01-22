@@ -39,11 +39,13 @@ export function useSignIn(args: UseSignInArgs) {
     reconnect,
     reset,
     data: { channelToken, url, qrCodeUri, nonce },
+    isSuccess: isConnected,
     isError: isCreateChannelError,
     error: createChannelError,
   } = useCreateChannel({ ...createChannelArgs, onError });
 
   const {
+    watch,
     isPolling,
     data: statusData,
     isError: isWatchStatusError,
@@ -73,7 +75,7 @@ export function useSignIn(args: UseSignInArgs) {
   const error = createChannelError || watchStatusError || verifyError;
 
   const signIn = () => {
-    connect();
+    watch();
   };
 
   const signOut = () => {
@@ -91,7 +93,9 @@ export function useSignIn(args: UseSignInArgs) {
   return {
     signIn,
     signOut,
+    connect,
     reconnect,
+    isConnected,
     isSuccess,
     isPolling,
     isError,

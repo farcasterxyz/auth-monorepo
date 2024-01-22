@@ -26,6 +26,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
   };
 
   const [statusData, setStatusData] = useState<StatusAPIResponse>();
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isPolling, setIsPolling] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -33,13 +34,18 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
 
   const resetState = () => {
     setStatusData(undefined);
+    setIsEnabled(false);
     setIsError(false);
     setIsSuccess(false);
     setError(undefined);
   };
 
+  const watch = () => {
+    setIsEnabled(true);
+  };
+
   const watchStatus = useCallback(async () => {
-    if (appClient && channelToken) {
+    if (isEnabled && appClient && channelToken) {
       setIsPolling(true);
       const {
         data,
@@ -66,7 +72,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
         onSuccess?.(data);
       }
     }
-  }, [appClient, channelToken, timeout, interval, onSuccess, onError, onResponse]);
+  }, [isEnabled, appClient, channelToken, timeout, interval, onSuccess, onError, onResponse]);
 
   useEffect(() => {
     resetState();
@@ -76,6 +82,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
   }, [channelToken, watchStatus]);
 
   return {
+    watch,
     isSuccess,
     isPolling,
     isError,

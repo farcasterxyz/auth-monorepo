@@ -7,7 +7,7 @@ export type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({ kind = "primary", children, className, ...rest }: Props) {
   return (
-    <button className={kindClass[kind] || className} {...rest}>
+    <button type="button" className={kindClass[kind] || className} {...rest}>
       {children}
     </button>
   );

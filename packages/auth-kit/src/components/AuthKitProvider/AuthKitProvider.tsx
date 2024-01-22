@@ -36,6 +36,8 @@ export interface AuthKitContextValues {
 const configDefaults = {
   relay: "https://relay.farcaster.xyz",
   version: "v1",
+  domain: window.location.host,
+  siweUri: window.location.href
 };
 
 export const AuthKitContext = createContext<AuthKitContextValues>({

@@ -33,6 +33,7 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
     [onError]
   );
 
+
   const signInState = useSignIn({
     ...signInArgs,
     onSuccess: onSuccessCallback,
@@ -42,34 +43,47 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   const {
     signIn,
     signOut,
+    connect,
     reconnect,
     isSuccess,
     isError,
     error,
+    channelToken,
     url,
     data,
     validSignature,
   } = signInState;
 
+  const onSignOut = useCallback(() => {
+    setShowDialog(false);
+    signOut();
+  }, [signOut]);
+
   const [showDialog, setShowDialog] = useState(false);
 
   const onClick = useCallback(() => {
-    isError ? reconnect() : signIn();
+    if (isError) {
+      reconnect()
+    }
     setShowDialog(true);
-  }, [isError, reconnect, signIn]);
+    signIn();
+    if (url && isMobile()) {
+      window.location.href = url;
+    }
+  }, [isError, reconnect, signIn, url]);
 
   const authenticated = isSuccess && validSignature;
 
   useEffect(() => {
-    if (url && isMobile()) {
-      window.location.href = url;
+    if (!channelToken) {
+      connect();
     }
-  }, [url, setShowDialog]);
+  }, [channelToken, connect]);
 
   return (
     <div className="fc-authkit-signin-button">
       {authenticated ? (
-        <ProfileButton userData={data} signOut={signOut} />
+        <ProfileButton userData={data} signOut={onSignOut} />
       ) : (
         <>
           <ActionButton onClick={onClick} label="Sign in" />

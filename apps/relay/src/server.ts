@@ -4,6 +4,7 @@ import rateLimit from "@fastify/rate-limit";
 import { err, ok } from "neverthrow";
 import { createChannelRequestSchema, authenticateRequestSchema } from "./schemas";
 import { ChannelStore } from "./channels";
+import { AddressService } from "./addresses";
 import {
   AuthenticateRequest,
   CreateChannelRequest,
@@ -27,18 +28,22 @@ interface RelayServerConfig {
 export class RelayServer {
   app = fastify();
   channels: ChannelStore<RelaySession>;
+  addresses: AddressService;
 
   constructor({ redisUrl, ttl, corsOrigin }: RelayServerConfig) {
     this.channels = new ChannelStore<RelaySession>({
       redisUrl,
       ttl,
     });
+    this.addresses = new AddressService();
     this.app.setErrorHandler(handleError.bind(this, log));
 
     this.app.register(cors, { origin: [corsOrigin] });
     this.app.decorateRequest("channels");
+    this.app.decorateRequest("addresses");
     this.app.addHook("onRequest", async (request) => {
       request.channels = this.channels;
+      request.addresses = this.addresses;
     });
     this.app.get("/healthcheck", async (_request, reply) => reply.send({ status: "OK" }));
     this.app.addSchema(createChannelRequestSchema);

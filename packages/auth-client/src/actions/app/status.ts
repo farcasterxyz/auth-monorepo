@@ -1,6 +1,7 @@
 import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
 import { get, HttpResponse } from "../../clients/transports/http";
+import type { Hex } from "viem";
 
 export interface StatusArgs {
   channelToken: string;
@@ -19,6 +20,8 @@ export interface StatusAPIResponse {
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
+  verifications?: Hex[];
+  custody?: Hex;
 }
 
 const path = "channel/status";

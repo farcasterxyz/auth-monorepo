@@ -105,13 +105,15 @@ describe("clients", () => {
       // 4. App client polls channel status
       const {
         response: completedStatusResponse,
-        data: { state: completedState, message, signature, nonce },
+        data: { state: completedState, message, signature, nonce, verifications, custody },
       } = await appClient.status({ channelToken });
       expect(completedStatusResponse.status).toBe(200);
       expect(completedState).toBe("completed");
       expect(message).toBe(messageString);
       expect(signature).toBe(sig);
       expect(nonce).toBe(nonce);
+      expect(custody).toBe("0x8773442740C17C9d0F0B87022c722F9a136206eD");
+      expect(verifications).toStrictEqual(["0x86924c37a93734e8611eb081238928a9d18a63c0"]);
 
       // 5. Channel is now closed
       const { response: channelClosedResponse } = await appClient.status({

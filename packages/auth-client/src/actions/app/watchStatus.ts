@@ -1,6 +1,7 @@
 import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
 import { poll, HttpResponse } from "../../clients/transports/http";
+import { StatusAPIResponse } from "./status";
 
 export interface WatchStatusArgs {
   channelToken: string;
@@ -10,19 +11,6 @@ export interface WatchStatusArgs {
 }
 
 export type WatchStatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>>;
-
-interface StatusAPIResponse {
-  state: "pending" | "completed";
-  nonce: string;
-  url: string;
-  message?: string;
-  signature?: `0x${string}`;
-  fid?: number;
-  username?: string;
-  bio?: string;
-  displayName?: string;
-  pfpUrl?: string;
-}
 
 const path = "channel/status";
 

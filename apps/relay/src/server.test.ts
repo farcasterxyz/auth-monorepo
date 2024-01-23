@@ -391,7 +391,10 @@ describe("relay server", () => {
         throw new Error("close error");
       });
       await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
-        headers: { Authorization: `Bearer ${channelToken}` },
+        headers: {
+          Authorization: `Bearer ${channelToken}`,
+          "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
+        },
       });
       const response = await http.get(getFullUrl("/v1/channel/status"), {
         headers: { Authorization: `Bearer ${channelToken}` },

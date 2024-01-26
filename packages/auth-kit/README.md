@@ -64,8 +64,10 @@ You can find official examples [here](https://github.com/farcasterxyz/connect-mo
 Projects using [Create React App (CRA)](https://create-react-app.dev/) may run into TypeScript version conflicts, as `react-scripts@5.0.1` expects a peer dependency of TypeScript version `^3.2.1 || ^4`, while both viem and AuthKit require `>=5.0.4`.
 
 To resolve this issue:
+
 - Install the latest version of TypeScript: `npm i typescript -D`
 - Add an override for `react-scripts` to your package.json file, to remove the version ceiling:
+
 ```json
 "overrides": {
   "react-scripts": {
@@ -213,45 +215,49 @@ function App() {
         bio: string;
         displayName: string;
         pfpUrl: string;
+        custody: Hex;
+        verifications: Hex[];
     },
     validSignature: boolean;
   };
 ```
 
-| Parameter          | Description                                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| `signIn`           | Call this function to connect to the relay and poll for a signature.                             |
-| `reconnect`        | Reconnect to the relay and try again. Use in the event of an error.                              |
-| `isSuccess`        | True when the relay server returns a valid signature.                                            |
-| `isPolling`        | True when the relay state is `"pending"` and the app is polling the relay server for a response. |
-| `isError`          | True when an error has occurred.                                                                 |
-| `error`            | `AuthClientError` instance.                                                                      |
-| `channelToken`     | Farcaster Auth relay channel token.                                                              |
-| `url`              | Sign in With Farcaster URL to present to the user. Links to Warpcast in v1.                      |
-| `qrcodeUri`        | QR code image data URI encoding `url`.                                                           |
-| `data.state`       | Status of the sign in request, either `"pending"` or `"complete"`                                |
-| `data.nonce`       | Random nonce used in the SIWE message. If you do not provide a custom nonce, read this value.    |
-| `data.message`     | The generated SIWE message.                                                                      |
-| `data.signature`   | Hex signature produced by the user's Warpcast wallet.                                            |
-| `data.fid`         | User's Farcaster ID.                                                                             |
-| `data.username`    | User's Farcaster username.                                                                       |
-| `data.bio`         | User's Farcaster bio.                                                                            |
-| `data.displayName` | User's Farcaster display name.                                                                   |
-| `data.pfpUrl`      | User's Farcaster profile picture URL.                                                            |
-| `validSignature`   | True when the signature returned by the relay server is valid.                                   |
+| Parameter            | Description                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------ |
+| `signIn`             | Call this function to connect to the relay and poll for a signature.                             |
+| `reconnect`          | Reconnect to the relay and try again. Use in the event of an error.                              |
+| `isSuccess`          | True when the relay server returns a valid signature.                                            |
+| `isPolling`          | True when the relay state is `"pending"` and the app is polling the relay server for a response. |
+| `isError`            | True when an error has occurred.                                                                 |
+| `error`              | `AuthClientError` instance.                                                                      |
+| `channelToken`       | Farcaster Auth relay channel token.                                                              |
+| `url`                | Sign in With Farcaster URL to present to the user. Links to Warpcast in v1.                      |
+| `qrcodeUri`          | QR code image data URI encoding `url`.                                                           |
+| `data.state`         | Status of the sign in request, either `"pending"` or `"complete"`                                |
+| `data.nonce`         | Random nonce used in the SIWE message. If you do not provide a custom nonce, read this value.    |
+| `data.message`       | The generated SIWE message.                                                                      |
+| `data.signature`     | Hex signature produced by the user's Warpcast wallet.                                            |
+| `data.fid`           | User's Farcaster ID.                                                                             |
+| `data.username`      | User's Farcaster username.                                                                       |
+| `data.bio`           | User's Farcaster bio.                                                                            |
+| `data.displayName`   | User's Farcaster display name.                                                                   |
+| `data.pfpUrl`        | User's Farcaster profile picture URL.                                                            |
+| `data.custody`       | User's Farcaster ID custody address.                                                             |
+| `data.verifications` | User's verified addresses.                                                                       |
+| `validSignature`     | True when the signature returned by the relay server is valid.                                   |
 
-### `useUserData`
+### `useProfile`
 
 Hook for reading information about the authenticated user.
 
 ```tsx
-import { useUserData } from "@farcaster/auth-kit";
+import { useProfile } from "@farcaster/auth-kit";
 
 function App() {
   const {
     isAuthenticated,
-    userData: { fid, pfpUrl, username, displayName, bio },
-  } = useUserData();
+    profile: { fid, pfpUrl, username, displayName, bio },
+  } = useProfile();
 
   return (
     <div>
@@ -266,7 +272,7 @@ function App() {
 ```ts
   {
     isAuthenticated: boolean;
-    userData: {
+    profile: {
         fid: number;
         username: string;
         bio: string;
@@ -276,21 +282,23 @@ function App() {
   };
 ```
 
-| Parameter              | Description                           |
-| ---------------------- | ------------------------------------- |
-| `isAuthenticated`      | True if the user is authenticated.    |
-| `userData.fid`         | User's Farcaster ID.                  |
-| `userData.username`    | User's Farcaster username.            |
-| `userData.bio`         | User's Farcaster bio.                 |
-| `userData.displayName` | User's Farcaster display name.        |
-| `userData.pfpUrl`      | User's Farcaster profile picture URL. |
+| Parameter               | Description                           |
+| ----------------------- | ------------------------------------- |
+| `isAuthenticated`       | True if the user is authenticated.    |
+| `profile.fid`           | User's Farcaster ID.                  |
+| `profile.username`      | User's Farcaster username.            |
+| `profile.bio`           | User's Farcaster bio.                 |
+| `profile.displayName`   | User's Farcaster display name.        |
+| `profile.pfpUrl`        | User's Farcaster profile picture URL. |
+| `profile.custody`       | User's Farcaster ID custody address.  |
+| `profile.verifications` | User's verified addresses.            |
 
 ### `useSignInMessage`
 
 Hook for reading the SIWE message and signature used to authenticate the user.
 
 ```tsx
-import { useUserData } from "@farcaster/auth-kit";
+import { useSignInMessage } from "@farcaster/auth-kit";
 
 function App() {
   const { message, signature } = useSignInMessage();

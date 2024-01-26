@@ -4,7 +4,7 @@ import { AuthKitProvider } from "../AuthKitProvider";
 
 export function Demo() {
   const config = {
-    rpcUrl: "https://mainnet.optimism.io"
+    rpcUrl: "https://mainnet.optimism.io",
   };
 
   return (
@@ -28,7 +28,7 @@ export function Demo() {
 function UserProfile() {
   const {
     isAuthenticated,
-    profile: { fid, bio, displayName },
+    profile: { fid, bio, displayName, custody },
   } = useProfile();
 
   return (
@@ -48,6 +48,11 @@ function UserProfile() {
           {bio && (
             <p>
               <strong>Bio:</strong> {bio}
+            </p>
+          )}
+          {custody && (
+            <p>
+              <strong>Custody address:</strong> {custody}
             </p>
           )}
         </div>

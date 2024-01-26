@@ -1,5 +1,22 @@
 # @farcaster/auth-kit
 
+## 0.1.0
+
+### Minor Changes
+
+- cfd30e4: Return custody address and verifications
+- 5475d3d: Add Sign Out button
+
+### Patch Changes
+
+- 02479a5: Add CSS classes to components
+- be9a35a: fix: iOS redirect delay
+- 52bc8ab: Fix: memoize callbacks on SignInButton
+- 47a8553: fix: reconnect on channel timeout
+- 8303558: add default siweUri and domain
+- Updated dependencies [cfd30e4]
+  - @farcaster/auth-client@0.1.0
+
 ## 0.0.39
 
 ### Patch Changes

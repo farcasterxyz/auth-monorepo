@@ -1,5 +1,11 @@
 # client-test
 
+## 0.0.4
+
+### Patch Changes
+
+- cfd30e4: Return custody address and verifications
+
 ## 0.0.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.1.0
+
+### Minor Changes
+
+- cfd30e4: Return custody address and verifications
+
 ## 0.0.22
 
 ### Patch Changes

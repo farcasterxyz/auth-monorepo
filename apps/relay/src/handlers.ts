@@ -1,6 +1,7 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
+import type { Hex } from "viem";
 import { AUTH_KEY, URL_BASE } from "./env";
-import { Logger } from "logger";
+import { Logger } from "./logger";
 import { generateNonce } from "siwe";
 
 export type CreateChannelRequest = {
@@ -34,6 +35,8 @@ export type RelaySession = {
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
+  verifications?: Hex[];
+  custody?: Hex;
 };
 
 const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
@@ -72,27 +75,33 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
   const channelToken = request.channelToken;
   const { message, signature, fid, username, displayName, bio, pfpUrl } = request.body;
 
-  const channel = await request.channels.read(channelToken);
-  if (channel.isOk()) {
-    const update = await request.channels.update(channelToken, {
-      ...channel.value,
-      state: "completed",
-      message,
-      signature,
-      fid,
-      username,
-      displayName,
-      bio,
-      pfpUrl,
-    });
-    if (update.isOk()) {
-      reply.code(201).send(update.value);
+  const addrs = await request.addresses.getAddresses(fid);
+  if (addrs.isOk()) {
+    const channel = await request.channels.read(channelToken);
+    if (channel.isOk()) {
+      const update = await request.channels.update(channelToken, {
+        ...channel.value,
+        state: "completed",
+        message,
+        signature,
+        fid,
+        username,
+        displayName,
+        bio,
+        pfpUrl,
+        ...addrs.value,
+      });
+      if (update.isOk()) {
+        reply.code(201).send(update.value);
+      } else {
+        reply.code(500).send({ error: update.error.message });
+      }
     } else {
-      reply.code(500).send({ error: update.error.message });
+      if (channel.error.errCode === "not_found") reply.code(401).send({ error: "Unauthorized " });
+      reply.code(500).send({ error: channel.error.message });
     }
   } else {
-    if (channel.error.errCode === "not_found") reply.code(401).send({ error: "Unauthorized " });
-    reply.code(500).send({ error: channel.error.message });
+    reply.code(500).send({ error: addrs.error.message });
   }
 }
 

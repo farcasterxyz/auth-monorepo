@@ -1,5 +1,5 @@
 ---
-"@farcaster/auth-kit": patch
+"@farcaster/auth-kit": minor
 ---
 
 Add Sign Out button

@@ -1,6 +1,6 @@
 ---
-"@farcaster/auth-client": patch
-"@farcaster/auth-kit": patch
+"@farcaster/auth-client": minor
+"@farcaster/auth-kit": minor
 "client-test": patch
 "@farcaster/auth-relay": patch
 ---

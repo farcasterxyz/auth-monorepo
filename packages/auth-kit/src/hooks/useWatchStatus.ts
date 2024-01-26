@@ -55,7 +55,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
         channelToken,
         timeout,
         interval,
-        onResponse: ({ data }) => {
+        onResponse: ({ data }: { data: StatusAPIResponse }) => {
           setStatusData(data);
           onResponse?.(data);
         },

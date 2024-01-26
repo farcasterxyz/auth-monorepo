@@ -7,9 +7,18 @@ import { isMobile } from "../../utils.ts";
 import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import { debugPanel } from "./SignInButton.css.ts";
 
-type SignInButtonProps = UseSignInArgs & { debug?: boolean, disableSignOut?: boolean  };
+type SignInButtonProps = UseSignInArgs & {
+  onSignOut?: () => void;
+  debug?: boolean;
+  hideSignOut?: boolean;
+};
 
-export function SignInButton({ debug, disableSignOut, ...signInArgs }: SignInButtonProps) {
+export function SignInButton({
+  debug,
+  hideSignOut,
+  onSignOut,
+  ...signInArgs
+}: SignInButtonProps) {
   const { onSuccess, onStatusResponse, onError } = signInArgs;
 
   const onSuccessCallback = useCallback(
@@ -33,6 +42,9 @@ export function SignInButton({ debug, disableSignOut, ...signInArgs }: SignInBut
     [onError]
   );
 
+  const onSignOutCallback = useCallback(() => {
+    onSignOut?.();
+  }, [onSignOut]);
 
   const signInState = useSignIn({
     ...signInArgs,
@@ -54,16 +66,17 @@ export function SignInButton({ debug, disableSignOut, ...signInArgs }: SignInBut
     validSignature,
   } = signInState;
 
-  const onSignOut = useCallback(() => {
+  const handleSignOut = useCallback(() => {
     setShowDialog(false);
     signOut();
-  }, [signOut]);
+    onSignOutCallback();
+  }, [signOut, onSignOutCallback]);
 
   const [showDialog, setShowDialog] = useState(false);
 
   const onClick = useCallback(() => {
     if (isError) {
-      reconnect()
+      reconnect();
     }
     setShowDialog(true);
     signIn();
@@ -83,7 +96,11 @@ export function SignInButton({ debug, disableSignOut, ...signInArgs }: SignInBut
   return (
     <div className="fc-authkit-signin-button">
       {authenticated ? (
-        <ProfileButton userData={data} signOut={onSignOut} disableSignOut={!!disableSignOut} />
+        <ProfileButton
+          userData={data}
+          signOut={handleSignOut}
+          hideSignOut={!!hideSignOut}
+        />
       ) : (
         <>
           <ActionButton onClick={onClick} label="Sign in" />

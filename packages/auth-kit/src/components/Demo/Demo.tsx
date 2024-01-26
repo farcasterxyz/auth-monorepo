@@ -17,6 +17,7 @@ export function Demo() {
           onError={(error) => console.error("error callback:", error)}
           onSuccess={(data) => console.log("success callback:", data)}
           onStatusResponse={(res) => console.log("status callback:", res)}
+          onSignOut={() => console.log("sign out callback")}
           debug
         />
       </div>

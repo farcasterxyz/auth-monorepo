@@ -17,11 +17,11 @@ interface UserDataProps {
 export function ProfileButton({
   userData,
   signOut,
-  disableSignOut,
+  hideSignOut,
 }: {
   userData?: UserDataProps;
   signOut?: () => void;
-  disableSignOut: boolean;
+  hideSignOut: boolean;
 }) {
   const [showSignOutButton, setShowSignOutButton] = useState(false);
   const ref = useRef(null);
@@ -30,7 +30,7 @@ export function ProfileButton({
   const name = userData?.username ?? `!${userData?.fid}`;
   const pfpUrl = userData?.pfpUrl ?? "https://warpcast.com/avatar.png";
 
-  const showSignOut = showSignOutButton && !disableSignOut;
+  const showSignOut = showSignOutButton && !hideSignOut;
 
   return (
     <div
@@ -51,7 +51,7 @@ export function ProfileButton({
         >
           <img className={profileImage} src={pfpUrl} alt="avatar" />
           <span className={profileName}>{name}</span>
-          {!disableSignOut && (
+          {!hideSignOut && (
             <svg
               width="24"
               height="24"

@@ -7,9 +7,9 @@ import { isMobile } from "../../utils.ts";
 import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import { debugPanel } from "./SignInButton.css.ts";
 
-type SignInButtonProps = UseSignInArgs & { debug?: boolean };
+type SignInButtonProps = UseSignInArgs & { debug?: boolean, disableSignOut?: boolean  };
 
-export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
+export function SignInButton({ debug, disableSignOut, ...signInArgs }: SignInButtonProps) {
   const { onSuccess, onStatusResponse, onError } = signInArgs;
 
   const onSuccessCallback = useCallback(
@@ -83,7 +83,7 @@ export function SignInButton({ debug, ...signInArgs }: SignInButtonProps) {
   return (
     <div className="fc-authkit-signin-button">
       {authenticated ? (
-        <ProfileButton userData={data} signOut={onSignOut} />
+        <ProfileButton userData={data} signOut={onSignOut} disableSignOut={!!disableSignOut} />
       ) : (
         <>
           <ActionButton onClick={onClick} label="Sign in" />

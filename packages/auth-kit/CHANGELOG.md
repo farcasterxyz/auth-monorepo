@@ -1,5 +1,14 @@
 # @farcaster/auth-kit
 
+## 0.1.1
+
+### Patch Changes
+
+- 5931f5a: fix: check window.location for RN compatibility
+- 181e0e8: add verifications to profile
+- 8913f4e: add optional disableSignOut prop
+- 0c216c4: feat: optional provider config prop
+
 ## 0.1.0
 
 ### Minor Changes

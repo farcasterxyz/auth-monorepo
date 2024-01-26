@@ -1,12 +1,17 @@
 import { secondaryButton } from "../styles.css.ts";
-import {
-  signOutButtonContainer, signOutIcon,
-} from "./SignOutButton.css.ts";
+import { signOutButtonContainer, signOutIcon } from "./SignOutButton.css.ts";
 
 export function SignOutButton({ signOut }: { signOut?: () => void }) {
   return (
     <div className={signOutButtonContainer}>
-      <button type="button" className={secondaryButton} onClick={signOut}>
+      <button
+        type="button"
+        className={secondaryButton}
+        style={{
+          boxShadow: "0px 6px 12px 0 rgba(0,0,0,0.12)",
+        }}
+        onClick={signOut}
+      >
         <svg
           width="19"
           height="20"

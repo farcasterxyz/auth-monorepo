@@ -16,6 +16,8 @@ export interface Profile {
   username?: string;
   displayName?: string;
   bio?: string;
+  custody?: `0x${string}`;
+  verifications?: `0x${string}`[];
 }
 
 export interface SignInMessage {
@@ -78,9 +80,9 @@ export function AuthKitProvider({
   }, [relay, rpcUrl, version]);
 
   const onSignIn = useCallback((signInData: UseSignInData) => {
-    const { message, signature, fid, username, bio, displayName, pfpUrl } = signInData;
+    const { message, signature, fid, username, bio, displayName, pfpUrl, custody, verifications } = signInData;
     setIsAuthenticated(true);
-    setProfile({ fid, username, bio, displayName, pfpUrl });
+    setProfile({ fid, username, bio, displayName, pfpUrl, custody, verifications });
     setSignInMessage({ message, signature });
   }, []);
 

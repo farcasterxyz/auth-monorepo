@@ -1,5 +1,12 @@
 # @farcaster/auth-relay
 
+## 0.0.7
+
+### Patch Changes
+
+- cfd30e4: Return custody address and verifications
+- f697a4f: fix: allow port in domain
+
 ## 0.0.6
 
 ### Patch Changes

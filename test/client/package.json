@@ -1,6 +1,6 @@
 {
   "name": "client-test",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "test": " DOTENV_CONFIG_PATH=.env.test jest",

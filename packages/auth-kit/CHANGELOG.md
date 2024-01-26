@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.1.2
+
+### Patch Changes
+
+- c91fc13: Add onSignOut callback to SignInButton
+
 ## 0.1.1
 
 ### Patch Changes

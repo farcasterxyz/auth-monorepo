@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.1.3
+
+### Patch Changes
+
+- 2c76849: fix: check for window in domain defaults
+
 ## 0.1.2
 
 ### Patch Changes

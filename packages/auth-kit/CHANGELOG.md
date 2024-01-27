@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.1.4
+
+### Patch Changes
+
+- fix: check using typeof
+
 ## 0.1.3
 
 ### Patch Changes

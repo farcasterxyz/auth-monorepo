@@ -35,7 +35,7 @@ export interface AuthKitContextValues {
   onSignOut: () => void;
 }
 
-const domainDefaults = window?.location ? {
+const domainDefaults = (typeof window !== 'undefined' && window?.location) ? {
   domain: window.location.host,
   siweUri: window.location.href
 } : {};

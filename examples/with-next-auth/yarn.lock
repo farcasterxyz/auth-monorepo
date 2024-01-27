@@ -19,21 +19,21 @@
   resolved "https://registry.npmjs.org/@emotion/hash/-/hash-0.9.1.tgz#4ffb0055f7ef676ebc3a5a91fb621393294e2f43"
   integrity sha512-gJB6HLm5rYwSLI6PQa+X1t5CFGrv1J1TWG+sOyMCeKz2ojaj6Fnl/rZEspogG+cvqbt4AE/2eIyD2QfLKTBNlQ==
 
-"@farcaster/auth-client@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.npmjs.org/@farcaster/auth-client/-/auth-client-0.0.22.tgz#776899c1acebfa19020a470f43f46ac8be3da264"
-  integrity sha512-F2pLeFOJVHTuxpZBQH/UiCKPlh8rxQYOUDx0vrNjlPn6Zh28lTv5zbwbgOfHk1+w+jgUqWdetDvt/CEJ7s4Irg==
+"@farcaster/auth-client@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/@farcaster/auth-client/-/auth-client-0.1.0.tgz#3f1608ee8398bc71e8da23a898aa721b36ce78d3"
+  integrity sha512-hWeUDwpyNNswclL82K5wt6sA0x0UjELGhLKSZK6JYvGAE6wNR6V8o1IBhZYIGASWHHxOGoJLZ1L1xRcvS3GbUQ==
   dependencies:
     ethers "^6.9.2"
     neverthrow "^6.1.0"
     siwe "^2.1.4"
 
-"@farcaster/auth-kit@^0.0.38":
-  version "0.0.38"
-  resolved "https://registry.npmjs.org/@farcaster/auth-kit/-/auth-kit-0.0.38.tgz#4c73d829c57833fda03fc9635503d713c67f4f62"
-  integrity sha512-kZr83YnYbgPaWJX7mGq+MLa6GO870zFLFs6nGPVbyt/K4ANXoWOzueo0yrnhDomkcZH+Wp/fW6IL5PDqSONyaQ==
+"@farcaster/auth-kit@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@farcaster/auth-kit/-/auth-kit-0.1.4.tgz#1b76195d018f3c8a3d01e45244e06e5527313f94"
+  integrity sha512-+SUdbme/NEcl4E2/ktwhvJMNgU5NHmaHUeCpgtvg8OIu52VvYEL6oChERjNJfVVlzvSub006E9KMC7Iao51tsQ==
   dependencies:
-    "@farcaster/auth-client" "^0.0.22"
+    "@farcaster/auth-client" "^0.1.0"
     "@vanilla-extract/css" "^1.14.0"
     qrcode "^1.5.3"
     react-remove-scroll "^2.5.7"

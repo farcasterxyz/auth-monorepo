@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createAppClient, viemConnector } from "@farcaster/auth-client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCsrfToken } from "next-auth/react";
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, {

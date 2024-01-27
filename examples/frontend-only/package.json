@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@farcaster/auth-kit": "^0.0.38",
+    "@farcaster/auth-kit": "^0.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "viem": "^2.0.3"

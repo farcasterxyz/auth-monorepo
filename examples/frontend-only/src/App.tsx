@@ -23,12 +23,12 @@ function App() {
             This example app shows how to use{" "}
             <a
               href="https://docs.farcaster.xyz/auth-kit/introduction"
-              target="_blank"
+              target="_blank" rel="noreferrer"
             >
               Farcaster AuthKit
             </a>{" "}
             and{" "}
-            <a href="https://vitejs.dev/" target="_blank">
+            <a href="https://vitejs.dev/" target="_blank" rel="noreferrer">
               Vite
             </a>
             .
@@ -67,15 +67,20 @@ function Profile() {
   const profile = useProfile();
   const {
     isAuthenticated,
-    profile: { fid, displayName },
+    profile: { fid, displayName, custody },
   } = profile;
 
   return (
     <>
       {isAuthenticated ? (
+        <div>
         <p>
           Hello, {displayName}! Your FID is {fid}.
         </p>
+        <p>
+          Your custody address is: <pre>{custody}</pre>
+        </p>
+        </div>
       ) : (
         <p>
           Click the "Sign in with Farcaster" button above, then scan the QR code

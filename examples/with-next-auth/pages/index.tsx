@@ -60,6 +60,7 @@ function Content() {
           nonce={getNonce}
           onSuccess={handleSuccess}
           onError={() => setError(true)}
+          onSignOut={() => signOut() }
         />
         {error && <div>Unable to sign in at this time.</div>}
       </div>
@@ -69,12 +70,12 @@ function Content() {
           This example app shows how to use{" "}
           <a
             href="https://docs.farcaster.xyz/auth-kit/introduction"
-            target="_blank"
+            target="_blank" rel="noreferrer"
           >
             Farcaster AuthKit
           </a>{" "}
           and{" "}
-          <a href="https://next-auth.js.org/" target="_blank">
+          <a href="https://next-auth.js.org/" target="_blank" rel="noreferrer">
             NextAuth.js
           </a>
           .
@@ -116,6 +117,7 @@ function Profile() {
       <p>Signed in as {session.user?.name}</p>
       <p>
         <button
+          type="button"
           style={{ padding: "6px 12px", cursor: "pointer" }}
           onClick={() => signOut()}
         >

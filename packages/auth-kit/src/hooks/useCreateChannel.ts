@@ -1,4 +1,3 @@
-import QRCode from "qrcode";
 import { AuthClientError } from "@farcaster/auth-client";
 import { useCallback, useEffect, useState } from "react";
 
@@ -18,7 +17,6 @@ export interface UseCreateChannelData {
   channelToken?: string;
   url?: string;
   nonce?: string;
-  qrCodeUri?: string;
 }
 
 export function useCreateChannel({
@@ -34,7 +32,6 @@ export function useCreateChannel({
   const appClient = useAppClient();
 
   const [connected, setConnected] = useState<boolean>(false);
-  const [qrCodeUri, setqrCodeUri] = useState<string>();
   const [channelToken, setChannelToken] = useState<string>();
   const [url, setUrl] = useState<string>();
   const [nonce, setNonce] = useState<string>();
@@ -67,10 +64,8 @@ export function useCreateChannel({
         setUrl(url);
         setNonce(nonce);
 
-        const qrCodeUri = await QRCode.toDataURL(url, { width: 360 });
-        setqrCodeUri(qrCodeUri);
         setIsSuccess(true);
-        onSuccess?.({ channelToken, url, qrCodeUri, nonce });
+        onSuccess?.({ channelToken, url, nonce });
       }
     }
   }, [
@@ -98,11 +93,10 @@ export function useCreateChannel({
   const reset = useCallback(() => {
     setChannelToken(undefined);
     setUrl(undefined);
-    setqrCodeUri(undefined);
     setIsSuccess(false);
     setIsError(false);
     setError(undefined);
-  }, [setChannelToken, setUrl, setqrCodeUri, setIsSuccess, setIsError, setError]);
+  }, [setChannelToken, setUrl, setIsSuccess, setIsError, setError]);
 
   const reconnect = useCallback(() => {
     reset();
@@ -116,7 +110,7 @@ export function useCreateChannel({
     isSuccess,
     isError,
     error,
-    data: { channelToken, url, qrCodeUri, nonce },
+    data: { channelToken, url, nonce },
   };
 }
 

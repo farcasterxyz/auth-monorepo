@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.2.0
+
+### Minor Changes
+
+- fix: remove qrCodeUri return value
+
 ## 0.1.4
 
 ### Patch Changes

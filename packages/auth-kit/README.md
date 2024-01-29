@@ -154,12 +154,12 @@ export const SignIn = ({ nonce }: { nonce: string }) => {
 Hook for signing in a user. Connects to the relay server, generates a QR code and sign in link to present to the user, and polls relay server for wallet signature.
 
 ```tsx
-import { useSignIn } from "@farcaster/auth-kit";
+import { QRCode, useSignIn } from "@farcaster/auth-kit";
 
 function App() {
   const {
     signIn,
-    qrCodeUri,
+    url
     data: { username },
     onSuccess: ({ fid }) => console.log("Your fid:", fid);
   } = useSignIn();
@@ -169,7 +169,7 @@ function App() {
       <button onClick={signIn}>Sign In</button>
       {qrCodeUri && (
         <span>
-          Scan this: <img src={qrCodeUri} />
+          Scan this: <QRCode uri={url} />
         </span>
       )}
       {username && `Hello, ${username}!`}

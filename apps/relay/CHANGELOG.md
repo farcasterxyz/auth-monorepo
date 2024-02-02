@@ -1,5 +1,11 @@
 # @farcaster/auth-relay
 
+## 0.0.8
+
+### Patch Changes
+
+- fix: handle new verification message name
+
 ## 0.0.7
 
 ### Patch Changes

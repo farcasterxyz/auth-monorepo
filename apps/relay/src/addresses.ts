@@ -8,13 +8,21 @@ import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/core";
 import { RelayAsyncResult, RelayError } from "./errors";
 import { HUB_URL, OPTIMISM_RPC_URL } from "./env";
 
-interface VerificationAddEthAddressBody {
+interface VerificationAddAddressBody {
   address: Hex;
 }
 
-interface VerificationMessageData {
-  verificationAddEthAddressBody: VerificationAddEthAddressBody;
+interface ArbitraryVerificationMessageData {
+  verificationAddEthAddressBody: never;
+  verificationAddAddressBody: VerificationAddAddressBody;
 }
+
+interface EthVerificationMessageData {
+  verificationAddEthAddressBody: VerificationAddAddressBody;
+  verificationAddAddressBody: never;
+}
+
+type VerificationMessageData = ArbitraryVerificationMessageData | EthVerificationMessageData;
 
 interface VerificationMessage {
   data: VerificationMessageData;
@@ -70,7 +78,13 @@ export class AddressService {
     return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url), (error) => {
       return new RelayError("unknown", error as Error);
     }).andThen((res) => {
-      return ok(res.data.messages.map((message) => message.data.verificationAddEthAddressBody.address));
+      return ok(
+        res.data.messages.map((message) => {
+          return (
+            message.data?.verificationAddAddressBody?.address || message.data?.verificationAddEthAddressBody?.address
+          );
+        }),
+      );
     });
   }
 }

@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.2.1
+
+### Patch Changes
+
+- 1bee0fb: fix: memoize signIn/signOut in useSignIn
+
 ## 0.2.0
 
 ### Minor Changes

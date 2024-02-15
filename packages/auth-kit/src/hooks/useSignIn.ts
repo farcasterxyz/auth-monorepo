@@ -1,5 +1,5 @@
 import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import useAppClient from "./useAppClient";
 import useCreateChannel, { UseCreateChannelArgs } from "./useCreateChannel";
@@ -74,14 +74,14 @@ export function useSignIn(args: UseSignInArgs) {
   const isError = isCreateChannelError || isWatchStatusError || isVerifyError;
   const error = createChannelError || watchStatusError || verifyError;
 
-  const signIn = () => {
+  const signIn = useCallback(() => {
     watch();
-  };
+  }, [watch]);
 
-  const signOut = () => {
+  const signOut = useCallback(() => {
     onSignOut();
     reset();
-  };
+  }, [onSignOut, reset]);
 
   useEffect(() => {
     if (isSuccess && statusData && validSignature) {

@@ -13,6 +13,7 @@ export function FarcasterLogo({
       width={width}
       height={height}
       fill="none"
+      viewBox="0 0 22 20"
     >
       <title>Farcaster logo</title>
       <g fill={fillColor[fill]} clipPath="url(#a)">

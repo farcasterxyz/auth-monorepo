@@ -3,21 +3,12 @@ import { ReactElement, useMemo } from "react";
 import { FarcasterLogo } from "./FarcasterLogo";
 import { qrCodeContainer, qrCodeWrapper, qrCode } from "./styles.css";
 
-const generateMatrix = (
-  value: string,
-  errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel
-) => {
-  const arr = Array.prototype.slice.call(
-    QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data,
-    0
-  );
+const generateMatrix = (value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel) => {
+  const arr = Array.prototype.slice.call(QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data, 0);
   const sqrt = Math.sqrt(arr.length);
   return arr.reduce(
-    (rows, key, index) =>
-      (index % sqrt === 0
-        ? rows.push([key])
-        : rows[rows.length - 1].push(key)) && rows,
-    []
+    (rows, key, index) => (index % sqrt === 0 ? rows.push([key]) : rows[rows.length - 1].push(key)) && rows,
+    [],
   );
 };
 
@@ -30,13 +21,7 @@ type Props = {
   uri: string;
 };
 
-export function QRCode({
-  ecl = "H",
-  logoMargin = 10,
-  logoSize = 50,
-  size: sizeProp = 200,
-  uri,
-}: Props) {
+export function QRCode({ ecl = "H", logoMargin = 10, logoSize = 50, size: sizeProp = 200, uri }: Props) {
   const padding = "20";
   const size = sizeProp - parseInt(padding, 10) * 2;
 
@@ -64,7 +49,7 @@ export function QRCode({
             width={cellSize * (7 - i * 2)}
             x={x1 + cellSize * i}
             y={y1 + cellSize * i}
-          />
+          />,
         );
       }
     });
@@ -76,21 +61,8 @@ export function QRCode({
     matrix.forEach((row: QRCodeUtil.QRCode[], i: number) => {
       row.forEach((_, j) => {
         if (matrix[i][j]) {
-          if (
-            !(
-              (i < 7 && j < 7) ||
-              (i > matrix.length - 8 && j < 7) ||
-              (i < 7 && j > matrix.length - 8)
-            )
-          ) {
-            if (
-              !(
-                i > matrixMiddleStart &&
-                i < matrixMiddleEnd &&
-                j > matrixMiddleStart &&
-                j < matrixMiddleEnd
-              )
-            ) {
+          if (!((i < 7 && j < 7) || (i > matrix.length - 8 && j < 7) || (i < 7 && j > matrix.length - 8))) {
+            if (!(i > matrixMiddleStart && i < matrixMiddleEnd && j > matrixMiddleStart && j < matrixMiddleEnd)) {
               dots.push(
                 <circle
                   cx={i * cellSize + cellSize / 2}
@@ -98,7 +70,7 @@ export function QRCode({
                   fill="black"
                   key={`circle-${i}-${j}`}
                   r={cellSize / 3} // calculate size of single dots
-                />
+                />,
               );
             }
           }

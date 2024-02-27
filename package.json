@@ -3,33 +3,26 @@
   "description": "A monorepo for Farcaster Auth",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@1.22.19",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "test/*"
-  ],
+  "packageManager": "pnpm@8.10.5",
   "scripts": {
-    "build": "./node_modules/.bin/turbo run build",
-    "clean": "./node_modules/.bin/turbo run clean",
-    "dev": "./node_modules/.bin/turbo run dev --parallel",
-    "test": "./node_modules/.bin/turbo run test",
-    "test:ci": "./node_modules/.bin/turbo run test:ci -- --passWithNoTests",
-    "lint": "./node_modules/.bin/turbo run lint --parallel",
-    "lint:ci": "./node_modules/.bin/turbo run lint:ci --parallel",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci -- --passWithNoTests",
+    "lint": "turbo run lint --parallel",
+    "lint:ci": "turbo run lint:ci --parallel",
     "prepare": "husky install",
     "version-packages": "changeset version",
-    "release-packages": "yarn build && changeset publish",
-    "release-all": "yarn build && changeset publish && changeset tag"
+    "release-packages": "pnpm build && changeset publish",
+    "release-all": "pnpm build && changeset publish && changeset tag"
   },
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.7"
   },
   "lint-staged": {
-    "*.ts": [
-      "biome check"
-    ]
+    "*.ts": ["biome check"]
   },
   "devDependencies": {
     "@biomejs/biome": "~1.1.0",

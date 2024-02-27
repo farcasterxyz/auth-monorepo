@@ -11,9 +11,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "license": "MIT",
   "scripts": {
     "build": "tsup --config tsup.config.ts",
@@ -22,8 +20,8 @@
     "lint:ci": "biome ci src/ scripts/",
     "test": "jest",
     "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
-    "console": "yarn ts-node ./scripts/console.ts",
-    "prepublishOnly": "yarn run build"
+    "console": "pnpm ts-node ./scripts/console.ts",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "neverthrow": "^6.1.0",

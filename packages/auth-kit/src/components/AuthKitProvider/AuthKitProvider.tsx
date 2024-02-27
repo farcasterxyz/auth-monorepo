@@ -35,15 +35,18 @@ export interface AuthKitContextValues {
   onSignOut: () => void;
 }
 
-const domainDefaults = (typeof window !== 'undefined' && window?.location) ? {
-  domain: window.location.host,
-  siweUri: window.location.href
-} : {};
+const domainDefaults =
+  typeof window !== "undefined" && window?.location
+    ? {
+        domain: window.location.host,
+        siweUri: window.location.href,
+      }
+    : {};
 
 const configDefaults = {
   relay: "https://relay.farcaster.xyz",
   version: "v1",
-  ...domainDefaults
+  ...domainDefaults,
 };
 
 export const AuthKitContext = createContext<AuthKitContextValues>({
@@ -86,7 +89,15 @@ export function AuthKitProvider({
   const onSignIn = useCallback((signInData: UseSignInData) => {
     const { message, signature, fid, username, bio, displayName, pfpUrl, custody, verifications } = signInData;
     setIsAuthenticated(true);
-    setProfile({ fid, username, bio, displayName, pfpUrl, custody, verifications });
+    setProfile({
+      fid,
+      username,
+      bio,
+      displayName,
+      pfpUrl,
+      custody,
+      verifications,
+    });
     setSignInMessage({ message, signature });
   }, []);
 
@@ -94,7 +105,7 @@ export function AuthKitProvider({
     setIsAuthenticated(false);
     setProfile({});
     setSignInMessage({});
-  }
+  };
 
   return (
     <AuthKitContext.Provider
@@ -105,7 +116,7 @@ export function AuthKitProvider({
         signInMessage,
         config: authKitConfig,
         onSignIn,
-        onSignOut
+        onSignOut,
       }}
     >
       {children}

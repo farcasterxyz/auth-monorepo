@@ -2,11 +2,7 @@ import "@farcaster/auth-kit/styles.css";
 
 import Head from "next/head";
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react";
-import {
-  SignInButton,
-  AuthKitProvider,
-  StatusAPIResponse,
-} from "@farcaster/auth-kit";
+import { SignInButton, AuthKitProvider, StatusAPIResponse } from "@farcaster/auth-kit";
 import { useCallback, useState } from "react";
 
 const config = {
@@ -50,7 +46,7 @@ function Content() {
         redirect: false,
       });
     },
-    [signIn]
+    [signIn],
   );
 
   return (
@@ -60,7 +56,7 @@ function Content() {
           nonce={getNonce}
           onSuccess={handleSuccess}
           onError={() => setError(true)}
-          onSignOut={() => signOut() }
+          onSignOut={() => signOut()}
         />
         {error && <div>Unable to sign in at this time.</div>}
       </div>
@@ -68,10 +64,7 @@ function Content() {
         <h1>@farcaster/auth-kit + NextAuth</h1>
         <p>
           This example app shows how to use{" "}
-          <a
-            href="https://docs.farcaster.xyz/auth-kit/introduction"
-            target="_blank" rel="noreferrer"
-          >
+          <a href="https://docs.farcaster.xyz/auth-kit/introduction" target="_blank" rel="noreferrer">
             Farcaster AuthKit
           </a>{" "}
           and{" "}
@@ -99,9 +92,9 @@ function Content() {
             <br />
             cd auth-monorepo/examples/with-next-auth &&
             <br />
-            yarn install &&
+            pnpm install &&
             <br />
-            yarn dev
+            pnpm dev
           </div>
         </div>
       </div>
@@ -116,19 +109,12 @@ function Profile() {
     <div style={{ fontFamily: "sans-serif" }}>
       <p>Signed in as {session.user?.name}</p>
       <p>
-        <button
-          type="button"
-          style={{ padding: "6px 12px", cursor: "pointer" }}
-          onClick={() => signOut()}
-        >
+        <button type="button" style={{ padding: "6px 12px", cursor: "pointer" }} onClick={() => signOut()}>
           Click here to sign out
         </button>
       </p>
     </div>
   ) : (
-    <p>
-      Click the "Sign in with Farcaster" button above, then scan the QR code to
-      sign in.
-    </p>
+    <p>Click the &quot;Sign in with Farcaster&quot; button above, then scan the QR code to sign in.</p>
   );
 }

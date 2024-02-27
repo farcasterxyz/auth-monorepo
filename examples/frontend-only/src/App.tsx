@@ -21,10 +21,7 @@ function App() {
           <h1>@farcaster/auth-kit + Vite</h1>
           <p>
             This example app shows how to use{" "}
-            <a
-              href="https://docs.farcaster.xyz/auth-kit/introduction"
-              target="_blank" rel="noreferrer"
-            >
+            <a href="https://docs.farcaster.xyz/auth-kit/introduction" target="_blank" rel="noreferrer">
               Farcaster AuthKit
             </a>{" "}
             and{" "}
@@ -52,9 +49,9 @@ function App() {
               <br />
               cd auth-monorepo/examples/frontend-only &&
               <br />
-              yarn install &&
+              pnpm install &&
               <br />
-              yarn dev
+              pnpm dev
             </div>
           </div>
         </div>
@@ -74,18 +71,15 @@ function Profile() {
     <>
       {isAuthenticated ? (
         <div>
-        <p>
-          Hello, {displayName}! Your FID is {fid}.
-        </p>
-        <p>
-          Your custody address is: <pre>{custody}</pre>
-        </p>
+          <p>
+            Hello, {displayName}! Your FID is {fid}.
+          </p>
+          <p>
+            Your custody address is: <pre>{custody}</pre>
+          </p>
         </div>
       ) : (
-        <p>
-          Click the "Sign in with Farcaster" button above, then scan the QR code
-          to sign in.
-        </p>
+        <p>Click the "Sign in with Farcaster" button above, then scan the QR code to sign in.</p>
       )}
     </>
   );

@@ -29,16 +29,16 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}--node--${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}--node--${{ hashFiles('**/pnpm.lock') }}
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Run build
-        run: yarn build
+        run: pnpm build
 
       - name: Run linter
-        run: yarn lint:ci
+        run: pnpm lint:ci
 
   test:
     timeout-minutes: 10
@@ -60,13 +60,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}--node--${{ matrix.node_version}}--${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}--node--${{ matrix.node_version}}--${{ hashFiles('**/pnpm.lock') }}
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Run build
-        run: yarn build
+        run: pnpm build
 
       - name: Log in to Docker Hub to avoid rate limiting
         uses: docker/login-action@v2
@@ -79,7 +79,7 @@ jobs:
         run: docker compose -f ./apps/relay/docker-compose.yml up --build --detach redis
 
       - name: Run tests
-        run: yarn test:ci
+        run: pnpm test:ci
 
       - name: Upload coverage results
         uses: codecov/codecov-action@v3

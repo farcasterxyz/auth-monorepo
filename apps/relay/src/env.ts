@@ -1,5 +1,7 @@
 import "dotenv/config";
 
+export const LOG_LEVEL = process.env["LOG_LEVEL"] || "info";
+
 export const CHANNEL_TTL = Number(process.env["CHANNEL_TTL"] || "3600");
 
 export const REDIS_URL = process.env["REDIS_URL"] || "redis://localhost:6379";

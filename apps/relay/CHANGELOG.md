@@ -1,5 +1,11 @@
 # @farcaster/auth-relay
 
+## 0.0.9
+
+### Patch Changes
+
+- fix: use fastify default logger
+
 ## 0.0.8
 
 ### Patch Changes

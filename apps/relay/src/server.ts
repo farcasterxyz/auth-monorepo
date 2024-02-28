@@ -14,10 +14,8 @@ import {
   handleError,
   status,
 } from "./handlers";
-import { logger } from "./logger";
 import { RelayError, RelayAsyncResult } from "./errors";
-
-const log = logger.child({ component: "RelayServer" });
+import logger from "./logger";
 
 interface RelayServerConfig {
   redisUrl: string;
@@ -26,7 +24,7 @@ interface RelayServerConfig {
 }
 
 export class RelayServer {
-  app = fastify();
+  app = fastify({ logger });
   channels: ChannelStore<RelaySession>;
   addresses: AddressService;
 
@@ -36,7 +34,7 @@ export class RelayServer {
       ttl,
     });
     this.addresses = new AddressService();
-    this.app.setErrorHandler(handleError.bind(this, log));
+    this.app.setErrorHandler(handleError);
 
     this.app.register(cors, { origin: [corsOrigin] });
     this.app.decorateRequest("channels");
@@ -111,11 +109,11 @@ export class RelayServer {
     return new Promise((resolve) => {
       this.app.listen({ host: ip, port }, (e, address) => {
         if (e) {
-          log.error({ err: e, errMsg: e.message }, "Failed to start http server");
+          this.app.log.error({ err: e, errMsg: e.message }, "Failed to start http server");
           resolve(err(new RelayError("unavailable", `Failed to start http server: ${e.message}`)));
         }
 
-        log.info({ address }, "Started relay server");
+        this.app.log.info({ address }, "Started relay server");
         resolve(ok(address));
       });
     });
@@ -124,6 +122,6 @@ export class RelayServer {
   async stop() {
     await this.app.close();
     await this.channels.stop();
-    log.info("Stopped relay server");
+    this.app.log.info("Stopped relay server");
   }
 }

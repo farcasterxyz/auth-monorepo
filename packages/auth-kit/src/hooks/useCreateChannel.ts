@@ -1,117 +1,46 @@
-import { AuthClientError } from "@farcaster/auth-client";
-import { useCallback, useEffect, useState } from "react";
+import { AuthClientError, CreateChannelAPIResponse } from "@farcaster/auth-client";
 
-import { useAppClient } from "./useAppClient";
-import useAuthKitContext from "./useAuthKitContext";
+import { UseQueryOptions, UseQueryResult, useQuery } from "@tanstack/react-query";
+import { useConfig } from "../hooks/useConfig";
 
-export interface UseCreateChannelArgs {
-  nonce?: string | (() => Promise<string>);
-  notBefore?: string;
-  expirationTime?: string;
-  requestId?: string;
-  onSuccess?: (createChannelData: UseCreateChannelData) => void;
-  onError?: (error?: AuthClientError) => void;
-}
-
-export interface UseCreateChannelData {
-  channelToken?: string;
-  url?: string;
-  nonce?: string;
-}
+export type UseCreateChannelArgs = {
+  query?: Omit<UseQueryOptions<CreateChannelAPIResponse, AuthClientError>, "queryFn" | "queryKey">;
+  args?: {
+    nonce?: string | (() => Promise<string>);
+    notBefore?: string;
+    expirationTime?: string;
+    requestId?: string;
+  };
+};
 
 export function useCreateChannel({
-  nonce: customNonce,
-  notBefore,
-  expirationTime,
-  requestId,
-  onSuccess,
-  onError,
-}: UseCreateChannelArgs) {
-  const { config } = useAuthKitContext();
+  args,
+  query: { enabled, ...query } = { enabled: true },
+}: UseCreateChannelArgs = {}): UseQueryResult<CreateChannelAPIResponse, AuthClientError> {
+  const config = useConfig();
   const { siweUri, domain } = config;
-  const appClient = useAppClient();
 
-  const [connected, setConnected] = useState<boolean>(false);
-  const [channelToken, setChannelToken] = useState<string>();
-  const [url, setUrl] = useState<string>();
-  const [nonce, setNonce] = useState<string>();
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<AuthClientError>();
+  return useQuery({
+    queryKey: ["createChannel", { args }],
+    queryFn: async () => {
+      if (!siweUri) throw new Error("siweUri is not defined");
+      if (!domain) throw new Error("domain is not defined");
 
-  const createChannel = useCallback(async () => {
-    if (connected && appClient && siweUri && domain && !channelToken) {
-      const nonceVal = typeof customNonce === "function" ? await customNonce() : customNonce;
-      const {
-        data,
-        isError: isCreateChannelError,
-        error: createChannelError,
-      } = await appClient.createChannel({
+      const nonceVal = typeof args?.nonce === "function" ? await args.nonce() : args?.nonce;
+      const { data } = await config.appClient.createChannel({
         nonce: nonceVal,
         siweUri,
         domain,
-        notBefore,
-        expirationTime,
-        requestId,
+        notBefore: args?.notBefore,
+        expirationTime: args?.expirationTime,
+        requestId: args?.requestId,
       });
-      if (isCreateChannelError) {
-        setIsError(true);
-        setError(createChannelError);
-        onError?.(createChannelError);
-      } else {
-        const { channelToken, url, nonce } = data;
-        setChannelToken(channelToken);
-        setUrl(url);
-        setNonce(nonce);
 
-        setIsSuccess(true);
-        onSuccess?.({ channelToken, url, nonce });
-      }
-    }
-  }, [
-    connected,
-    appClient,
-    siweUri,
-    domain,
-    channelToken,
-    customNonce,
-    notBefore,
-    expirationTime,
-    requestId,
-    onError,
-    onSuccess,
-  ]);
-
-  useEffect(() => {
-    createChannel();
-  }, [createChannel]);
-
-  const connect = useCallback(async () => {
-    setConnected(true);
-  }, [setConnected]);
-
-  const reset = useCallback(() => {
-    setChannelToken(undefined);
-    setUrl(undefined);
-    setIsSuccess(false);
-    setIsError(false);
-    setError(undefined);
-  }, [setChannelToken, setUrl, setIsSuccess, setIsError, setError]);
-
-  const reconnect = useCallback(() => {
-    reset();
-    connect();
-  }, [connect, reset]);
-
-  return {
-    connect,
-    reconnect,
-    reset,
-    isSuccess,
-    isError,
-    error,
-    data: { channelToken, url, nonce },
-  };
+      return data;
+    },
+    ...query,
+    enabled: Boolean(enabled && siweUri && domain),
+  });
 }
 
 export default useCreateChannel;

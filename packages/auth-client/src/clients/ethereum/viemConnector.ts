@@ -14,7 +14,7 @@ export const viemConnector = (args?: ViemConfigArgs): EthereumConnector => {
     transport: http(args?.rpcUrl),
   });
 
-  const getFid = async (custody: Hex): Promise<BigInt> => {
+  const getFid = async (custody: Hex): Promise<bigint> => {
     return publicClient.readContract({
       address: ID_REGISTRY_ADDRESS,
       abi: idRegistryABI,

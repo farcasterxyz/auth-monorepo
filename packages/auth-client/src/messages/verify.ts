@@ -1,14 +1,13 @@
 import { SiweMessage, SiweResponse, SiweError } from "siwe";
-import { ResultAsync, err, ok } from "neverthrow";
-import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../errors";
+import { AuthClientError } from "../errors";
 
-import { validate, parseResources } from "./validate";
+import { parseSiweMessage, parseResources } from "./validate";
 import { FarcasterResourceParams } from "./build";
 import type { Provider } from "ethers";
 
 type Hex = `0x${string}`;
 type SignInOpts = {
-  getFid: (custody: Hex) => Promise<BigInt>;
+  getFid: (custody: Hex) => Promise<bigint>;
   provider?: Provider;
 };
 export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
@@ -27,64 +26,44 @@ export const verify = async (
   options: SignInOpts = {
     getFid: voidVerifyFid,
   },
-): AuthClientAsyncResult<VerifyResponse> => {
+): Promise<VerifyResponse> => {
   const { getFid, provider } = options;
-  const valid = validate(message)
-    .andThen((message) => validateNonce(message, nonce))
-    .andThen((message) => validateDomain(message, domain));
-  if (valid.isErr()) return err(valid.error);
+  const validatedMessage = parseSiweMessage(message);
+  verifyNonce(validatedMessage, nonce);
+  verifyDomain(validatedMessage, domain);
 
-  const siwe = (await verifySiweMessage(valid.value, signature, provider)).andThen(mergeResources);
-  if (siwe.isErr()) return err(siwe.error);
-  if (!siwe.value.success) {
-    const errMessage = siwe.value.error?.type ?? "Failed to verify SIWE message";
-    return err(new AuthClientError("unauthorized", errMessage));
+  const siweResponse = await verifySignature(validatedMessage, signature, provider);
+  const siweResponseWithResources = mergeResources(siweResponse);
+
+  if (!siweResponseWithResources.success) {
+    const errMessage = siweResponseWithResources.error?.type ?? "Failed to verify SIWE message";
+    throw new AuthClientError("unauthorized", errMessage);
   }
 
-  const fid = await verifyFidOwner(siwe.value, getFid);
-  if (fid.isErr()) return err(fid.error);
-  if (!fid.value.success) {
-    const errMessage = siwe.value.error?.type ?? "Failed to validate fid owner";
-    return err(new AuthClientError("unauthorized", errMessage));
+  const siweResponseWithResourcesAndValidatedFid = await verifyFidOwner(siweResponseWithResources, getFid);
+  if (!siweResponseWithResourcesAndValidatedFid.success) {
+    const errMessage = siweResponseWithResourcesAndValidatedFid.error?.type ?? "Failed to validate fid owner";
+    throw new AuthClientError("unauthorized", errMessage);
   }
-  const { error, ...response } = fid.value;
-  return ok(response);
+  const { error, ...response } = siweResponseWithResourcesAndValidatedFid;
+  return response;
 };
 
-const validateNonce = (message: SiweMessage, nonce: string): AuthClientResult<SiweMessage> => {
-  if (message.nonce !== nonce) {
-    return err(new AuthClientError("unauthorized", "Invalid nonce"));
-  } else {
-    return ok(message);
+const verifySignature = async (message: SiweMessage, signature: string, provider?: Provider): Promise<SiweResponse> => {
+  try {
+    return await message.verify({ signature }, { provider, suppressExceptions: true });
+  } catch (e) {
+    throw new AuthClientError("unauthorized", e as Error);
   }
-};
-
-const validateDomain = (message: SiweMessage, domain: string): AuthClientResult<SiweMessage> => {
-  if (message.domain !== domain) {
-    return err(new AuthClientError("unauthorized", "Invalid domain"));
-  } else {
-    return ok(message);
-  }
-};
-
-const verifySiweMessage = async (
-  message: SiweMessage,
-  signature: string,
-  provider?: Provider,
-): AuthClientAsyncResult<SiweResponse> => {
-  return ResultAsync.fromPromise(message.verify({ signature }, { provider, suppressExceptions: true }), (e) => {
-    return new AuthClientError("unauthorized", e as Error);
-  });
 };
 
 const verifyFidOwner = async (
   response: SiweResponse & FarcasterResourceParams,
-  fidVerifier: (custody: Hex) => Promise<BigInt>,
-): AuthClientAsyncResult<SiweResponse & FarcasterResourceParams> => {
+  fidVerifier: (custody: Hex) => Promise<bigint>,
+): Promise<SiweResponse & FarcasterResourceParams> => {
   const signer = response.data.address as Hex;
-  return ResultAsync.fromPromise(fidVerifier(signer), (e) => {
-    return new AuthClientError("unavailable", e as Error);
-  }).andThen((fid) => {
+  try {
+    const fid = await fidVerifier(signer);
     if (fid !== BigInt(response.fid)) {
       response.success = false;
       response.error = new SiweError(
@@ -93,12 +72,25 @@ const verifyFidOwner = async (
         fid.toString(),
       );
     }
-    return ok(response);
-  });
+    return response;
+  } catch (e) {
+    throw new AuthClientError("unavailable", e as Error);
+  }
 };
 
-const mergeResources = (response: SiweResponse): AuthClientResult<SiweResponse & FarcasterResourceParams> => {
-  return parseResources(response.data).andThen((resources) => {
-    return ok({ ...resources, ...response });
-  });
+const mergeResources = (response: SiweResponse): SiweResponse & FarcasterResourceParams => {
+  const resources = parseResources(response.data);
+  return { ...response, ...resources };
+};
+
+export const verifyNonce = (message: SiweMessage, nonce: string): void => {
+  if (message.nonce !== nonce) {
+    throw new AuthClientError("unauthorized", "Invalid nonce");
+  }
+};
+
+export const verifyDomain = (message: SiweMessage, domain: string): void => {
+  if (message.domain !== domain) {
+    throw new AuthClientError("unauthorized", "Invalid domain");
+  }
 };

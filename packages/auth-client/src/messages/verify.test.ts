@@ -2,7 +2,8 @@ import { build } from "./build";
 import { verify } from "./verify";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { Hex, zeroAddress } from "viem";
-import { getDefaultProvider, providers } from "ethers";
+import { getDefaultProvider } from "ethers";
+import { AuthClientError } from "../errors";
 
 const account = privateKeyToAccount(generatePrivateKey());
 
@@ -25,11 +26,10 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { siweMessage, message } = res._unsafeUnwrap();
+    const { siweMessage, message } = res;
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, { getFid });
-    expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toEqual({
+    expect(result).toEqual({
       data: siweMessage,
       success: true,
       fid: 1234,
@@ -44,11 +44,10 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { siweMessage, message } = res._unsafeUnwrap();
+    const { siweMessage, message } = res;
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, { getFid });
-    expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toEqual({
+    expect(result).toEqual({
       data: siweMessage,
       success: true,
       fid: 1234,
@@ -64,11 +63,10 @@ describe("verify", () => {
       address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
       fid: 1234,
     });
-    const { siweMessage, message } = res._unsafeUnwrap();
+    const { siweMessage, message } = res;
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, { getFid, provider });
-    expect(result.isOk()).toBe(true);
-    expect(result._unsafeUnwrap()).toEqual({
+    expect(result).toEqual({
       data: siweMessage,
       success: true,
       fid: 1234,
@@ -83,13 +81,18 @@ describe("verify", () => {
       address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({ message });
-    const result = await verify(nonce, domain, message, sig, { getFid });
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe("Signature does not match address of the message.");
+    try {
+      await verify(nonce, domain, message, sig, { getFid });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unauthorized");
+      expect(e.message).toBe("Signature does not match address of the message.");
+    }
   });
 
   test("invalid SIWE message", async () => {
@@ -100,15 +103,20 @@ describe("verify", () => {
       address: zeroAddress,
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig, { getFid });
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe("Signature does not match address of the message.");
+    try {
+      await verify(nonce, domain, message, sig, { getFid });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unauthorized");
+      expect(e.message).toBe("Signature does not match address of the message.");
+    }
   });
 
   test("invalid fid owner", async () => {
@@ -119,15 +127,20 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig, { getFid });
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe(`Invalid resource: signer ${account.address} does not own fid 1234.`);
+    try {
+      await verify(nonce, domain, message, sig, { getFid });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unauthorized");
+      expect(e.message).toBe(`Invalid resource: signer ${account.address} does not own fid 1234.`);
+    }
   });
 
   test("client error", async () => {
@@ -138,15 +151,20 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig, { getFid });
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unavailable");
-    expect(err.message).toBe("client error");
+    try {
+      await verify(nonce, domain, message, sig, { getFid });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unavailable");
+      expect(e.message).toBe("client error");
+    }
   });
 
   test("missing verifier", async () => {
@@ -155,15 +173,20 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig);
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unavailable");
-    expect(err.message).toBe("Not implemented: Must provide an fid verifier");
+    try {
+      await verify(nonce, domain, message, sig);
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unavailable");
+      expect(e.message).toBe("Not implemented: Must provide an fid verifier");
+    }
   });
 
   test("mismatched nonce", async () => {
@@ -172,15 +195,20 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify("mismatched-nonce", domain, message, sig);
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe("Invalid nonce");
+    try {
+      await verify("mismatched-nonce", domain, message, sig);
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unauthorized");
+      expect(e.message).toBe("Invalid nonce");
+    }
   });
 
   test("mismatched domain", async () => {
@@ -189,14 +217,19 @@ describe("verify", () => {
       address: account.address,
       fid: 1234,
     });
-    const { message } = res._unsafeUnwrap();
+    const { message } = res;
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, "mismatched-domain", message, sig);
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe("Invalid domain");
+    try {
+      await verify(nonce, "mismatched-domain", message, sig);
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toBe("unauthorized");
+      expect(e.message).toBe("Invalid domain");
+    }
   });
 });

@@ -1,11 +1,11 @@
 import useProfile from "../../hooks/useProfile";
 import { SignInButton } from "../SignInButton";
-import { AuthKitProvider } from "../AuthKitProvider";
+import { AuthKitProvider, createConfig } from "../AuthKitProvider";
 
 export function Demo() {
-  const config = {
+  const config = createConfig({
     rpcUrl: "https://mainnet.optimism.io",
-  };
+  });
 
   return (
     <AuthKitProvider config={config}>
@@ -14,11 +14,9 @@ export function Demo() {
           nonce="abcd1234"
           requestId="some-unique-request-id"
           timeout={20000}
-          onError={(error) => console.error("error callback:", error)}
-          onSuccess={(data) => console.log("success callback:", data)}
-          onStatusResponse={(res) => console.log("status callback:", res)}
+          onSignInError={(error) => console.error("error callback:", error)}
+          onSignIn={(data) => console.log("success callback:", data)}
           onSignOut={() => console.log("sign out callback")}
-          debug
         />
       </div>
       <UserProfile />
@@ -27,33 +25,30 @@ export function Demo() {
 }
 
 function UserProfile() {
-  const {
-    isAuthenticated,
-    profile: { fid, bio, displayName, custody },
-  } = useProfile();
+  const profile = useProfile();
 
   return (
     <div style={{ fontFamily: "sans-serif" }}>
-      {isAuthenticated && (
+      {profile?.isAuthenticated && (
         <div>
-          {fid && (
+          {profile.fid && (
             <p>
-              <strong>FID:</strong> {fid}
+              <strong>FID:</strong> {profile.fid}
             </p>
           )}
-          {displayName && (
+          {profile.displayName && (
             <p>
-              <strong>Display name:</strong> {displayName}
+              <strong>Display name:</strong> {profile.displayName}
             </p>
           )}
-          {bio && (
+          {profile.bio && (
             <p>
-              <strong>Bio:</strong> {bio}
+              <strong>Bio:</strong> {profile.bio}
             </p>
           )}
-          {custody && (
+          {profile.custody && (
             <p>
-              <strong>Custody address:</strong> {custody}
+              <strong>Custody address:</strong> {profile.custody}
             </p>
           )}
         </div>

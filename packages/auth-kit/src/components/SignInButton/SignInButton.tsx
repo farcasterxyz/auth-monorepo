@@ -1,104 +1,120 @@
 import { useCallback, useEffect, useState } from "react";
-import useSignIn, { UseSignInArgs } from "../../hooks/useSignIn.ts";
+import { AuthClientError, CompletedStatusAPIResponse } from "@farcaster/auth-client";
+import useSignIn, { UseSignInMutationVariables } from "../../hooks/useSignIn.ts";
+import { UseCreateChannelArgs } from "../../hooks/useCreateChannel.ts";
 import { ActionButton } from "../ActionButton/index.ts";
 import { ProfileButton } from "../ProfileButton/index.ts";
 import { QRCodeDialog } from "../QRCodeDialog/index.tsx";
-import { isMobile } from "../../utils.ts";
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
-import { debugPanel } from "./SignInButton.css.ts";
+import { isMobile, MaybePromise } from "../../utils.ts";
+import { useCreateChannel } from "../../index.ts";
 
-type SignInButtonProps = UseSignInArgs & {
-  onSignOut?: () => void;
-  debug?: boolean;
-  hideSignOut?: boolean;
-};
+type SignInButtonProps = NonNullable<UseCreateChannelArgs["args"]> &
+  Omit<UseSignInMutationVariables, "channelToken"> & {
+    onSignIn?: (signInData: CompletedStatusAPIResponse & { isAuthenticated: boolean }) => MaybePromise<unknown>;
+    onSignOut?: () => MaybePromise<unknown>;
+    onSignInError?: (error: unknown) => MaybePromise<unknown>;
+    hideSignOut?: boolean;
+  };
 
-export function SignInButton({ debug, hideSignOut, onSignOut, ...signInArgs }: SignInButtonProps) {
-  const { onSuccess, onStatusResponse, onError } = signInArgs;
+export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, ...signInArgs }: SignInButtonProps) {
+  const { status: signInStatus, data: signInData, error: signInError, signIn, signOut, reset } = useSignIn();
 
-  const onSuccessCallback = useCallback(
-    (res: StatusAPIResponse) => {
-      onSuccess?.(res);
+  const {
+    data: createChannelData,
+    status: createChannelDataStatus,
+    error: createChannelError,
+    refetch: recreateChannel,
+  } = useCreateChannel({
+    args: {
+      nonce: signInArgs.nonce,
+      notBefore: signInArgs.notBefore,
+      requestId: signInArgs.requestId,
+      expirationTime: signInArgs.expirationTime,
     },
-    [onSuccess],
-  );
-
-  const onStatusCallback = useCallback(
-    (res: StatusAPIResponse) => {
-      onStatusResponse?.(res);
-    },
-    [onStatusResponse],
-  );
-
-  const onErrorCallback = useCallback(
-    (error?: AuthClientError) => {
-      onError?.(error);
-    },
-    [onError],
-  );
-
-  const onSignOutCallback = useCallback(() => {
-    onSignOut?.();
-  }, [onSignOut]);
-
-  const signInState = useSignIn({
-    ...signInArgs,
-    onSuccess: onSuccessCallback,
-    onStatusResponse: onStatusCallback,
-    onError: onErrorCallback,
   });
-  const { signIn, signOut, connect, reconnect, isSuccess, isError, error, channelToken, url, data, validSignature } =
-    signInState;
+
+  useEffect(() => {
+    if (signInStatus === "success") onSignIn?.(signInData);
+    if (signInStatus === "error") {
+      // if it's a polling error due to the timeout, we recreate the channel
+      if (
+        signInError instanceof AuthClientError &&
+        signInError.errCode === "unavailable" &&
+        signInError.message.startsWith("Polling timed out after")
+      ) {
+        (async () => {
+          const { data: recreateChannelData } = await recreateChannel();
+          if (recreateChannelData?.channelToken) {
+            reset();
+            signIn({
+              channelToken: recreateChannelData.channelToken,
+              timeout: signInArgs.timeout,
+              interval: signInArgs.interval,
+            });
+          }
+        })();
+        return;
+      }
+      onSignInError?.(signInError);
+    }
+  }, [
+    signInStatus,
+    onSignIn,
+    signInData,
+    signInError,
+    onSignInError,
+    recreateChannel,
+    reset,
+    signIn,
+    signInArgs.interval,
+    signInArgs.timeout,
+  ]);
 
   const handleSignOut = useCallback(() => {
     setShowDialog(false);
     signOut();
-    onSignOutCallback();
-  }, [signOut, onSignOutCallback]);
+    recreateChannel();
+    onSignOut?.();
+  }, [signOut, recreateChannel, onSignOut]);
 
   const [showDialog, setShowDialog] = useState(false);
 
-  const onClick = useCallback(() => {
-    if (isError) {
-      reconnect();
+  const onClick = useCallback(async () => {
+    if (signInStatus === "error") {
+      signOut();
     }
     setShowDialog(true);
-    signIn();
-    if (url && isMobile()) {
-      window.location.href = url;
-    }
-  }, [isError, reconnect, signIn, url]);
 
-  const authenticated = isSuccess && validSignature;
-
-  useEffect(() => {
-    if (!channelToken) {
-      connect();
+    if (!createChannelData) throw new Error("Missing `createChannelData`");
+    signIn({ ...signInArgs, channelToken: createChannelData.channelToken });
+    if (isMobile()) {
+      window.location.href = createChannelData.url;
     }
-  }, [channelToken, connect]);
+  }, [signInStatus, signIn, createChannelData, signInArgs, signOut]);
 
   return (
     <div className="fc-authkit-signin-button">
-      {authenticated ? (
-        <ProfileButton userData={data} signOut={handleSignOut} hideSignOut={!!hideSignOut} />
+      {signInStatus === "success" && signInData.isAuthenticated ? (
+        <ProfileButton userData={signInData} signOut={handleSignOut} hideSignOut={!!hideSignOut} />
       ) : (
         <>
-          <ActionButton onClick={onClick} label="Sign in" />
-          {url && (
+          <ActionButton disabled={createChannelDataStatus !== "success"} onClick={onClick} label="Sign in" />
+          {createChannelDataStatus === "success" ? (
             <QRCodeDialog
+              variant="success"
               open={showDialog && !isMobile()}
               onClose={() => setShowDialog(false)}
-              url={url}
-              isError={isError}
-              error={error}
+              url={createChannelData.url}
             />
-          )}
+          ) : createChannelDataStatus === "error" ? (
+            <QRCodeDialog
+              variant="error"
+              open={showDialog && !isMobile()}
+              onClose={() => setShowDialog(false)}
+              error={createChannelError}
+            />
+          ) : null}
         </>
-      )}
-      {debug && (
-        <div className={debugPanel}>
-          <pre>{JSON.stringify(signInState, null, 2)}</pre>
-        </div>
       )}
     </div>
   );

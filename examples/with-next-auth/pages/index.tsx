@@ -2,16 +2,18 @@ import "@farcaster/auth-kit/styles.css";
 
 import Head from "next/head";
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react";
-import { SignInButton, AuthKitProvider, StatusAPIResponse } from "@farcaster/auth-kit";
+import { SignInButton, AuthKitProvider, createConfig, CompletedStatusAPIResponse } from "@farcaster/auth-kit";
 import { useCallback, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const config = {
+const config = createConfig({
   relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
   siweUri: "http://example.com/login",
   domain: "example.com",
-};
+});
 
+const queryClient = new QueryClient();
 export default function Home() {
   return (
     <>
@@ -19,9 +21,11 @@ export default function Home() {
         <title>Farcaster AuthKit + NextAuth Demo</title>
       </Head>
       <main style={{ fontFamily: "Inter, sans-serif" }}>
-        <AuthKitProvider config={config}>
-          <Content />
-        </AuthKitProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthKitProvider config={config}>
+            <Content />
+          </AuthKitProvider>
+        </QueryClientProvider>
       </main>
     </>
   );
@@ -36,26 +40,24 @@ function Content() {
     return nonce;
   }, []);
 
-  const handleSuccess = useCallback(
-    (res: StatusAPIResponse) => {
-      signIn("credentials", {
-        message: res.message,
-        signature: res.signature,
-        name: res.username,
-        pfp: res.pfpUrl,
-        redirect: false,
-      });
-    },
-    [signIn],
-  );
+  const handleSuccess = useCallback((res: CompletedStatusAPIResponse) => {
+    console.log(res);
+    signIn("credentials", {
+      message: res.message,
+      signature: res.signature,
+      name: res.username,
+      pfp: res.pfpUrl,
+      redirect: false,
+    });
+  }, []);
 
   return (
     <div>
       <div style={{ position: "fixed", top: "12px", right: "12px" }}>
         <SignInButton
           nonce={getNonce}
-          onSuccess={handleSuccess}
-          onError={() => setError(true)}
+          onSignIn={handleSuccess}
+          onSignInError={() => setError(true)}
           onSignOut={() => signOut()}
         />
         {error && <div>Unable to sign in at this time.</div>}

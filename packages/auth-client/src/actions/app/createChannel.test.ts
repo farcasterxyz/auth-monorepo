@@ -51,14 +51,16 @@ describe("createChannel", () => {
   test("handles errors", async () => {
     const spy = jest.spyOn(global, "fetch").mockRejectedValue(new Error("some error"));
 
-    const res = await client.createChannel({
-      siweUri,
-      domain,
-      nonce,
-    });
-
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(res.isError).toBe(true);
-    expect(res.error).toEqual(new AuthClientError("unknown", "some error"));
+    try {
+      await client.createChannel({
+        siweUri,
+        domain,
+        nonce,
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(e).toEqual(new AuthClientError("unknown", "some error"));
+    }
   });
 });

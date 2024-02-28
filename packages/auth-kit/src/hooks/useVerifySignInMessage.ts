@@ -1,15 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
-import { AuthClientError } from "@farcaster/auth-client";
-import useAppClient from "./useAppClient";
+import { AppClient } from "@farcaster/auth-client";
+import { useConfig } from "../hooks/useConfig";
+import { UseQueryOptions, UseQueryResult, useQuery } from "@tanstack/react-query";
 
-export interface UseVerifySignInMessageArgs {
-  nonce?: string;
-  domain?: string;
-  message?: string;
-  signature?: `0x${string}`;
-  onSuccess?: (statusData: UseVerifySignInMessageData) => void;
-  onError?: (error?: AuthClientError) => void;
-}
+export type UseVerifySignInMessageArgs = {
+  args:
+    | {
+        nonce: string;
+        domain: string;
+        message: string;
+        signature: `0x${string}`;
+      }
+    | undefined;
+  query?: Omit<
+    UseQueryOptions<
+      boolean,
+      Error,
+      boolean,
+      ["verifySignInMessage", { args: UseVerifySignInMessageArgs["args"]; appClient: AppClient }]
+    >,
+    "queryKey" | "queryFn"
+  >;
+};
 
 export interface UseVerifySignInMessageData {
   message?: string;
@@ -18,64 +29,23 @@ export interface UseVerifySignInMessageData {
 }
 
 export function useVerifySignInMessage({
-  nonce,
-  domain,
-  message,
-  signature,
-  onSuccess,
-  onError,
-}: UseVerifySignInMessageArgs) {
-  const appClient = useAppClient();
+  args,
+  query: { enabled, ...query } = { enabled: true },
+}: UseVerifySignInMessageArgs): UseQueryResult<boolean> {
+  const config = useConfig();
 
-  const [validSignature, setValidSignature] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<AuthClientError>();
-
-  const resetState = async () => {
-    setIsError(false);
-    setIsSuccess(false);
-    setValidSignature(false);
-    setError(undefined);
-  };
-
-  const verifySignInMessage = useCallback(async () => {
-    if (appClient && nonce && domain && message && signature) {
-      const {
-        success,
-        isError: isVerifyError,
-        error: verifyError,
-      } = await appClient.verifySignInMessage({
-        nonce,
-        domain,
-        message,
-        signature,
+  return useQuery({
+    queryKey: ["verifySignInMessage", { args, appClient: config.appClient }],
+    queryFn: async () => {
+      if (!config.appClient || !args) throw new Error("Unexpected Error");
+      const { success } = await config.appClient.verifySignInMessage({
+        ...args,
       });
-      if (isVerifyError) {
-        setIsError(true);
-        setError(verifyError);
-        onError?.(verifyError);
-      } else {
-        setValidSignature(success);
-        setIsSuccess(true);
-        onSuccess?.({ message, signature, validSignature: success });
-      }
-    }
-  }, [appClient, nonce, domain, message, signature, onSuccess, onError]);
-
-  useEffect(() => {
-    resetState();
-    if (nonce && domain && message && signature) {
-      verifySignInMessage();
-    }
-  }, [nonce, domain, message, signature, verifySignInMessage]);
-
-  return {
-    isSuccess,
-    isError,
-    error,
-    data: { message, signature, validSignature },
-  };
+      return success;
+    },
+    ...query,
+    enabled: Boolean(enabled && args),
+  });
 }
 
 export default useVerifySignInMessage;

@@ -1,4 +1,4 @@
-import { validate } from "./validate";
+import { parseSiweMessage } from "./validate";
 import { AuthClientError } from "../errors";
 
 const siweParams = {
@@ -17,71 +17,93 @@ const authParams = {
   resources: ["farcaster://fid/1234"],
 };
 
-describe("validate", () => {
+describe("parseSiweMessage", () => {
   test("default parameters are valid", () => {
-    const result = validate(authParams);
-    expect(result.isOk()).toBe(true);
+    expect(() => parseSiweMessage(authParams)).not.toThrow();
   });
 
   test("propagates SIWE message errors", () => {
-    const result = validate({
-      ...authParams,
-      address: "Invalid address",
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result._unsafeUnwrapErr().errCode).toEqual("bad_request.validation_failure");
-    expect(result._unsafeUnwrapErr().message).toMatch("invalid address");
+    try {
+      parseSiweMessage({
+        ...authParams,
+        address: "Invalid address",
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e.errCode).toEqual("bad_request.validation_failure");
+      expect(e.message).toMatch("invalid address");
+    }
   });
 
   test("message must contain 'Farcaster Auth'", () => {
-    const result = validate({
-      ...authParams,
-      statement: "Invalid statement",
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result._unsafeUnwrapErr()).toEqual(
-      new AuthClientError("bad_request.validation_failure", "Statement must be 'Farcaster Auth'"),
-    );
+    try {
+      parseSiweMessage({
+        ...authParams,
+        statement: "Invalid statement",
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e).toEqual(new AuthClientError("bad_request.validation_failure", "Statement must be 'Farcaster Auth'"));
+    }
   });
 
   test("statement allows 'Farcaster Connect'", () => {
-    const result = validate({
-      ...authParams,
-      statement: "Farcaster Connect",
-    });
-    expect(result.isOk()).toBe(true);
+    expect(() =>
+      parseSiweMessage({
+        ...authParams,
+        statement: "Farcaster Connect",
+      }),
+    ).not.toThrow();
   });
 
   test("message must include chainId 10", () => {
-    const result = validate({
-      ...authParams,
-      chainId: 1,
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result._unsafeUnwrapErr()).toEqual(
-      new AuthClientError("bad_request.validation_failure", "Chain ID must be 10"),
-    );
+    try {
+      parseSiweMessage({
+        ...authParams,
+        chainId: 1,
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e).toEqual(new AuthClientError("bad_request.validation_failure", "Chain ID must be 10"));
+    }
   });
 
   test("message must include FID resource", () => {
-    const result = validate({
-      ...authParams,
-      resources: [],
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result._unsafeUnwrapErr()).toEqual(
-      new AuthClientError("bad_request.validation_failure", "No fid resource provided"),
-    );
+    try {
+      parseSiweMessage({
+        ...authParams,
+        resources: [],
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e).toEqual(new AuthClientError("bad_request.validation_failure", "No fid resource provided"));
+    }
   });
 
   test("message must only include one FID resource", () => {
-    const result = validate({
-      ...authParams,
-      resources: ["farcaster://fid/1", "farcaster://fid/2"],
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result._unsafeUnwrapErr()).toEqual(
-      new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"),
-    );
+    try {
+      parseSiweMessage({
+        ...authParams,
+        resources: ["farcaster://fid/1", "farcaster://fid/2"],
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AuthClientError);
+      if (!(e instanceof AuthClientError)) throw new Error("unexpected");
+
+      expect(e).toEqual(new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"));
+    }
   });
 });

@@ -1,6 +1,14 @@
 import { createRoot } from "react-dom/client";
 import { Demo } from "./index";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const domNode = document.getElementById("root");
+// biome-ignore lint/style/noNonNullAssertion: for demo purposes
 const root = createRoot(domNode!);
-root.render(<Demo />);
+
+const queryClient = new QueryClient();
+root.render(
+  <QueryClientProvider client={queryClient}>
+    <Demo />
+  </QueryClientProvider>,
+);

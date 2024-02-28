@@ -37,14 +37,17 @@ describe("verifySignInMessage", () => {
 
     const errMsg = `Invalid resource: signer ${account.address} does not own fid 1234.`;
     const err = new AuthClientError("unauthorized", errMsg);
-    const { isError, error } = await client.verifySignInMessage({
-      nonce,
-      domain,
-      message,
-      signature,
-    });
-    expect(isError).toBe(true);
-    expect(error).toStrictEqual(err);
+    try {
+      await client.verifySignInMessage({
+        nonce,
+        domain,
+        message,
+        signature,
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toStrictEqual(err);
+    }
   });
 
   test("verifies 1271 sign in message", async () => {
@@ -61,13 +64,17 @@ describe("verifySignInMessage", () => {
 
     const errMsg = `Invalid resource: signer ${LGTM} does not own fid 1234.`;
     const err = new AuthClientError("unauthorized", errMsg);
-    const { isError, error } = await client.verifySignInMessage({
-      nonce,
-      domain,
-      message,
-      signature,
-    });
-    expect(isError).toBe(true);
-    expect(error).toStrictEqual(err);
+
+    try {
+      await client.verifySignInMessage({
+        nonce,
+        domain,
+        message,
+        signature,
+      });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toStrictEqual(err);
+    }
   });
 });

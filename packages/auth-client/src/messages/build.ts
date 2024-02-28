@@ -1,7 +1,5 @@
 import { SiweMessage } from "siwe";
-import { err, ok } from "neverthrow";
-import { AuthClientResult } from "../errors";
-import { validate } from "./validate";
+import { parseSiweMessage } from "./validate";
 import { parseSignInURI } from "./parseSignInURI";
 import { STATEMENT, CHAIN_ID } from "./constants";
 
@@ -14,23 +12,21 @@ export interface BuildResponse {
   message: string;
 }
 
-export const build = (params: SignInMessageParams): AuthClientResult<BuildResponse> => {
+export const build = (params: SignInMessageParams): BuildResponse => {
   const { fid, ...siweParams } = params;
   const resources = siweParams.resources ?? [];
   siweParams.version = "1";
   siweParams.statement = STATEMENT;
   siweParams.chainId = CHAIN_ID;
   siweParams.resources = [buildFidResource(fid), ...resources];
-  const valid = validate(siweParams);
-  if (valid.isErr()) return err(valid.error);
-  else {
-    const siweMessage = valid.value;
-    return ok({ siweMessage, message: siweMessage.toMessage() });
-  }
+  const valid = parseSiweMessage(siweParams);
+  const siweMessage = valid;
+  return { siweMessage, message: siweMessage.toMessage() };
 };
 
-export const buildFromSignInURI = (signInUri: string, fid: number): AuthClientResult<BuildResponse> => {
-  return parseSignInURI(signInUri).andThen(({ params }) => build({ ...params, fid }));
+export const buildFromSignInURI = (signInUri: string, fid: number): BuildResponse => {
+  const parsedSignInURI = parseSignInURI(signInUri);
+  return build({ ...parsedSignInURI.params, fid });
 };
 
 const buildFidResource = (fid: number): string => {

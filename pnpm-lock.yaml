@@ -105,6 +105,9 @@ importers:
       '@farcaster/auth-kit':
         specifier: workspace:*
         version: link:../../packages/auth-kit
+      '@tanstack/react-query':
+        specifier: ^5.24.1
+        version: 5.24.1(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -154,6 +157,9 @@ importers:
       '@farcaster/auth-kit':
         specifier: workspace:*
         version: link:../../packages/auth-kit
+      '@tanstack/react-query':
+        specifier: ^5.24.1
+        version: 5.24.1(react@18.2.0)
       next:
         specifier: 14.0.4
         version: 14.0.4(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
@@ -216,7 +222,13 @@ importers:
       react-remove-scroll:
         specifier: ^2.5.7
         version: 2.5.7(@types/react@18.2.60)(react@18.2.0)
+      zustand:
+        specifier: ^4.5.1
+        version: 4.5.1(@types/react@18.2.60)(react@18.2.0)
     devDependencies:
+      '@tanstack/react-query':
+        specifier: ^5.24.1
+        version: 5.24.1(react@18.2.0)
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.5
@@ -2088,6 +2100,17 @@ packages:
     dependencies:
       defer-to-connect: 2.0.1
     dev: true
+
+  /@tanstack/query-core@5.24.1:
+    resolution: {integrity: sha512-DZ6Nx9p7BhjkG50ayJ+MKPgff+lMeol7QYXkvuU5jr2ryW/4ok5eanaS9W5eooA4xN0A/GPHdLGOZGzArgf5Cg==}
+
+  /@tanstack/react-query@5.24.1(react@18.2.0):
+    resolution: {integrity: sha512-4+09JEdO4d6+Gc8Y/g2M/MuxDK5IY0QV8+2wL2304wPKJgJ54cBbULd3nciJ5uvh/as8rrxx6s0mtIwpRuGd1g==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      '@tanstack/query-core': 5.24.1
+      react: 18.2.0
 
   /@tokenizer/token@0.3.0:
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
@@ -8405,6 +8428,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /use-sync-external-store@1.2.0(react@18.2.0):
+    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -8893,3 +8924,23 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
+
+  /zustand@4.5.1(@types/react@18.2.60)(react@18.2.0):
+    resolution: {integrity: sha512-XlauQmH64xXSC1qGYNv00ODaQ3B+tNPoy22jv2diYiP4eoDKr9LA+Bh5Bc3gplTrFdb6JVI+N4kc1DZ/tbtfPg==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@types/react': '>=16.8'
+      immer: '>=9.0.6'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.60
+      react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false

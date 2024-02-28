@@ -15,8 +15,7 @@ describe("build", () => {
       ...siweParams,
       fid: 5678,
     });
-    expect(result.isOk()).toBe(true);
-    const { siweMessage, message } = result._unsafeUnwrap();
+    const { siweMessage, message } = result;
     expect(siweMessage).toMatchObject({
       ...siweParams,
       statement: "Farcaster Auth",
@@ -32,8 +31,7 @@ describe("build", () => {
       fid: 5678,
       resources: ["https://example.com/resource"],
     });
-    expect(result.isOk()).toBe(true);
-    const { siweMessage } = result._unsafeUnwrap();
+    const { siweMessage } = result;
     expect(siweMessage).toMatchObject({
       ...siweParams,
       statement: "Farcaster Auth",

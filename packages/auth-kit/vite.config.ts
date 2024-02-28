@@ -15,7 +15,7 @@ export default defineConfig({
       fileName: "auth-kit",
     },
     rollupOptions: {
-      external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/auth-client"],
+      external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/auth-client", "@tanstack/react-query"],
     },
   },
 });

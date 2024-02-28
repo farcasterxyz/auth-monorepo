@@ -27,7 +27,7 @@ describe("http", () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const res = await get(client, "path");
-      const { response } = res._unsafeUnwrap();
+      const { response } = res;
 
       expect(response).toEqual(httpResponse);
     });
@@ -36,7 +36,7 @@ describe("http", () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const res = await get(client, "path");
-      const { data } = res._unsafeUnwrap();
+      const { data } = res;
 
       expect(data).toEqual(bodyData);
     });
@@ -78,7 +78,7 @@ describe("http", () => {
       const requestData = { data: "request stub" };
       const res = await post(client, "path", requestData);
 
-      const { response } = res._unsafeUnwrap();
+      const { response } = res;
       expect(response).toEqual(httpResponse);
     });
 
@@ -88,7 +88,7 @@ describe("http", () => {
       const requestData = { data: "request stub" };
       const res = await post(client, "path", requestData);
 
-      const { data } = res._unsafeUnwrap();
+      const { data } = res;
       expect(data).toEqual(data);
     });
 
@@ -116,27 +116,32 @@ describe("http", () => {
 
   describe("poll", () => {
     test("polls for success response", async () => {
-      const accepted1 = new Response(JSON.stringify({ state: "pending" }), {
-        status: 202,
+      let i = 0;
+      const spy = jest.spyOn(global, "fetch").mockImplementation(async () => {
+        if (i === 2)
+          return new Response(JSON.stringify({ state: "completed" }), {
+            status: 200,
+          });
+        i++;
+        return new Response(JSON.stringify({ state: "pending" }), {
+          status: 202,
+        });
       });
-      const accepted2 = new Response(JSON.stringify({ state: "pending" }), {
-        status: 202,
-      });
-      const ok = new Response(JSON.stringify({ state: "completed" }), {
-        status: 200,
-      });
+      // .mockResolvedValueOnce(accepted1)
+      // .mockResolvedValueOnce(accepted2)
+      // .mockResolvedValueOnce(ok);
 
-      const spy = jest
-        .spyOn(global, "fetch")
-        .mockResolvedValueOnce(accepted1)
-        .mockResolvedValueOnce(accepted2)
-        .mockResolvedValueOnce(ok);
-
-      const res = await poll(client, "path");
+      let res: { response: { status: number }; data: { state: string } } = {
+        response: { status: 500 },
+        data: { state: "error" },
+      };
+      for await (const generatorResponse of poll<typeof res["data"]>(client, "path", { interval: 100 })) {
+        res = generatorResponse;
+        if (res.response.status === 200) break;
+      }
 
       expect(spy).toHaveBeenCalledTimes(3);
-      expect(res.isOk()).toBe(true);
-      const { response, data } = res._unsafeUnwrap();
+      const { response, data } = res;
       expect(response.status).toBe(200);
       expect(data).toEqual({ state: "completed" });
     });
@@ -148,9 +153,14 @@ describe("http", () => {
 
       jest.spyOn(global, "fetch").mockResolvedValue(accepted);
 
-      const res = await poll(client, "path", { timeout: 1, interval: 1 });
-      expect(res.isErr()).toBe(true);
-      expect(res._unsafeUnwrapErr().message).toBe("Polling timed out after 1ms");
+      let i = 0;
+      try {
+        for await (const _generatorResponse of poll(client, "path", { timeout: 1, interval: 1 })) {
+          if (i++ === 1) expect(true).toBe(false);
+        }
+      } catch (e) {
+        expect(e.message).toBe("Polling timed out after 1ms");
+      }
     });
   });
 });

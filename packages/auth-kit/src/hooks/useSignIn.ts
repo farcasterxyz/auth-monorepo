@@ -1,18 +1,24 @@
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
-import { useCallback, useEffect } from "react";
+import { AuthClientError, CompletedStatusAPIResponse, StatusAPIResponse } from "@farcaster/auth-client";
 
-import useAppClient from "./useAppClient";
-import useCreateChannel, { UseCreateChannelArgs } from "./useCreateChannel";
-import useAuthKitContext from "./useAuthKitContext";
-import useVerifySignInMessage from "./useVerifySignInMessage";
-import useWatchStatus, { UseWatchStatusData } from "./useWatchStatus";
+import { useConfig } from "../hooks/useConfig";
+import { UseMutationOptions, UseMutationResult, useMutation } from "@tanstack/react-query";
+import { UsePollStatusTillSuccessArgs } from "./usePollStatusTillSuccess";
+import { useProfileStore, useSignInMessageStore } from ".";
+import { useCallback } from "react";
 
-export type UseSignInArgs = Omit<UseCreateChannelArgs, "onSuccess" | "onError"> & {
-  timeout?: number;
-  interval?: number;
-  onSuccess?: (res: UseSignInData) => void;
-  onStatusResponse?: (statusData: UseWatchStatusData) => void;
-  onError?: (error?: AuthClientError) => void;
+export type UseSignInMutationVariables = Omit<NonNullable<UsePollStatusTillSuccessArgs["args"]>, "channelToken"> & {
+  channelToken: string;
+};
+
+export type UseSignInArgs = {
+  mutation?: Omit<
+    UseMutationOptions<
+      CompletedStatusAPIResponse & { isAuthenticated: boolean },
+      AuthClientError,
+      UseSignInMutationVariables
+    >,
+    "mutationFn" | "mutationKey"
+  >;
 };
 
 export type UseSignInData = StatusAPIResponse;
@@ -22,90 +28,84 @@ const defaults = {
   interval: 1_500,
 };
 
-export function useSignIn(args: UseSignInArgs) {
-  const appClient = useAppClient();
-  const {
-    onSignIn,
-    onSignOut,
-    config: { domain },
-  } = useAuthKitContext();
-  const { timeout, interval, onSuccess, onStatusResponse, onError, ...createChannelArgs } = {
-    ...defaults,
-    ...args,
-  };
+type UnaliasedUseSignInResult = UseMutationResult<
+  CompletedStatusAPIResponse & { isAuthenticated: boolean },
+  AuthClientError,
+  UseSignInMutationVariables
+>;
+type UseSignInResult = UnaliasedUseSignInResult & {
+  signIn: UnaliasedUseSignInResult["mutate"];
+  signInAsync: UnaliasedUseSignInResult["mutateAsync"];
+  signOut: () => void;
+};
 
+// @TODO: `Omit` breaks the return type, needs to be fixed. For now, mutate and mutateAsync will also be passed
+//
+// type UseSignInResult = Omit<UnaliasedUseSignInResult, 'mutate' | 'mutateAsync'> & {
+//   signIn: UnaliasedUseSignInResult["mutate"];
+//   signInAsync: UnaliasedUseSignInResult["mutateAsync"];
+// };
+
+export function useSignIn({ mutation }: UseSignInArgs = {}): UseSignInResult {
+  const config = useConfig();
+  const { siweUri, domain } = config;
+
+  const { setProfile, resetProfile } = useProfileStore(({ set, reset }) => ({ setProfile: set, resetProfile: reset }));
+  const { setSignInMessage, resetSignInMessage } = useSignInMessageStore(({ set, reset }) => ({
+    setSignInMessage: set,
+    resetSignInMessage: reset,
+  }));
   const {
-    connect,
-    reconnect,
+    mutate: signIn,
+    mutateAsync: signInAsync,
     reset,
-    data: { channelToken, url, nonce },
-    isSuccess: isConnected,
-    isError: isCreateChannelError,
-    error: createChannelError,
-  } = useCreateChannel({ ...createChannelArgs, onError });
+    ...rest
+  } = useMutation({
+    mutationKey: ["signIn"],
+    mutationFn: async (args) => {
+      if (!siweUri) throw new Error("siweUri is not defined");
+      if (!domain) throw new Error("domain is not defined");
 
-  const {
-    watch,
-    isPolling,
-    data: statusData,
-    isError: isWatchStatusError,
-    error: watchStatusError,
-  } = useWatchStatus({
-    channelToken,
-    timeout,
-    interval,
-    onError,
-    onResponse: onStatusResponse,
+      const { data: pollStatusTillSuccessResponse } = await config.appClient.pollStatusTillSuccess({
+        channelToken: args?.channelToken,
+        timeout: args?.timeout ?? defaults.timeout,
+        interval: args?.interval ?? defaults.interval,
+      });
+
+      setSignInMessage({
+        message: pollStatusTillSuccessResponse.message,
+        signature: pollStatusTillSuccessResponse.signature,
+      });
+
+      const { success: isAuthenticated } = await config.appClient.verifySignInMessage({
+        nonce: pollStatusTillSuccessResponse.nonce,
+        domain,
+        message: pollStatusTillSuccessResponse.message,
+        signature: pollStatusTillSuccessResponse.signature,
+      });
+
+      setProfile({
+        isAuthenticated,
+        fid: pollStatusTillSuccessResponse.fid,
+        pfpUrl: pollStatusTillSuccessResponse.pfpUrl,
+        username: pollStatusTillSuccessResponse.username,
+        displayName: pollStatusTillSuccessResponse.displayName,
+        bio: pollStatusTillSuccessResponse.bio,
+        custody: pollStatusTillSuccessResponse.custody,
+        verifications: pollStatusTillSuccessResponse.verifications,
+      });
+      return { isAuthenticated, ...pollStatusTillSuccessResponse };
+    },
+    ...mutation,
   });
-
-  const {
-    isSuccess,
-    data: { validSignature },
-    isError: isVerifyError,
-    error: verifyError,
-  } = useVerifySignInMessage({
-    nonce,
-    domain,
-    message: statusData?.message,
-    signature: statusData?.signature,
-    onError,
-  });
-
-  const isError = isCreateChannelError || isWatchStatusError || isVerifyError;
-  const error = createChannelError || watchStatusError || verifyError;
-
-  const signIn = useCallback(() => {
-    watch();
-  }, [watch]);
 
   const signOut = useCallback(() => {
-    onSignOut();
     reset();
-  }, [onSignOut, reset]);
+    resetProfile();
+    resetSignInMessage();
+  }, [reset, resetProfile, resetSignInMessage]);
 
-  useEffect(() => {
-    if (isSuccess && statusData && validSignature) {
-      onSignIn(statusData);
-      onSuccess?.(statusData);
-    }
-  }, [isSuccess, statusData, validSignature, onSignIn, onSuccess]);
-
-  return {
-    signIn,
-    signOut,
-    connect,
-    reconnect,
-    isConnected,
-    isSuccess,
-    isPolling,
-    isError,
-    error,
-    channelToken,
-    url,
-    appClient,
-    data: statusData,
-    validSignature,
-  };
+  return { signIn, signInAsync, mutate: signIn, mutateAsync: signInAsync, signOut, reset, ...rest };
 }
 
 export default useSignIn;

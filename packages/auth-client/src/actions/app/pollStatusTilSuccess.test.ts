@@ -25,16 +25,12 @@ describe("status", () => {
       .mockResolvedValueOnce(pending2)
       .mockResolvedValueOnce(completed);
 
-    const callbackSpy = jest.fn();
-
-    const res = await client.watchStatus({
+    const res = await client.pollStatusTillSuccess({
       channelToken: "some-channel-token",
-      onResponse: callbackSpy,
     });
 
     expect(res.response.status).toEqual(200);
     expect(res.data).toEqual({ state: "completed" });
     expect(fetchSpy).toHaveBeenCalledTimes(3);
-    expect(callbackSpy).toHaveBeenCalledTimes(2);
   });
 });

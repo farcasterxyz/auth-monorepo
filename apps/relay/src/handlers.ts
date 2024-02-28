@@ -1,7 +1,6 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import type { Hex } from "viem";
 import { AUTH_KEY, URL_BASE } from "./env";
-import { Logger } from "./logger";
 import { generateNonce } from "siwe";
 
 export type CreateChannelRequest = {
@@ -124,7 +123,7 @@ export async function status(request: FastifyRequest, reply: FastifyReply) {
   }
 }
 
-export async function handleError(log: Logger, error: FastifyError, request: FastifyRequest, reply: FastifyReply) {
+export async function handleError(error: FastifyError, request: FastifyRequest, reply: FastifyReply) {
   const { validation, statusCode } = error;
   if (validation) {
     reply.status(400).send({ error: "Validation error", message: error.message });
@@ -132,7 +131,7 @@ export async function handleError(log: Logger, error: FastifyError, request: Fas
     reply.code(statusCode);
     if (statusCode < 500) reply.send({ error: error.message });
   } else {
-    log.error({ err: error, errMsg: error.message, request }, "Error in http request");
+    request.log.error({ err: error, errMsg: error.message, request }, "Error in http request");
     reply.code(500).send({ error: error.message });
   }
 }

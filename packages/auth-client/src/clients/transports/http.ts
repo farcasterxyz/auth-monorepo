@@ -84,9 +84,10 @@ export const poll = async <ResponseDataType>(
     ...pollOpts,
   };
 
-  const deadline = Date.now() + timeout;
+  const now = Date.now();
+  const deadline = now + timeout;
 
-  while (Date.now() < deadline) {
+  while (now < deadline) {
     const res = await get<ResponseDataType>(client, path, opts);
     if (res.isOk()) {
       const { response } = res.value;

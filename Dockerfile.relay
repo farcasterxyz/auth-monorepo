@@ -17,7 +17,7 @@ WORKDIR /home/node/app
 COPY --chown=node:node ./package.json ./package.json
 RUN pnpm global add turbo@$(node -e "console.log(require('./package.json').devDependencies.turbo)")
 COPY --chown=node:node . .
-RUN /home/node/.pnpm/bin/turbo prune --scope=@farcaster/auth-relay --docker
+RUN pnpm turbo prune --scope=@farcaster/auth-relay --docker
 
 ###############################################################################
 ############## Stage 2: Build the code using a full node image ################
@@ -41,7 +41,7 @@ ENV RUSTFLAGS="-C target-feature=-crt-static"
 
 # Copy dependency information and install all dependencies
 COPY --chown=node:node --from=prune /home/node/app/out/json/ .
-COPY --chown=node:node --from=prune /home/node/app/out/pnpm.lock ./pnpm.lock
+COPY --chown=node:node --from=prune /home/node/app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
 RUN pnpm install --frozen-lockfile --network-timeout 1800000
 

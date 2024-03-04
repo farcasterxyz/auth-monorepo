@@ -225,13 +225,17 @@ describe("relay server", () => {
     });
 
     test("POST with invalid token", async () => {
-      const response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
+      let response = await http.post(getFullUrl("/v1/channel/authenticate"), authenticateParams, {
         headers: {
           Authorization: "Bearer abc-123-def",
           "X-Farcaster-Auth-Relay-Key": "some-shared-secret",
         },
       });
       expect(response.status).toBe(401);
+      response = await http.get(getFullUrl("/v1/channel/status"), {
+        headers: { Authorization: `Bearer ${channelToken}` },
+      });
+      expect(response.data.state).toBe("pending");
     });
 
     test("POST with invalid key", async () => {

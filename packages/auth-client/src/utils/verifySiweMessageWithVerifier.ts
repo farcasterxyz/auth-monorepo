@@ -7,7 +7,7 @@ import { getSiweMessage } from "./getSiweMessage.js";
 import { getResourcesFromSiweMessage } from "./getResourcesFromSiweMessage.js";
 import type { Address } from "../types/address.js";
 
-export type VerifySiweMessageParameters = {
+export type VerifySiweMessageWithVerifierParameters = {
   nonce: string;
   domain: string;
   message: string | Partial<SiweMessage>;
@@ -17,7 +17,7 @@ export type VerifySiweMessageParameters = {
     provider?: Provider;
   };
 };
-export type VerifySiweMessageReturnType = Omit<SiweResponse, "error"> & FarcasterResourceParameters;
+export type VerifySiweMessageWithVerifierReturnType = Omit<SiweResponse, "error"> & FarcasterResourceParameters;
 
 const voidVerifyFid = (_custody: Address) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
 
@@ -25,9 +25,9 @@ const voidVerifyFid = (_custody: Address) => Promise.reject(new Error("Not imple
  * Verify signature of a Sign In With Farcaster message. Returns an error if the
  * message is invalid or the signature is invalid.
  */
-export const verifySiweMessage = async (
-  parameters: VerifySiweMessageParameters,
-): Promise<VerifySiweMessageReturnType> => {
+export const verifySiweMessageWithVerifier = async (
+  parameters: VerifySiweMessageWithVerifierParameters,
+): Promise<VerifySiweMessageWithVerifierReturnType> => {
   const {
     nonce,
     domain,

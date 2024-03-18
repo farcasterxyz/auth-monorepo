@@ -1,4 +1,4 @@
-import { verifySiweMessage } from "./verifySiweMessage.js";
+import { verifySiweMessageWithVerifier } from "./verifySiweMessageWithVerifier.js";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { type Hex, zeroAddress } from "viem";
 import { getDefaultProvider } from "ethers";
@@ -29,7 +29,7 @@ describe("verify", () => {
     const siweMessage = res;
     const message = siweMessage.toMessage();
     const signature = await account.signMessage({ message });
-    const result = await verifySiweMessage({ nonce, domain, message, signature, verifier: { getFid } });
+    const result = await verifySiweMessageWithVerifier({ nonce, domain, message, signature, verifier: { getFid } });
     expect(result).toEqual({
       data: siweMessage,
       success: true,
@@ -48,7 +48,7 @@ describe("verify", () => {
     const siweMessage = res;
     const message = siweMessage.toMessage();
     const signature = await account.signMessage({ message });
-    const result = await verifySiweMessage({ nonce, domain, message, signature, verifier: { getFid } });
+    const result = await verifySiweMessageWithVerifier({ nonce, domain, message, signature, verifier: { getFid } });
     expect(result).toEqual({
       data: siweMessage,
       success: true,
@@ -68,7 +68,7 @@ describe("verify", () => {
     const siweMessage = res;
     const message = siweMessage.toMessage();
     const sig = await account.signMessage({ message });
-    const result = await verifySiweMessage({ nonce, domain, message, sig, verifier: { getFid, provider } });
+    const result = await verifySiweMessageWithVerifier({ nonce, domain, message, sig, verifier: { getFid, provider } });
     expect(result).toEqual({
       data: siweMessage,
       success: true,
@@ -88,7 +88,7 @@ describe("verify", () => {
     const message = siweMessage.toMessage();
     const signature = await account.signMessage({ message });
     try {
-      await verifySiweMessage({ nonce, domain, message, signature, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({ nonce, domain, message, signature, verifier: { getFid } });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);
@@ -113,7 +113,7 @@ describe("verify", () => {
       message,
     });
     try {
-      await verifySiweMessage({ nonce, domain, message, sig, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({ nonce, domain, message, sig, verifier: { getFid } });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);
@@ -138,7 +138,7 @@ describe("verify", () => {
       message,
     });
     try {
-      await verifySiweMessage({ nonce, domain, message, signature, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({ nonce, domain, message, signature, verifier: { getFid } });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);
@@ -163,7 +163,7 @@ describe("verify", () => {
       message,
     });
     try {
-      await verifySiweMessage({ nonce, domain, message, signature, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({ nonce, domain, message, signature, verifier: { getFid } });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);
@@ -187,7 +187,13 @@ describe("verify", () => {
     });
     const getFid = (_custody: Hex) => Promise.resolve(1234n);
     try {
-      await verifySiweMessage({ nonce: "mismatched-nonce", domain, message, signature, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({
+        nonce: "mismatched-nonce",
+        domain,
+        message,
+        signature,
+        verifier: { getFid },
+      });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);
@@ -211,7 +217,13 @@ describe("verify", () => {
     });
     const getFid = (_custody: Hex) => Promise.resolve(1234n);
     try {
-      await verifySiweMessage({ nonce, domain: "mismatched-domain", message, signature, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({
+        nonce,
+        domain: "mismatched-domain",
+        message,
+        signature,
+        verifier: { getFid },
+      });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);

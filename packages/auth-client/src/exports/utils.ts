@@ -8,4 +8,4 @@ export * from "../utils/getSiweMessageFromSignInURI.js";
 export * from "../utils/validateSiweMessageChainId.js";
 export * from "../utils/validateSiweMessageResources.js";
 export * from "../utils/validateSiweMessageStatement.js";
-export * from "../utils/verifySiweMessage.js";
+export * from "../utils/verifySiweMessageWithVerifier.js";

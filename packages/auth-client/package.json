@@ -1,29 +1,75 @@
 {
   "name": "@farcaster/auth-client",
+  "description": "A framework agnostic client library for Farcaster Auth.",
   "version": "0.1.0",
-  "main": "./dist/index.js",
-  "type": "module",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": ["dist"],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farcasterxyz/auth-monorepo.git",
+    "directory": "packages/auth-client"
+  },
   "scripts": {
-    "build": "tc",
+    "build": "pnpm run clean && pnpm run build:esm+types",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
-    "clean": "rimraf ./dist",
-    "lint": "biome format src/ scripts/ --write && biome check src/ scripts/ --apply",
-    "lint:ci": "biome ci src/ scripts/",
-    "test": "jest",
+    "clean": "rimraf dist tsconfig.tsbuildinfo actions clients contracts errors utils",
+    "test:build": "publint --strict",
+    "typecheck": "tsc --noEmit",
     "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
     "console": "pnpm ts-node ./scripts/console.ts",
     "prepublishOnly": "pnpm run build"
+  },
+  "files": [
+    "dist/**",
+    "!dist/**/*.tsbuildinfo",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.test-d.ts",
+    "/actions",
+    "/clients",
+    "/contracts",
+    "/errors",
+    "/utils"
+  ],
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "typings": "./dist/types/exports/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./actions": {
+      "types": "./dist/types/exports/actions.d.ts",
+      "default": "./dist/esm/exports/actions.js"
+    },
+    "./clients": {
+      "types": "./dist/types/exports/clients.d.ts",
+      "default": "./dist/esm/exports/clients.js"
+    },
+    "./contracts": {
+      "types": "./dist/types/exports/contracts.d.ts",
+      "default": "./dist/esm/exports/contracts.js"
+    },
+    "./errors": {
+      "types": "./dist/types/exports/errors.d.ts",
+      "default": "./dist/esm/exports/errors.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "default": "./dist/esm/exports/utils.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "actions": ["./dist/types/exports/actions.d.ts"],
+      "clients": ["./dist/types/exports/clients.d.ts"],
+      "contracts": ["./dist/types/exports/contracts.d.ts"],
+      "errors": ["./dist/types/exports/errors.d.ts"],
+      "utils": ["./dist/types/exports/utils.d.ts"]
+    }
   },
   "dependencies": {
     "neverthrow": "^6.1.0",
@@ -35,5 +81,6 @@
   },
   "devDependencies": {
     "viem": "^1.19.11"
-  }
+  },
+  "keywords": ["farcaster", "sign-in", "sign-in with farcaster", "siwe", "auth-client"]
 }

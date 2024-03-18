@@ -8,7 +8,9 @@
     ".": "./dist/auth-kit.js",
     "./styles.css": "./dist/style.css"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "scripts": {
     "dev": "vite",
@@ -23,6 +25,7 @@
     "zustand": "^4.5.1"
   },
   "devDependencies": {
+    "@tanstack/query-core": "^5.28.4",
     "@tanstack/react-query": "^5.24.1",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.43",
@@ -43,8 +46,8 @@
     "vite-plugin-node-polyfills": "^0.19.0"
   },
   "peerDependencies": {
+    "@tanstack/react-query": ">=5.0.0",
     "react": ">= 17",
-    "react-dom": ">= 17",
-    "@tanstack/react-query": ">=5.0.0"
+    "react-dom": ">= 17"
   }
 }

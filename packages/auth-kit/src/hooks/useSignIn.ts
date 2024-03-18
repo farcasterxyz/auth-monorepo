@@ -1,111 +1,73 @@
-import { AuthClientError, CompletedStatusAPIResponse, StatusAPIResponse } from "@farcaster/auth-client";
+"use client";
 
-import { useConfig } from "../hooks/useConfig";
-import { UseMutationOptions, UseMutationResult, useMutation } from "@tanstack/react-query";
-import { UsePollStatusTillSuccessArgs } from "./usePollStatusTillSuccess";
-import { useProfileStore, useSignInMessageStore } from ".";
-import { useCallback } from "react";
+import { useConfig } from "../hooks/useConfig.js";
+import { useMutation } from "@tanstack/react-query";
+import { useSignInMessageStore } from "./useSignInMessage.js";
+import { useProfileStore } from "./useProfile.js";
+import { useCallback, useEffect } from "react";
+import { type UseMutationParameters, type UseMutationReturnType } from "../types/query.js";
+import {
+  type SignInData,
+  type SignInMutate,
+  type SignInMutateAsync,
+  type SignInVariables,
+  signInOptions,
+} from "../query/signIn.js";
+import { type SignInErrorType } from "../actions/signIn.js";
+import { type Evaluate } from "../types/utils.js";
 
-export type UseSignInMutationVariables = Omit<NonNullable<UsePollStatusTillSuccessArgs["args"]>, "channelToken"> & {
-  channelToken: string;
+export type UseSignInParameters<context = unknown> = {
+  mutation?: UseMutationParameters<SignInData, SignInErrorType, SignInVariables, context>;
 };
 
-export type UseSignInArgs = {
-  mutation?: Omit<
-    UseMutationOptions<
-      CompletedStatusAPIResponse & { isAuthenticated: boolean },
-      AuthClientError,
-      UseSignInMutationVariables
-    >,
-    "mutationFn" | "mutationKey"
-  >;
-};
-
-export type UseSignInData = StatusAPIResponse;
-
-const defaults = {
-  timeout: 300_000,
-  interval: 1_500,
-};
-
-type UnaliasedUseSignInResult = UseMutationResult<
-  CompletedStatusAPIResponse & { isAuthenticated: boolean },
-  AuthClientError,
-  UseSignInMutationVariables
+export type UseSignInReturnType<context = unknown> = Evaluate<
+  UseMutationReturnType<SignInData, SignInErrorType, SignInVariables, context> & {
+    signIn: SignInMutate<context>;
+    signInAsync: SignInMutateAsync<context>;
+    signOut: () => void;
+  }
 >;
-type UseSignInResult = UnaliasedUseSignInResult & {
-  signIn: UnaliasedUseSignInResult["mutate"];
-  signInAsync: UnaliasedUseSignInResult["mutateAsync"];
-  signOut: () => void;
-};
 
-// @TODO: `Omit` breaks the return type, needs to be fixed. For now, mutate and mutateAsync will also be passed
-//
-// type UseSignInResult = Omit<UnaliasedUseSignInResult, 'mutate' | 'mutateAsync'> & {
-//   signIn: UnaliasedUseSignInResult["mutate"];
-//   signInAsync: UnaliasedUseSignInResult["mutateAsync"];
-// };
-
-export function useSignIn({ mutation }: UseSignInArgs = {}): UseSignInResult {
+export function useSignIn<context = unknown>({
+  mutation,
+}: UseSignInParameters<context> = {}): UseSignInReturnType<context> {
   const config = useConfig();
-  const { siweUri, domain } = config;
 
   const { setProfile, resetProfile } = useProfileStore(({ set, reset }) => ({ setProfile: set, resetProfile: reset }));
   const { setSignInMessage, resetSignInMessage } = useSignInMessageStore(({ set, reset }) => ({
     setSignInMessage: set,
     resetSignInMessage: reset,
   }));
-  const {
-    mutate: signIn,
-    mutateAsync: signInAsync,
-    reset,
-    ...rest
-  } = useMutation({
-    mutationKey: ["signIn"],
-    mutationFn: async (args) => {
-      if (!siweUri) throw new Error("siweUri is not defined");
-      if (!domain) throw new Error("domain is not defined");
 
-      const { data: pollStatusTillSuccessResponse } = await config.appClient.pollStatusTillSuccess({
-        channelToken: args?.channelToken,
-        timeout: args?.timeout ?? defaults.timeout,
-        interval: args?.interval ?? defaults.interval,
-      });
-
-      setSignInMessage({
-        message: pollStatusTillSuccessResponse.message,
-        signature: pollStatusTillSuccessResponse.signature,
-      });
-
-      const { success: isAuthenticated } = await config.appClient.verifySignInMessage({
-        nonce: pollStatusTillSuccessResponse.nonce,
-        domain,
-        message: pollStatusTillSuccessResponse.message,
-        signature: pollStatusTillSuccessResponse.signature,
-      });
-
-      setProfile({
-        isAuthenticated,
-        fid: pollStatusTillSuccessResponse.fid,
-        pfpUrl: pollStatusTillSuccessResponse.pfpUrl,
-        username: pollStatusTillSuccessResponse.username,
-        displayName: pollStatusTillSuccessResponse.displayName,
-        bio: pollStatusTillSuccessResponse.bio,
-        custody: pollStatusTillSuccessResponse.custody,
-        verifications: pollStatusTillSuccessResponse.verifications,
-      });
-      return { isAuthenticated, ...pollStatusTillSuccessResponse };
-    },
+  const mutationOptions = signInOptions(config);
+  const { mutate, mutateAsync, ...result } = useMutation({
     ...mutation,
+    ...mutationOptions,
   });
 
+  useEffect(() => {
+    if (result.status !== "success") return;
+
+    setSignInMessage({ message: result.data.message, signature: result.data.signature });
+    setProfile({
+      isAuthenticated: result.data.isAuthenticated,
+      fid: result.data.fid,
+      pfpUrl: result.data.pfpUrl,
+      username: result.data.username,
+      displayName: result.data.displayName,
+      bio: result.data.bio,
+      custody: result.data.custody,
+      verifications: result.data.verifications,
+    });
+  }, [setSignInMessage, setProfile, result.data, result.status]);
+
   const signOut = useCallback(() => {
-    reset();
+    result.reset();
     resetProfile();
     resetSignInMessage();
-  }, [reset, resetProfile, resetSignInMessage]);
+  }, [result.reset, resetProfile, resetSignInMessage]);
 
-  return { signIn, signInAsync, mutate: signIn, mutateAsync: signInAsync, signOut, reset, ...rest };
+  return { signIn: mutate, signInAsync: mutateAsync, signOut, ...result };
 }
 
 export default useSignIn;

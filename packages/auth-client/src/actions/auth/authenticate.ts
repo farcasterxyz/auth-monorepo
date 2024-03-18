@@ -1,15 +1,10 @@
-import { StatusAPIResponse } from "../app/status";
-import { post, HttpResponse } from "../../clients/transports/http";
-import { Client } from "../../clients/createClient";
+import { type StatusReturnType } from "../app/status.js";
+import { post } from "../../clients/transports/http.js";
+import { type Client } from "../../clients/createClient.js";
 
-export interface AuthenticateArgs extends AuthenticateRequest {
+export type AuthenticateParameters = {
   authKey: string;
   channelToken: string;
-}
-
-export type AuthenticateResponse = Promise<HttpResponse<AuthenticateAPIResponse>>;
-
-interface AuthenticateRequest {
   message: string;
   signature: `0x${string}`;
   fid: number;
@@ -17,17 +12,17 @@ interface AuthenticateRequest {
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
-}
+};
 
-export type AuthenticateAPIResponse = StatusAPIResponse;
+export type AuthenticateReturnType = StatusReturnType;
 
 const path = "channel/authenticate";
 
 export const authenticate = async (
   client: Client,
-  { channelToken, authKey, ...request }: AuthenticateArgs,
-): AuthenticateResponse => {
-  return post<AuthenticateRequest, AuthenticateAPIResponse>(client, path, request, {
+  { channelToken, authKey, ...request }: AuthenticateParameters,
+): Promise<AuthenticateReturnType> => {
+  return post<Omit<AuthenticateParameters, "channelToken" | "authKey">, AuthenticateReturnType>(client, path, request, {
     authToken: channelToken,
     headers: {
       "X-Farcaster-Auth-Relay-Key": authKey,

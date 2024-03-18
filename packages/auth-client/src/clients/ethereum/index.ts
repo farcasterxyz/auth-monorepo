@@ -1,1 +1,1 @@
-export * from "./viemConnector";
+export * from "./viemConnector.js";

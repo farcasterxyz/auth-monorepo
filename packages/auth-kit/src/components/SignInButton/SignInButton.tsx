@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { AuthClientError, CompletedStatusAPIResponse } from "@farcaster/auth-client";
-import useSignIn, { UseSignInMutationVariables } from "../../hooks/useSignIn.ts";
-import { UseCreateChannelArgs } from "../../hooks/useCreateChannel.ts";
+import useSignIn from "../../hooks/useSignIn.ts";
 import { ActionButton } from "../ActionButton/index.ts";
 import { ProfileButton } from "../ProfileButton/index.ts";
 import { QRCodeDialog } from "../QRCodeDialog/index.tsx";
 import { isMobile, MaybePromise } from "../../utils.ts";
 import { useCreateChannel } from "../../index.ts";
+import { CreateChannelParameters } from "../../actions/createChannel.ts";
+import { SignInParameters } from "../../actions/signIn.ts";
+import { Omit } from "../../types/utils.ts";
 
-type SignInButtonProps = NonNullable<UseCreateChannelArgs["args"]> &
-  Omit<UseSignInMutationVariables, "channelToken"> & {
+type SignInButtonProps = NonNullable<CreateChannelParameters> &
+  Omit<SignInParameters, "channelToken"> & {
     onSignIn?: (signInData: CompletedStatusAPIResponse & { isAuthenticated: boolean }) => MaybePromise<unknown>;
     onSignOut?: () => MaybePromise<unknown>;
     onSignInError?: (error: unknown) => MaybePromise<unknown>;
@@ -20,18 +22,22 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
   const { status: signInStatus, data: signInData, error: signInError, signIn, signOut, reset } = useSignIn();
 
   const {
+    createChannel,
+    createChannelAsync,
     data: createChannelData,
     status: createChannelDataStatus,
     error: createChannelError,
-    refetch: recreateChannel,
-  } = useCreateChannel({
-    args: {
+  } = useCreateChannel();
+
+  // Create channel on mount
+  useEffect(() => {
+    createChannel({
       nonce: signInArgs.nonce,
       notBefore: signInArgs.notBefore,
       requestId: signInArgs.requestId,
       expirationTime: signInArgs.expirationTime,
-    },
-  });
+    });
+  }, [createChannel, signInArgs]);
 
   useEffect(() => {
     if (signInStatus === "success") onSignIn?.(signInData);
@@ -43,7 +49,12 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
         signInError.message.startsWith("Polling timed out after")
       ) {
         (async () => {
-          const { data: recreateChannelData } = await recreateChannel();
+          const recreateChannelData = await createChannelAsync({
+            nonce: signInArgs.nonce,
+            notBefore: signInArgs.notBefore,
+            requestId: signInArgs.requestId,
+            expirationTime: signInArgs.expirationTime,
+          });
           if (recreateChannelData?.channelToken) {
             reset();
             signIn({
@@ -57,25 +68,19 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
       }
       onSignInError?.(signInError);
     }
-  }, [
-    signInStatus,
-    onSignIn,
-    signInData,
-    signInError,
-    onSignInError,
-    recreateChannel,
-    reset,
-    signIn,
-    signInArgs.interval,
-    signInArgs.timeout,
-  ]);
+  }, [signInStatus, onSignIn, signInData, signInError, onSignInError, createChannelAsync, reset, signIn, signInArgs]);
 
   const handleSignOut = useCallback(() => {
     setShowDialog(false);
     signOut();
-    recreateChannel();
+    createChannel({
+      nonce: signInArgs.nonce,
+      notBefore: signInArgs.notBefore,
+      requestId: signInArgs.requestId,
+      expirationTime: signInArgs.expirationTime,
+    });
     onSignOut?.();
-  }, [signOut, recreateChannel, onSignOut]);
+  }, [signOut, createChannel, signInArgs, onSignOut]);
 
   const [showDialog, setShowDialog] = useState(false);
 

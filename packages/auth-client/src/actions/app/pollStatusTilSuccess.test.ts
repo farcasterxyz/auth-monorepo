@@ -1,6 +1,6 @@
-import { createAppClient } from "../../clients/createAppClient";
+import { createAppClient } from "../../clients/createAppClient.js";
 import { jest } from "@jest/globals";
-import { viemConnector } from "../../clients/ethereum/viemConnector";
+import { viemConnector } from "../../clients/ethereum/viemConnector.js";
 
 describe("status", () => {
   const client = createAppClient({
@@ -29,8 +29,7 @@ describe("status", () => {
       channelToken: "some-channel-token",
     });
 
-    expect(res.response.status).toEqual(200);
-    expect(res.data).toEqual({ state: "completed" });
+    expect(res).toEqual({ state: "completed" });
     expect(fetchSpy).toHaveBeenCalledTimes(3);
   });
 });

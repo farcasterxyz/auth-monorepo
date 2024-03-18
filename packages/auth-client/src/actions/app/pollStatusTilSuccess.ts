@@ -1,23 +1,23 @@
-import { AuthClientError } from "../../errors";
-import { Client } from "../../clients/createClient";
-import { poll, HttpResponse } from "../../clients/transports/http";
-import { CompletedStatusAPIResponse, StatusAPIResponse } from "./status";
+import { AuthClientError } from "../../errors.js";
+import { type Client } from "../../clients/createClient.js";
+import { poll } from "../../clients/transports/http.js";
+import { type CompletedStatusReturnType, type StatusReturnType } from "./status.js";
 
-export interface PollStatusTilSuccessArgs {
+export type PollStatusTilSuccessParameters = {
   channelToken: string;
   timeout?: number;
   interval?: number;
-}
+};
 
-export type PollStatusTilSuccessResponse = Promise<HttpResponse<CompletedStatusAPIResponse>>;
+export type PollStatusTilSuccessReturnType = CompletedStatusReturnType;
 
 const path = "channel/status";
 
 export const pollStatusTillSuccess = async (
   client: Client,
-  args: PollStatusTilSuccessArgs,
-): PollStatusTilSuccessResponse => {
-  for await (const res of poll<StatusAPIResponse>(
+  args: PollStatusTilSuccessParameters,
+): Promise<PollStatusTilSuccessReturnType> => {
+  for await (const polledData of poll<StatusReturnType>(
     client,
     path,
     {
@@ -26,10 +26,10 @@ export const pollStatusTillSuccess = async (
     },
     { authToken: args.channelToken },
   )) {
-    if (res.response.status === 200) {
+    if (polledData.state === "completed") {
       // type coercing to completed as if the response status is 200
       // it is expected to have a completed status.
-      return res as HttpResponse<CompletedStatusAPIResponse>;
+      return polledData as PollStatusTilSuccessReturnType;
     }
   }
   // This error should not be thrown, as the `poll` function will throw an error on timeout

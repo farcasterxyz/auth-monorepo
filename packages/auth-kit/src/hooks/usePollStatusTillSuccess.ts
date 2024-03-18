@@ -1,49 +1,47 @@
-import { UseQueryOptions, UseQueryResult, useQuery } from "@tanstack/react-query";
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
+"use client";
+
 import { useConfig } from "../hooks/useConfig";
+import {
+  PollStatusTillSuccessOptions,
+  type PollStatusTillSuccessData,
+  PollStatusTillSuccessQueryFnData,
+  PollStatusTillSuccessQueryKey,
+  pollStatusTillSuccessQueryOptions,
+} from "../query/pollStatusTillSuccess";
+import { UnionEvaluate } from "../types/utils";
+import { QueryParameter } from "../types/properties";
+import { PollStatusTillSuccessErrorType } from "../actions/pollStatusTillSuccess";
+import { UseQueryReturnType, structuralSharing, useQuery } from "../types/query";
 
-export interface UsePollStatusTillSuccessArgs {
-  args:
-    | {
-        channelToken: string;
-        timeout?: number;
-        interval?: number;
-      }
-    | undefined;
-  query?: Omit<UseQueryOptions<UsePollStatusTillSuccessData, AuthClientError>, "queryFn" | "queryKey">;
-}
+export type UsePollStatusTillSuccessParameters<selectData = PollStatusTillSuccessData,> = UnionEvaluate<
+  PollStatusTillSuccessOptions &
+    QueryParameter<
+      PollStatusTillSuccessQueryFnData,
+      PollStatusTillSuccessErrorType,
+      selectData,
+      PollStatusTillSuccessQueryKey
+    >
+>;
 
-export type UsePollStatusTillSuccessData = StatusAPIResponse;
+export type UsePollStatusTillSuccessReturnType<selectData = PollStatusTillSuccessData,> = UseQueryReturnType<
+  selectData,
+  PollStatusTillSuccessErrorType
+>;
 
-const defaults = {
-  timeout: 300_000,
-  interval: 1_500,
-};
-
-export function usePollStatusTillSuccess({
-  args,
-  query: { enabled, ...query } = { enabled: true },
-}: UsePollStatusTillSuccessArgs): UseQueryResult<UsePollStatusTillSuccessData, AuthClientError> {
+export function usePollStatusTillSuccess<selectData = PollStatusTillSuccessData>(
+  parameters: UsePollStatusTillSuccessParameters<selectData> = {} as any,
+): UsePollStatusTillSuccessReturnType<selectData> {
+  const { channelToken, query = {} } = parameters;
   const config = useConfig();
-  const { channelToken, timeout, interval } = {
-    ...defaults,
-    ...args,
-  };
+
+  const options = pollStatusTillSuccessQueryOptions(config, parameters);
+
+  const enabled = Boolean(channelToken && (query.enabled ?? true));
 
   return useQuery({
-    queryFn: async () => {
-      if (!channelToken) throw new Error("Missing `channelToken`.");
-      const { data } = await config.appClient.pollStatusTillSuccess({
-        channelToken,
-        timeout,
-        interval,
-      });
-      return data;
-    },
-    queryKey: ["pollStatusTillSuccess", args],
     ...query,
-    enabled: Boolean(enabled && channelToken),
+    ...options,
+    enabled,
+    structuralSharing: query.structuralSharing ?? structuralSharing,
   });
 }
-
-export default usePollStatusTillSuccess;

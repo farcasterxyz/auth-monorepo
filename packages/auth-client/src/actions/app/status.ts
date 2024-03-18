@@ -1,15 +1,15 @@
-import { Client } from "../../clients/createClient";
-import { get, HttpResponse } from "../../clients/transports/http";
+import { type Client } from "../../clients/createClient.js";
+import { get } from "../../clients/transports/http.js";
 import type { Hex } from "viem";
 
-export interface StatusArgs {
+export type StatusParameters = {
   channelToken: string;
-}
+};
 
-export type StatusResponse = Promise<HttpResponse<StatusAPIResponse>>;
+export type StatusReturnType = PendingStatusReturnType | CompletedStatusReturnType;
 
-export type PendingStatusAPIResponse = { state: "pending"; nonce: string; url: string };
-export type CompletedStatusAPIResponse = {
+export type PendingStatusReturnType = { state: "pending"; nonce: string; url: string };
+export type CompletedStatusReturnType = {
   state: "completed";
   message: string;
   signature: `0x${string}`;
@@ -24,11 +24,10 @@ export type CompletedStatusAPIResponse = {
   url: string;
 };
 
-export type StatusAPIResponse = PendingStatusAPIResponse | CompletedStatusAPIResponse;
 const path = "channel/status";
 
-export const status = (client: Client, { channelToken }: StatusArgs): StatusResponse => {
-  return get<StatusAPIResponse>(client, path, {
+export const status = (client: Client, { channelToken }: StatusParameters): Promise<StatusReturnType> => {
+  return get<StatusReturnType>(client, path, {
     authToken: channelToken,
   });
 };

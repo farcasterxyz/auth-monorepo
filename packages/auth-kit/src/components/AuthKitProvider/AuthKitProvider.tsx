@@ -1,17 +1,8 @@
 import { createContext, ReactNode } from "react";
-import { AppClient } from "@farcaster/auth-client";
-
-export interface AuthKitConfig {
-  relay?: string;
-  domain?: string;
-  siweUri?: string;
-  rpcUrl?: string;
-  version?: string;
-  appClient: AppClient;
-}
+import { Config } from "../../types/config";
 
 export interface AuthKitConfigContextValues {
-  config: AuthKitConfig;
+  config: Config;
 }
 
 export const AuthKitContext = createContext<AuthKitConfigContextValues | null>(null);
@@ -20,7 +11,7 @@ export function AuthKitProvider({
   config,
   children,
 }: {
-  config: AuthKitConfig;
+  config: Config;
   children: ReactNode;
 }) {
   return (

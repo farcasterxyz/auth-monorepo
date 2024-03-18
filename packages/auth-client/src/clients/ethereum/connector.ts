@@ -1,4 +1,4 @@
-import { Hex } from "viem";
+import { type Hex } from "viem";
 import type { Provider } from "ethers";
 
 export interface EthereumConnector {

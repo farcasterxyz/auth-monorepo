@@ -1,26 +1,26 @@
-import { Client } from "../../clients/createClient";
-import { HttpResponse, post } from "../../clients/transports/http";
+import { type Client } from "../../clients/createClient.js";
+import { post } from "../../clients/transports/http.js";
 
-export type CreateChannelArgs = CreateChannelRequest;
-export type CreateChannelResponse = Promise<HttpResponse<CreateChannelAPIResponse>>;
-
-interface CreateChannelRequest {
+export type CreateChannelParameters = {
   siweUri: string;
   domain: string;
   nonce?: string;
   notBefore?: string;
   expirationTime?: string;
   requestId?: string;
-}
+};
 
-export interface CreateChannelAPIResponse {
+export type CreateChannelReturnType = {
   channelToken: string;
   url: string;
   nonce: string;
-}
+};
 
 const path = "channel";
 
-export const createChannel = (client: Client, { ...request }: CreateChannelArgs): CreateChannelResponse => {
-  return post<CreateChannelRequest, CreateChannelAPIResponse>(client, path, request);
+export const createChannel = (
+  client: Client,
+  parameters: CreateChannelParameters,
+): Promise<CreateChannelReturnType> => {
+  return post<CreateChannelParameters, CreateChannelReturnType>(client, path, parameters);
 };

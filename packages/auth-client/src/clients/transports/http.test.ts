@@ -1,6 +1,6 @@
-import { createClient } from "../createClient";
-import { viemConnector } from "../ethereum/viemConnector";
-import { get, poll, post } from "./http";
+import { createClient } from "../createClient.js";
+import { viemConnector } from "../ethereum/viemConnector.js";
+import { get, poll, post } from "./http.js";
 import { jest } from "@jest/globals";
 
 describe("http", () => {

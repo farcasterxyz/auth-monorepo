@@ -1,51 +1,51 @@
-import { AppClient } from "@farcaster/auth-client";
-import { useConfig } from "../hooks/useConfig";
-import { UseQueryOptions, UseQueryResult, useQuery } from "@tanstack/react-query";
+"use client";
 
-export type UseVerifySignInMessageArgs = {
-  args:
-    | {
-        nonce: string;
-        domain: string;
-        message: string;
-        signature: `0x${string}`;
-      }
-    | undefined;
-  query?: Omit<
-    UseQueryOptions<
-      boolean,
-      Error,
-      boolean,
-      ["verifySignInMessage", { args: UseVerifySignInMessageArgs["args"]; appClient: AppClient }]
-    >,
-    "queryKey" | "queryFn"
+import { useConfig } from "../hooks/useConfig";
+import { useMutation } from "@tanstack/react-query";
+import { UseMutationParameters, UseMutationReturnType } from "../types/query";
+import {
+  VerifySignInMessageData,
+  VerifySignInMessageMutate,
+  VerifySignInMessageMutateAsync,
+  VerifySignInMessageVariables,
+  verifySignInMessageOptions,
+} from "../query/verifySignInMessage";
+import { VerifySignInMessageErrorType } from "../actions/verifySignInMessage";
+import { Evaluate } from "../types/utils";
+
+export type UseVerifySignInMessageParameters<context = unknown> = {
+  mutation?: UseMutationParameters<
+    VerifySignInMessageData,
+    VerifySignInMessageErrorType,
+    VerifySignInMessageVariables,
+    context
   >;
 };
 
-export interface UseVerifySignInMessageData {
-  message?: string;
-  signature?: `0x${string}`;
-  validSignature: boolean;
-}
+export type UseVerifySignInMessageReturnType<context = unknown> = Evaluate<
+  UseMutationReturnType<
+    VerifySignInMessageData,
+    VerifySignInMessageErrorType,
+    VerifySignInMessageVariables,
+    context
+  > & {
+    verifySignInMessage: VerifySignInMessageMutate<context>;
+    verifySignInMessageAsync: VerifySignInMessageMutateAsync<context>;
+  }
+>;
 
-export function useVerifySignInMessage({
-  args,
-  query: { enabled, ...query } = { enabled: true },
-}: UseVerifySignInMessageArgs): UseQueryResult<boolean> {
+export function useVerifySignInMessage<context = unknown>({
+  mutation,
+}: UseVerifySignInMessageParameters<context> = {}): UseVerifySignInMessageReturnType<context> {
   const config = useConfig();
 
-  return useQuery({
-    queryKey: ["verifySignInMessage", { args, appClient: config.appClient }],
-    queryFn: async () => {
-      if (!config.appClient || !args) throw new Error("Unexpected Error");
-      const { success } = await config.appClient.verifySignInMessage({
-        ...args,
-      });
-      return success;
-    },
-    ...query,
-    enabled: Boolean(enabled && args),
+  const mutationOptions = verifySignInMessageOptions(config);
+  const { mutate, mutateAsync, ...result } = useMutation({
+    ...mutation,
+    ...mutationOptions,
   });
+
+  return { verifySignInMessage: mutate, verifySignInMessageAsync: mutateAsync, ...result };
 }
 
 export default useVerifySignInMessage;

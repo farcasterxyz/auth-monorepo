@@ -2,6 +2,7 @@
   "name": "@farcaster/auth-client",
   "version": "0.1.0",
   "main": "./dist/index.js",
+  "type": "module",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -14,7 +15,8 @@
   "files": ["dist"],
   "license": "MIT",
   "scripts": {
-    "build": "tsup --config tsup.config.ts",
+    "build": "tc",
+    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
     "clean": "rimraf ./dist",
     "lint": "biome format src/ scripts/ --write && biome check src/ scripts/ --apply",
     "lint:ci": "biome ci src/ scripts/",

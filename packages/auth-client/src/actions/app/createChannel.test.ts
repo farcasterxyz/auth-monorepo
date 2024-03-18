@@ -1,8 +1,8 @@
-import { createAppClient } from "../../clients/createAppClient";
+import { createAppClient } from "../../clients/createAppClient.js";
 import { jest } from "@jest/globals";
-import { viemConnector } from "../../clients/ethereum/viemConnector";
-import { AuthClientError } from "../../errors";
-import { CreateChannelAPIResponse } from "./createChannel";
+import { viemConnector } from "../../clients/ethereum/viemConnector.js";
+import { AuthClientError } from "../../errors.js";
+import { type CreateChannelReturnType } from "./createChannel.js";
 
 describe("createChannel", () => {
   const client = createAppClient({
@@ -17,15 +17,16 @@ describe("createChannel", () => {
   const domain = "example.com";
   const nonce = "abcd1234";
 
-  const createChannelResponseDataStub: CreateChannelAPIResponse = {
+  const createChannelResponseDataStub: CreateChannelReturnType = {
     channelToken: "some-channel-token",
     url: "completed",
     nonce,
   };
 
   test("constructs API request", async () => {
-    const response = new Response(JSON.stringify(createChannelResponseDataStub));
-    const spy = jest.spyOn(global, "fetch").mockResolvedValue(response);
+    const spy = jest
+      .spyOn(global, "fetch")
+      .mockResolvedValue(new Response(JSON.stringify(createChannelResponseDataStub)));
 
     const res = await client.createChannel({
       siweUri,
@@ -33,7 +34,7 @@ describe("createChannel", () => {
       nonce,
     });
 
-    expect(res.response).toEqual(response);
+    expect(res).toEqual(createChannelResponseDataStub);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/channel", {
       method: "POST",

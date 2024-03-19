@@ -9,8 +9,6 @@ const config = createConfig({
   // RPC URL from a provider like Alchemy or Infura.
   relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
-  domain: "example.com",
-  siweUri: "https://example.com/login",
 });
 
 function App() {

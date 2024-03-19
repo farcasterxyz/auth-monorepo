@@ -31,12 +31,7 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
 
   // Create channel on mount
   useEffect(() => {
-    createChannel({
-      nonce: signInArgs.nonce,
-      notBefore: signInArgs.notBefore,
-      requestId: signInArgs.requestId,
-      expirationTime: signInArgs.expirationTime,
-    });
+    createChannel(signInArgs);
   }, [createChannel, signInArgs]);
 
   useEffect(() => {

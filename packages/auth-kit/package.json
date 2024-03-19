@@ -23,16 +23,29 @@
     "!src/**/*.test.ts",
     "!src/**/*.test-d.ts",
     "/actions",
-    "/clients",
-    "/contracts",
-    "/errors",
-    "/utils"
+    "/components",
+    "/hooks"
   ],
   "type": "module",
-  "main": "./dist/auth-kit.js",
-  "types": "./dist/auth-kit.d.ts",
+  "main": "./dist/exports/index.js",
+  "types": "./dist/exports/index.d.ts",
   "exports": {
-    ".": "./dist/auth-kit.js",
+    ".": {
+      "types": "./dist/exports/index.d.ts",
+      "default": "./dist/exports/index.js"
+    },
+    "./actions": {
+      "types": "./dist/exports/actions.d.ts",
+      "default": "./dist/exports/actions.js"
+    },
+    "./components": {
+      "types": "./dist/exports/components.d.ts",
+      "default": "./dist/exports/components.js"
+    },
+    "./hooks": {
+      "types": "./dist/exports/hooks.d.ts",
+      "default": "./dist/exports/hooks.js"
+    },
     "./styles.css": "./dist/style.css"
   },
   "dependencies": {
@@ -60,7 +73,7 @@
     "typescript": "^5.2.2",
     "viem": "^1.19.11",
     "vite": "^5.0.12",
-    "vite-plugin-dts": "^3.7.0",
+    "vite-plugin-dts": "^3.7.3",
     "vite-plugin-node-polyfills": "^0.19.0"
   },
   "peerDependencies": {

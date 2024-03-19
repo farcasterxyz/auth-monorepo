@@ -2,7 +2,7 @@ import "@farcaster/auth-kit/styles.css";
 
 import Head from "next/head";
 import { useSession, signIn, signOut, getCsrfToken } from "next-auth/react";
-import { SignInButton, AuthKitProvider, createConfig, CompletedStatusAPIResponse } from "@farcaster/auth-kit";
+import { SignInButton, AuthKitProvider, createConfig, SignInReturnType } from "@farcaster/auth-kit";
 import { useCallback, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -40,7 +40,7 @@ function Content() {
     return nonce;
   }, []);
 
-  const handleSuccess = useCallback((res: CompletedStatusAPIResponse) => {
+  const handleSuccess = useCallback((res: SignInReturnType) => {
     console.log(res);
     signIn("credentials", {
       message: res.message,

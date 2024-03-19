@@ -7,18 +7,18 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), vanillaExtractPlugin(), dts({ rollupTypes: true }), nodePolyfills({ include: ["buffer"] })],
+  plugins: [react(), vanillaExtractPlugin(), dts(/* { rollupTypes: true } */), nodePolyfills({ include: ["buffer"] })],
   build: {
-    target: "esnext",
+    // target: "esnext",
+    minify: false,
     lib: {
       formats: ["es"],
       entry: {
-        index: resolve(__dirname, "src/exports/index.ts"),
-        actions: resolve(__dirname, "src/exports/actions.ts"),
-        components: resolve(__dirname, "src/exports/components.ts"),
-        hooks: resolve(__dirname, "src/exports/hooks.ts"),
+        "exports/index": resolve(__dirname, "src/exports/index.ts"),
+        "exports/actions": resolve(__dirname, "src/exports/actions.ts"),
+        "exports/components": resolve(__dirname, "src/exports/components.ts"),
+        "exports/hooks": resolve(__dirname, "src/exports/hooks.ts"),
       },
-      // fileName: "auth-kit",
     },
     rollupOptions: {
       external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/auth-client", "@tanstack/react-query"],

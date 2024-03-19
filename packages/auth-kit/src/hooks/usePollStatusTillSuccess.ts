@@ -1,17 +1,17 @@
 "use client";
 
-import { useConfig } from "../hooks/useConfig";
+import { useConfig } from "../hooks/useConfig.js";
 import {
-  PollStatusTillSuccessOptions,
+  type PollStatusTillSuccessOptions,
   type PollStatusTillSuccessData,
-  PollStatusTillSuccessQueryFnData,
-  PollStatusTillSuccessQueryKey,
+  type PollStatusTillSuccessQueryFnData,
+  type PollStatusTillSuccessQueryKey,
   pollStatusTillSuccessQueryOptions,
-} from "../query/pollStatusTillSuccess";
-import { UnionEvaluate } from "../types/utils";
-import { QueryParameter } from "../types/properties";
-import { PollStatusTillSuccessErrorType } from "../actions/pollStatusTillSuccess";
-import { UseQueryReturnType, structuralSharing, useQuery } from "../types/query";
+} from "../query/pollStatusTillSuccess.js";
+import { type UnionEvaluate } from "../types/utils.js";
+import { type QueryParameter } from "../types/properties.js";
+import { type PollStatusTillSuccessErrorType } from "../actions/pollStatusTillSuccess.js";
+import { type UseQueryReturnType, structuralSharing, useQuery } from "../types/query.js";
 
 export type UsePollStatusTillSuccessParameters<selectData = PollStatusTillSuccessData,> = UnionEvaluate<
   PollStatusTillSuccessOptions &
@@ -29,7 +29,7 @@ export type UsePollStatusTillSuccessReturnType<selectData = PollStatusTillSucces
 >;
 
 export function usePollStatusTillSuccess<selectData = PollStatusTillSuccessData>(
-  parameters: UsePollStatusTillSuccessParameters<selectData> = {} as any,
+  parameters: UsePollStatusTillSuccessParameters<selectData> = {},
 ): UsePollStatusTillSuccessReturnType<selectData> {
   const { channelToken, query = {} } = parameters;
   const config = useConfig();

@@ -1,14 +1,13 @@
-import { AuthClientError } from "@farcaster/auth-client";
-import { StatusAPIResponse } from "..";
-import { Config } from "../types/config";
+import {
+  AuthClientError,
+  type PollStatusTillSuccessParameters as client_PollStatusTilSuccessParameters,
+  type PollStatusTillSuccessReturnType as client_PollStatusTilSuccessReturnType,
+} from "@farcaster/auth-client";
+import { type Config } from "../types/config.js";
 
-export type PollStatusTillSuccessParameters = {
-  channelToken: string;
-  timeout?: number;
-  interval?: number;
-};
+export type PollStatusTillSuccessParameters = client_PollStatusTilSuccessParameters;
 
-export type PollStatusTillSuccessReturnType = StatusAPIResponse;
+export type PollStatusTillSuccessReturnType = client_PollStatusTilSuccessReturnType;
 export type PollStatusTillSuccessErrorType = AuthClientError;
 
 const defaults = {
@@ -21,10 +20,9 @@ export async function pollStatusTillSuccess(
   parameters: PollStatusTillSuccessParameters,
 ): Promise<PollStatusTillSuccessReturnType> {
   const { channelToken, timeout = defaults.timeout, interval = defaults.interval } = parameters;
-  const { data } = await config.appClient.pollStatusTillSuccess({
+  return await config.appClient.pollStatusTillSuccess({
     channelToken,
     timeout,
     interval,
   });
-  return data;
 }

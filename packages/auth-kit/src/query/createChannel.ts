@@ -1,8 +1,8 @@
 import type { MutateOptions, MutationOptions } from "@tanstack/query-core";
 
-import { type CreateChannelParameters, type CreateChannelReturnType, createChannel } from "../actions/createChannel";
-import { type Evaluate } from "../types/utils";
-import { Config } from "../types/config";
+import { type CreateChannelParameters, type CreateChannelReturnType, createChannel } from "../actions/createChannel.js";
+import { type Evaluate } from "../types/utils.js";
+import { type Config } from "../types/config.js";
 
 export function createChannelOptions(config: Config) {
   return {

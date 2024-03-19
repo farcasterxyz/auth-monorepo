@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
-import { secondaryButton } from "../styles.css.ts";
-import useDetectClickOutside from "../../hooks/useDetectClickOutside.ts";
-import { profileButtonContainer, profileImage, profileName } from "./ProfileButton.css.ts";
-import { SignOutButton } from "../SignOutButton";
+import { secondaryButton } from "../styles.css.js";
+import useDetectClickOutside from "../../hooks/useDetectClickOutside.js";
+import { profileButtonContainer, profileImage, profileName } from "./ProfileButton.css.js";
+import { SignOutButton } from "../SignOutButton/index.js";
 
 interface UserDataProps {
   fid?: number;

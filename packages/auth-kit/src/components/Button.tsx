@@ -1,5 +1,5 @@
-import { ButtonHTMLAttributes } from "react";
-import { primaryButton, secondaryButton, tertiaryButton, resetButton } from "./styles.css";
+import { type ButtonHTMLAttributes } from "react";
+import { primaryButton, secondaryButton, tertiaryButton, resetButton } from "./styles.css.js";
 
 export type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   kind?: "primary" | "secondary" | "tertiary" | "reset";

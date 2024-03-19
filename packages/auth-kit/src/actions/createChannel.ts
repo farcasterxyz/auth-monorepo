@@ -1,14 +1,16 @@
-import { AuthClientError, CreateChannelAPIResponse } from "@farcaster/auth-client";
-import { Config } from "../types/config";
+import {
+  AuthClientError,
+  type CreateChannelParameters as client_CreateChannelParameters,
+  type CreateChannelReturnType as client_CreateChannelReturnType,
+} from "@farcaster/auth-client";
+import { type Config } from "../types/config.js";
+import type { Omit } from "../types/utils.js";
 
-export type CreateChannelParameters = {
+export type CreateChannelParameters = Omit<client_CreateChannelParameters, "nonce"> & {
   nonce?: string | (() => Promise<string>);
-  notBefore?: string;
-  expirationTime?: string;
-  requestId?: string;
 };
 
-export type CreateChannelReturnType = CreateChannelAPIResponse;
+export type CreateChannelReturnType = client_CreateChannelReturnType;
 export type CreateChannelErrorType = AuthClientError;
 
 export async function createChannel(
@@ -19,7 +21,7 @@ export async function createChannel(
   const { nonce, expirationTime, notBefore, requestId } = parameters;
 
   const nonceVal = typeof nonce === "function" ? await nonce() : nonce;
-  const { data } = await config.appClient.createChannel({
+  return await config.appClient.createChannel({
     nonce: nonceVal,
     siweUri,
     domain,
@@ -27,6 +29,4 @@ export async function createChannel(
     expirationTime,
     requestId,
   });
-
-  return data;
 }

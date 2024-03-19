@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { Demo } from "./index";
+import { Demo } from "./exports/index.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const domNode = document.getElementById("root");

@@ -2,8 +2,8 @@ import { type Client } from "../../clients/createClient.js";
 import { post } from "../../clients/transports/http.js";
 
 export type CreateChannelParameters = {
-  siweUri: string;
-  domain: string;
+  siweUri?: string;
+  domain?: string;
   nonce?: string;
   notBefore?: string;
   expirationTime?: string;

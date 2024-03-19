@@ -1,1 +1,1 @@
-export * from "./SignInButton";
+export * from "./SignInButton.js";

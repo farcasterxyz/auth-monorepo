@@ -67,8 +67,14 @@ describe("verify", () => {
     });
     const siweMessage = res;
     const message = siweMessage.toMessage();
-    const sig = await account.signMessage({ message });
-    const result = await verifySiweMessageWithVerifier({ nonce, domain, message, sig, verifier: { getFid, provider } });
+    const signature = await account.signMessage({ message });
+    const result = await verifySiweMessageWithVerifier({
+      nonce,
+      domain,
+      message,
+      signature,
+      verifier: { getFid, provider },
+    });
     expect(result).toEqual({
       data: siweMessage,
       success: true,
@@ -109,11 +115,11 @@ describe("verify", () => {
     });
     const siweMessage = res;
     const message = siweMessage.toMessage();
-    const sig = await account.signMessage({
+    const signature = await account.signMessage({
       message,
     });
     try {
-      await verifySiweMessageWithVerifier({ nonce, domain, message, sig, verifier: { getFid } });
+      await verifySiweMessageWithVerifier({ nonce, domain, message, signature, verifier: { getFid } });
       expect(true).toBe(false);
     } catch (e) {
       expect(e).toBeInstanceOf(AuthClientError);

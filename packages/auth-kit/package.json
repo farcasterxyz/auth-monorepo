@@ -1,21 +1,39 @@
 {
   "name": "@farcaster/auth-kit",
+  "description": "A React library that makes it easy to add Sign In With Farcaster to your application.",
   "version": "0.2.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farcasterxyz/auth-monorepo.git",
+    "directory": "packages/auth-client"
+  },
+  "scripts": {
+    "build": "pnpm run clean &&  pnpm vite build",
+    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
+    "clean": "rimraf dist tsconfig.tsbuildinfo actions clients contracts errors utils",
+    "test:build": "publint --strict",
+    "typecheck": "tsc --noEmit",
+    "dev": "vite"
+  },
+  "files": [
+    "dist/**",
+    "!dist/**/*.tsbuildinfo",
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.test-d.ts",
+    "/actions",
+    "/clients",
+    "/contracts",
+    "/errors",
+    "/utils"
+  ],
   "type": "module",
   "main": "./dist/auth-kit.js",
   "types": "./dist/auth-kit.d.ts",
   "exports": {
     ".": "./dist/auth-kit.js",
     "./styles.css": "./dist/style.css"
-  },
-  "files": [
-    "dist"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@farcaster/auth-client": "workspace:*",

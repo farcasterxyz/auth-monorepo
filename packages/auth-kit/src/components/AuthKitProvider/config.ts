@@ -1,5 +1,5 @@
 import { createAppClient, viemConnector } from "@farcaster/auth-client";
-import { Config } from "./AuthKitProvider";
+import { type Config } from "../../types/config.js";
 
 const domainDefaults =
   typeof window !== "undefined" && window?.location

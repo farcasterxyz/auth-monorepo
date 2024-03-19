@@ -1,9 +1,9 @@
-import { MouseEventHandler, ReactNode, useCallback, useEffect, useState } from "react";
+import { type MouseEventHandler, type ReactNode, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";
-import * as styles from "./Dialog.css";
-import { FocusTrap } from "./FocusTrap";
-import { isMobile } from "../../utils";
+import * as styles from "./Dialog.css.js";
+import { FocusTrap } from "./FocusTrap.js";
+import { isMobile } from "../../utils.js";
 
 const stopPropagation: MouseEventHandler<unknown> = (event) => event.stopPropagation();
 

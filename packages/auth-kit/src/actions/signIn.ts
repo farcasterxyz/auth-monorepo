@@ -1,7 +1,10 @@
-import { AuthClientError, type CompletedStatusAPIResponse } from "@farcaster/auth-client";
+import {
+  AuthClientError,
+  type PollStatusTillSuccessReturnType,
+  type PollStatusTillSuccessParameters,
+} from "@farcaster/auth-client";
 import { type Config } from "../types/config.js";
 import { type Omit } from "../types/utils.js";
-import { type PollStatusTillSuccessParameters } from "./pollStatusTillSuccess.js";
 
 export type SignInErrorType = AuthClientError;
 
@@ -9,7 +12,7 @@ export type SignInParameters = Omit<PollStatusTillSuccessParameters, "channelTok
   channelToken: string;
 };
 
-export type SignInReturnType = CompletedStatusAPIResponse & { isAuthenticated: boolean };
+export type SignInReturnType = PollStatusTillSuccessReturnType & { isAuthenticated: boolean };
 
 const defaults = {
   timeout: 300_000,
@@ -18,13 +21,13 @@ const defaults = {
 
 export async function signIn(config: Config, parameters: SignInParameters): Promise<SignInReturnType> {
   if (!config.domain) throw new Error("domain is not defined");
-  const { data: pollStatusTillSuccessResponse } = await config.appClient.pollStatusTillSuccess({
+  const pollStatusTillSuccessResponse = await config.appClient.pollStatusTillSuccess({
     channelToken: parameters?.channelToken,
     timeout: parameters?.timeout ?? defaults.timeout,
     interval: parameters?.interval ?? defaults.interval,
   });
 
-  const { success: isAuthenticated } = await config.appClient.verifySignInMessage({
+  const { success: isAuthenticated } = await config.appClient.verifySiweMessage({
     nonce: pollStatusTillSuccessResponse.nonce,
     domain: config.domain,
     message: pollStatusTillSuccessResponse.message,

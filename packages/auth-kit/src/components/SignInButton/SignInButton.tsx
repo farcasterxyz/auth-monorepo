@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import { AuthClientError, CompletedStatusAPIResponse } from "@farcaster/auth-client";
-import useSignIn from "../../hooks/useSignIn.ts";
-import { ActionButton } from "../ActionButton/index.ts";
-import { ProfileButton } from "../ProfileButton/index.ts";
-import { QRCodeDialog } from "../QRCodeDialog/index.tsx";
-import { isMobile, MaybePromise } from "../../utils.ts";
-import { useCreateChannel } from "../../index.ts";
-import { CreateChannelParameters } from "../../actions/createChannel.ts";
-import { SignInParameters } from "../../actions/signIn.ts";
-import { Omit } from "../../types/utils.ts";
+import { AuthClientError, type PollStatusTillSuccessReturnType } from "@farcaster/auth-client";
+import useSignIn from "../../hooks/useSignIn.js";
+import { ActionButton } from "../ActionButton/index.js";
+import { ProfileButton } from "../ProfileButton/index.js";
+import { QRCodeDialog } from "../QRCodeDialog/index.js";
+import { isMobile, type MaybePromise } from "../../utils.js";
+import { type CreateChannelParameters } from "../../actions/createChannel.js";
+import { type SignInParameters } from "../../actions/signIn.js";
+import { type Omit } from "../../types/utils.js";
+import { useCreateChannel } from "../../hooks/useCreateChannel.js";
 
 type SignInButtonProps = NonNullable<CreateChannelParameters> &
   Omit<SignInParameters, "channelToken"> & {
-    onSignIn?: (signInData: CompletedStatusAPIResponse & { isAuthenticated: boolean }) => MaybePromise<unknown>;
+    onSignIn?: (signInData: PollStatusTillSuccessReturnType & { isAuthenticated: boolean }) => MaybePromise<unknown>;
     onSignOut?: () => MaybePromise<unknown>;
     onSignInError?: (error: unknown) => MaybePromise<unknown>;
     hideSignOut?: boolean;

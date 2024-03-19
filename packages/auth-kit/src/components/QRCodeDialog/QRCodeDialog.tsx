@@ -1,8 +1,8 @@
 import { AuthClientError } from "@farcaster/auth-client";
-import { Dialog } from "../Dialog/index.ts";
-import { body, siwfHeading, instructions } from "./QRCodeDialog.css.ts";
-import { Button } from "../Button.tsx";
-import { QRCode } from "../QRCode.tsx";
+import { Dialog } from "../Dialog/index.js";
+import { body, siwfHeading, instructions } from "./QRCodeDialog.css.js";
+import { Button } from "../Button.js";
+import { QRCode } from "../QRCode.js";
 
 export function QRCodeDialog(
   props: {

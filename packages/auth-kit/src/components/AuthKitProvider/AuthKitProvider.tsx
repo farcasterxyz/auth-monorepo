@@ -1,5 +1,5 @@
-import { createContext, ReactNode } from "react";
-import { Config } from "../../types/config";
+import { createContext, type ReactNode } from "react";
+import { type Config } from "../../types/config.js";
 
 export interface AuthKitConfigContextValues {
   config: Config;

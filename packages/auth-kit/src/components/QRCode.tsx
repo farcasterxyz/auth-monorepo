@@ -1,7 +1,7 @@
 import QRCodeUtil from "qrcode";
-import { ReactElement, useMemo } from "react";
-import { FarcasterLogo } from "./FarcasterLogo";
-import { qrCodeContainer, qrCodeWrapper, qrCode } from "./styles.css";
+import { type ReactElement, useMemo } from "react";
+import { FarcasterLogo } from "./FarcasterLogo.js";
+import { qrCodeContainer, qrCodeWrapper, qrCode } from "./styles.css.js";
 
 const generateMatrix = (value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel) => {
   const arr = Array.prototype.slice.call(QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data, 0);

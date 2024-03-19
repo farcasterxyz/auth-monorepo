@@ -1,6 +1,6 @@
-import { DefaultError, QueryKey } from "@tanstack/react-query";
-import { UseQueryParameters } from "./query";
-import { Omit } from "./utils";
+import { type DefaultError, type QueryKey } from "@tanstack/react-query";
+import { type UseQueryParameters } from "./query.js";
+import { type Omit } from "./utils.js";
 
 export type EnabledParameter = {
   enabled?: boolean | undefined;

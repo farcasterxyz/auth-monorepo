@@ -9,10 +9,16 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 export default defineConfig({
   plugins: [react(), vanillaExtractPlugin(), dts({ rollupTypes: true }), nodePolyfills({ include: ["buffer"] })],
   build: {
+    target: "esnext",
     lib: {
       formats: ["es"],
-      entry: resolve(__dirname, "src/index.ts"),
-      fileName: "auth-kit",
+      entry: {
+        index: resolve(__dirname, "src/exports/index.ts"),
+        actions: resolve(__dirname, "src/exports/actions.ts"),
+        components: resolve(__dirname, "src/exports/components.ts"),
+        hooks: resolve(__dirname, "src/exports/hooks.ts"),
+      },
+      // fileName: "auth-kit",
     },
     rollupOptions: {
       external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/auth-client", "@tanstack/react-query"],

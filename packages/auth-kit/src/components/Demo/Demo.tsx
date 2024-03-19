@@ -1,6 +1,6 @@
-import useProfile from "../../hooks/useProfile";
-import { SignInButton } from "../SignInButton";
-import { AuthKitProvider, createConfig } from "../AuthKitProvider";
+import useProfile from "../../hooks/useProfile.js";
+import { SignInButton } from "../SignInButton/index.js";
+import { AuthKitProvider, createConfig } from "../AuthKitProvider/index.js";
 
 export function Demo() {
   const config = createConfig({

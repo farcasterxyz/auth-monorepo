@@ -1,8 +1,8 @@
-import { CompletedStatusAPIResponse } from "@farcaster/auth-client";
+import { type PollStatusTillSuccessReturnType } from "@farcaster/auth-client";
 import { create } from "zustand";
 
 export type Profile = Pick<
-  CompletedStatusAPIResponse,
+  PollStatusTillSuccessReturnType,
   "fid" | "pfpUrl" | "username" | "displayName" | "bio" | "custody" | "verifications"
 > & { isAuthenticated: boolean };
 

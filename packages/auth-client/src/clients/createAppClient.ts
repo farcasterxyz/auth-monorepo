@@ -6,8 +6,8 @@ import {
 import { status, type StatusParameters, type StatusReturnType } from "../actions/app/status.js";
 import {
   pollStatusTillSuccess,
-  type PollStatusTilSuccessParameters,
-  type PollStatusTilSuccessReturnType,
+  type PollStatusTillSuccessParameters,
+  type PollStatusTillSuccessReturnType,
 } from "../actions/app/pollStatusTilSuccess.js";
 import {
   verifySiweMessage,
@@ -19,7 +19,7 @@ import { type Client, type CreateClientParameters, createClient } from "./create
 export interface AppClient extends Client {
   createChannel: (args: CreateChannelParameters) => Promise<CreateChannelReturnType>;
   status: (args: StatusParameters) => Promise<StatusReturnType>;
-  pollStatusTillSuccess: (args: PollStatusTilSuccessParameters) => Promise<PollStatusTilSuccessReturnType>;
+  pollStatusTillSuccess: (args: PollStatusTillSuccessParameters) => Promise<PollStatusTillSuccessReturnType>;
   verifySiweMessage: (args: VerifySiweMessageParameters) => Promise<VerifySiweMessageReturnType>;
 }
 
@@ -29,7 +29,7 @@ export const createAppClient = (config: CreateClientParameters): AppClient => {
     ...client,
     createChannel: (args: CreateChannelParameters) => createChannel(client, args),
     status: (args: StatusParameters) => status(client, args),
-    pollStatusTillSuccess: (args: PollStatusTilSuccessParameters) => pollStatusTillSuccess(client, args),
+    pollStatusTillSuccess: (args: PollStatusTillSuccessParameters) => pollStatusTillSuccess(client, args),
     verifySiweMessage: (args: VerifySiweMessageParameters) => verifySiweMessage(client, args),
   };
 };

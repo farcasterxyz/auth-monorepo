@@ -7,7 +7,7 @@ const moveFocusWithin = (element: HTMLElement, position: "start" | "end") => {
 
   if (focusableElements.length === 0) return;
 
-  focusableElements[position === "end" ? focusableElements.length - 1 : 0].focus();
+  focusableElements[position === "end" ? focusableElements.length - 1 : 0]?.focus();
 };
 
 export function FocusTrap(props: JSX.IntrinsicElements["div"]) {

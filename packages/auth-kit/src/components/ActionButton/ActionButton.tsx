@@ -1,5 +1,5 @@
-import { FarcasterLogo } from "../FarcasterLogo.tsx";
-import { Button } from "../Button.tsx";
+import { FarcasterLogo } from "../FarcasterLogo.js";
+import { Button } from "../Button.js";
 
 export function ActionButton({
   label,

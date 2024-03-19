@@ -1,17 +1,17 @@
 "use client";
 
-import { useConfig } from "../hooks/useConfig";
+import { useConfig } from "../hooks/useConfig.js";
 import { useMutation } from "@tanstack/react-query";
-import { UseMutationParameters, UseMutationReturnType } from "../types/query";
+import { type UseMutationParameters, type UseMutationReturnType } from "../types/query.js";
 import {
-  CreateChannelData,
-  CreateChannelMutate,
-  CreateChannelMutateAsync,
-  CreateChannelVariables,
+  type CreateChannelData,
+  type CreateChannelMutate,
+  type CreateChannelMutateAsync,
+  type CreateChannelVariables,
   createChannelOptions,
-} from "../query/createChannel";
-import { CreateChannelErrorType } from "../actions/createChannel";
-import { Evaluate } from "../types/utils";
+} from "../query/createChannel.js";
+import { type CreateChannelErrorType } from "../actions/createChannel.js";
+import { type Evaluate } from "../types/utils.js";
 
 export type UseCreateChannelParameters<context = unknown> = {
   mutation?: UseMutationParameters<CreateChannelData, CreateChannelErrorType, CreateChannelVariables, context>;

@@ -23,20 +23,10 @@ describe("http", () => {
   });
 
   describe("get", () => {
-    test("returns fetch response", async () => {
-      jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
-
-      const res = await get(client, "path");
-      const { response } = res;
-
-      expect(response).toEqual(httpResponse);
-    });
-
     test("returns parsed body data", async () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
-      const res = await get(client, "path");
-      const { data } = res;
+      const data = await get(client, "path");
 
       expect(data).toEqual(bodyData);
     });
@@ -76,20 +66,18 @@ describe("http", () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
-      const res = await post(client, "path", requestData);
+      const data = await post(client, "path", requestData);
 
-      const { response } = res;
-      expect(response).toEqual(httpResponse);
+      expect(data).toEqual(bodyData);
     });
 
     test("returns parsed body data", async () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
-      const res = await post(client, "path", requestData);
+      const data = await post(client, "path", requestData);
 
-      const { data } = res;
-      expect(data).toEqual(data);
+      expect(data).toEqual(bodyData);
     });
 
     test("constructs fetch request", async () => {
@@ -131,18 +119,15 @@ describe("http", () => {
       // .mockResolvedValueOnce(accepted2)
       // .mockResolvedValueOnce(ok);
 
-      let res: { response: { status: number }; data: { state: string } } = {
-        response: { status: 500 },
-        data: { state: "error" },
+      let data: { state: string } = {
+        state: "error",
       };
-      for await (const generatorResponse of poll<typeof res["data"]>(client, "path", { interval: 100 })) {
-        res = generatorResponse;
-        if (res.response.status === 200) break;
+      for await (const generatorResponse of poll<typeof data>(client, "path", { interval: 100 })) {
+        data = generatorResponse;
+        if (generatorResponse.state === "completed") break;
       }
 
       expect(spy).toHaveBeenCalledTimes(3);
-      const { response, data } = res;
-      expect(response.status).toBe(200);
       expect(data).toEqual({ state: "completed" });
     });
 
@@ -158,8 +143,8 @@ describe("http", () => {
         for await (const _generatorResponse of poll(client, "path", { timeout: 1, interval: 1 })) {
           if (i++ === 1) expect(true).toBe(false);
         }
-      } catch (e) {
-        expect(e.message).toBe("Polling timed out after 1ms");
+      } catch (e: unknown) {
+        expect((e as Error).message).toBe("Polling timed out after 1ms");
       }
     });
   });

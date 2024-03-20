@@ -1,5 +1,7 @@
-import { secondaryButton } from "../styles.css.ts";
-import { signOutButtonContainer, signOutIcon } from "./SignOutButton.css.ts";
+"use client";
+
+import { secondaryButton } from "../styles.css.js";
+import { signOutButtonContainer, signOutIcon } from "./SignOutButton.css.js";
 
 export function SignOutButton({ signOut }: { signOut?: () => void }) {
   return (

@@ -1,5 +1,5 @@
-import { createAppClient, AppClient } from "./createAppClient";
-import { viemConnector } from "./ethereum/viemConnector";
+import { createAppClient, type AppClient } from "./createAppClient.js";
+import { viemConnector } from "./ethereum/viemConnector.js";
 
 describe("createAppClient", () => {
   const config = {

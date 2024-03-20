@@ -1,37 +1,32 @@
-import { AuthClientError } from "@farcaster/auth-client";
-import { Dialog } from "../Dialog/index.ts";
-import { body, siwfHeading, instructions } from "./QRCodeDialog.css.ts";
-import { Button } from "../Button.tsx";
-import { QRCode } from "../QRCode.tsx";
+"use client";
 
-export function QRCodeDialog({
-  open,
-  onClose,
-  url,
-  isError,
-  error,
-}: {
-  open: boolean;
-  onClose: () => void;
-  url: string;
-  isError: boolean;
-  error?: AuthClientError;
-}) {
+import { AuthClientError } from "@farcaster/auth-client";
+import { Dialog } from "../Dialog/index.js";
+import { body, siwfHeading, instructions } from "./QRCodeDialog.css.js";
+import { Button } from "../Button.js";
+import { QRCode } from "../QRCode.js";
+
+export function QRCodeDialog(
+  props: {
+    open: boolean;
+    onClose: () => void;
+  } & (
+    | {
+        variant: "success";
+        url: string;
+      }
+    | {
+        variant: "error";
+        error: AuthClientError;
+      }
+  ),
+) {
   return (
-    <Dialog open={open} titleId="Sign In With Farcaster" onClose={onClose}>
+    <Dialog open={props.open} titleId="Sign In With Farcaster" onClose={props.onClose}>
       <div className="fc-authkit-qrcode-dialog">
         <div className={body}>
-          <Button
-            kind="reset"
-            onClick={onClose}
-            style={{ position: "absolute", top: 19, right: 13 }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={18}
-              height={18}
-              fill="none"
-            >
+          <Button kind="reset" onClick={props.onClose} style={{ position: "absolute", top: 19, right: 13 }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} fill="none">
               <path
                 fill="rgba(0,0,0,0.5)"
                 fillRule="evenodd"
@@ -40,19 +35,15 @@ export function QRCodeDialog({
               />
             </svg>
           </Button>
-          {isError ? (
+          {props.variant === "error" ? (
             <>
               <div className={siwfHeading}>Error</div>
-              <div className={instructions}>
-                {error?.message ?? "Unknown error, please try again."}
-              </div>
+              <div className={instructions}>{props.error.message ?? "Unknown error, please try again."}</div>
             </>
           ) : (
             <>
               <div className={siwfHeading}>Sign in with Farcaster</div>
-              <div className={instructions}>
-                Scan with your phone's camera to continue.
-              </div>
+              <div className={instructions}>Scan with your phone's camera to continue.</div>
               <div
                 style={{
                   display: "flex",
@@ -61,7 +52,7 @@ export function QRCodeDialog({
                   marginBottom: 12,
                 }}
               >
-                <QRCode uri={url} size={264} logoSize={22} logoMargin={12} />
+                <QRCode uri={props.url} size={264} logoSize={22} logoMargin={12} />
               </div>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
@@ -72,15 +63,10 @@ export function QRCodeDialog({
                     fontWeight: 500,
                   }}
                   onClick={() => {
-                    window.location.href = url;
+                    window.location.href = props.url;
                   }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={12}
-                    height={18}
-                    fill="none"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" width={12} height={18} fill="none">
                     <path
                       fill="#7C65C1"
                       fillRule="evenodd"

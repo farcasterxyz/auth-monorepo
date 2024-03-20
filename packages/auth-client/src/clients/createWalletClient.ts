@@ -1,24 +1,18 @@
-import { authenticate, AuthenticateArgs, AuthenticateResponse } from "../actions/auth/authenticate";
-import { parseSignInURI, ParseSignInURIArgs, ParseSignInURIResponse } from "../actions/auth/parseSignInURI";
 import {
-  buildSignInMessage,
-  BuildSignInMessageArgs,
-  BuildSignInMessageResponse,
-} from "../actions/auth/buildSignInMessage";
-import { Client, CreateClientArgs, createClient } from "./createClient";
+  authenticate,
+  type AuthenticateParameters,
+  type AuthenticateReturnType,
+} from "../actions/auth/authenticate.js";
+import { type Client, type CreateClientParameters, createClient } from "./createClient.js";
 
 export interface WalletClient extends Client {
-  authenticate: (args: AuthenticateArgs) => AuthenticateResponse;
-  buildSignInMessage: (args: BuildSignInMessageArgs) => BuildSignInMessageResponse;
-  parseSignInURI: (args: ParseSignInURIArgs) => ParseSignInURIResponse;
+  authenticate: (args: AuthenticateParameters) => Promise<AuthenticateReturnType>;
 }
 
-export const createWalletClient = (config: CreateClientArgs): WalletClient => {
+export const createWalletClient = (config: CreateClientParameters): WalletClient => {
   const client = createClient(config);
   return {
     ...client,
-    authenticate: (args: AuthenticateArgs) => authenticate(client, args),
-    buildSignInMessage: (args: BuildSignInMessageArgs) => buildSignInMessage(client, args),
-    parseSignInURI: (args: ParseSignInURIArgs) => parseSignInURI(client, args),
+    authenticate: (args: AuthenticateParameters) => authenticate(client, args),
   };
 };

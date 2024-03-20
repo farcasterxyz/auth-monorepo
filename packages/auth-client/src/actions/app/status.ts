@@ -1,34 +1,33 @@
-import { AsyncUnwrapped, unwrap } from "../../errors";
-import { Client } from "../../clients/createClient";
-import { get, HttpResponse } from "../../clients/transports/http";
+import { type Client } from "../../clients/createClient.js";
+import { get } from "../../clients/transports/http.js";
 import type { Hex } from "viem";
 
-export interface StatusArgs {
+export type StatusParameters = {
   channelToken: string;
-}
+};
 
-export type StatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>>;
+export type StatusReturnType = PendingStatusReturnType | CompletedStatusReturnType;
 
-export interface StatusAPIResponse {
-  state: "pending" | "completed";
+export type PendingStatusReturnType = { state: "pending"; nonce: string; url: string };
+export type CompletedStatusReturnType = {
+  state: "completed";
+  message: string;
+  signature: `0x${string}`;
+  fid: number;
+  username: string;
+  bio: string;
+  displayName: string;
+  pfpUrl: string;
+  verifications: Hex[];
+  custody: Hex;
   nonce: string;
   url: string;
-  message?: string;
-  signature?: `0x${string}`;
-  fid?: number;
-  username?: string;
-  bio?: string;
-  displayName?: string;
-  pfpUrl?: string;
-  verifications?: Hex[];
-  custody?: Hex;
-}
+};
 
 const path = "channel/status";
 
-export const status = async (client: Client, { channelToken }: StatusArgs): StatusResponse => {
-  const response = await get<StatusAPIResponse>(client, path, {
+export const status = (client: Client, { channelToken }: StatusParameters): Promise<StatusReturnType> => {
+  return get<StatusReturnType>(client, path, {
     authToken: channelToken,
   });
-  return unwrap(response);
 };

@@ -1,4 +1,6 @@
-import { RefObject, useEffect } from "react";
+"use client";
+
+import { type RefObject, useEffect } from "react";
 
 export function useDetectClickOutside<T extends HTMLElement>(ref: RefObject<T>, callback: () => void) {
   useEffect(() => {

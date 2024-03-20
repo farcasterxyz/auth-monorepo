@@ -1,7 +1,7 @@
-import { createWalletClient } from "../../clients/createWalletClient";
+import { createWalletClient } from "../../clients/createWalletClient.js";
 import { jest } from "@jest/globals";
-import { viemConnector } from "../../clients/ethereum/viemConnector";
-import { AuthenticateAPIResponse } from "./authenticate";
+import { viemConnector } from "../../clients/ethereum/viemConnector.js";
+import { type AuthenticateReturnType } from "./authenticate.js";
 
 describe("authenticate", () => {
   const client = createWalletClient({
@@ -21,7 +21,7 @@ describe("authenticate", () => {
   const displayName = "Alice Teapot";
   const pfpUrl = "https://example.com/alice.png";
 
-  const statusResponseDataStub: AuthenticateAPIResponse = {
+  const statusResponseDataStub: AuthenticateReturnType = {
     state: "completed",
     nonce: "abcd1234",
     url: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
@@ -32,11 +32,12 @@ describe("authenticate", () => {
     bio,
     displayName,
     pfpUrl,
+    verifications: [],
+    custody: "0x0000000000000000000000000000000000000000",
   };
 
   test("constructs API request", async () => {
-    const response = new Response(JSON.stringify(statusResponseDataStub));
-    const spy = jest.spyOn(global, "fetch").mockResolvedValue(response);
+    const spy = jest.spyOn(global, "fetch").mockResolvedValue(new Response(JSON.stringify(statusResponseDataStub)));
 
     const res = await client.authenticate({
       authKey: "some-auth-key",
@@ -50,7 +51,7 @@ describe("authenticate", () => {
       pfpUrl,
     });
 
-    expect(res.response).toEqual(response);
+    expect(res).toEqual(statusResponseDataStub);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith("https://relay.farcaster.xyz/v1/channel/authenticate", {
       method: "POST",

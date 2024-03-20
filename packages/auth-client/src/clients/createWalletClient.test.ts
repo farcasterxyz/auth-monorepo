@@ -1,5 +1,5 @@
-import { createWalletClient, WalletClient } from "./createWalletClient";
-import { viemConnector } from "./ethereum/viemConnector";
+import { createWalletClient, type WalletClient } from "./createWalletClient.js";
+import { viemConnector } from "./ethereum/viemConnector.js";
 
 describe("createWalletClient", () => {
   const config = {

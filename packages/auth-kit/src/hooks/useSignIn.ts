@@ -1,111 +1,73 @@
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
+"use client";
+
+import { useConfig } from "../hooks/useConfig.js";
+import { useMutation } from "@tanstack/react-query";
+import { useSignInMessageStore } from "./useSignInMessage.js";
+import { useProfileStore } from "./useProfile.js";
 import { useCallback, useEffect } from "react";
+import { type UseMutationParameters, type UseMutationReturnType } from "../types/query.js";
+import {
+  type SignInData,
+  type SignInMutate,
+  type SignInMutateAsync,
+  type SignInVariables,
+  signInOptions,
+} from "../query/signIn.js";
+import { type SignInErrorType } from "../actions/signIn.js";
+import { type Evaluate } from "../types/utils.js";
 
-import useAppClient from "./useAppClient";
-import useCreateChannel, { UseCreateChannelArgs } from "./useCreateChannel";
-import useAuthKitContext from "./useAuthKitContext";
-import useVerifySignInMessage from "./useVerifySignInMessage";
-import useWatchStatus, { UseWatchStatusData } from "./useWatchStatus";
-
-export type UseSignInArgs = Omit<UseCreateChannelArgs, "onSuccess" | "onError"> & {
-  timeout?: number;
-  interval?: number;
-  onSuccess?: (res: UseSignInData) => void;
-  onStatusResponse?: (statusData: UseWatchStatusData) => void;
-  onError?: (error?: AuthClientError) => void;
+export type UseSignInParameters<context = unknown> = {
+  mutation?: UseMutationParameters<SignInData, SignInErrorType, SignInVariables, context>;
 };
 
-export type UseSignInData = StatusAPIResponse;
+export type UseSignInReturnType<context = unknown> = Evaluate<
+  UseMutationReturnType<SignInData, SignInErrorType, SignInVariables, context> & {
+    signIn: SignInMutate<context>;
+    signInAsync: SignInMutateAsync<context>;
+    signOut: () => void;
+  }
+>;
 
-const defaults = {
-  timeout: 300_000,
-  interval: 1_500,
-};
+export function useSignIn<context = unknown>({
+  mutation,
+}: UseSignInParameters<context> = {}): UseSignInReturnType<context> {
+  const config = useConfig();
 
-export function useSignIn(args: UseSignInArgs) {
-  const appClient = useAppClient();
-  const {
-    onSignIn,
-    onSignOut,
-    config: { domain },
-  } = useAuthKitContext();
-  const { timeout, interval, onSuccess, onStatusResponse, onError, ...createChannelArgs } = {
-    ...defaults,
-    ...args,
-  };
+  const { setProfile, resetProfile } = useProfileStore(({ set, reset }) => ({ setProfile: set, resetProfile: reset }));
+  const { setSignInMessage, resetSignInMessage } = useSignInMessageStore(({ set, reset }) => ({
+    setSignInMessage: set,
+    resetSignInMessage: reset,
+  }));
 
-  const {
-    connect,
-    reconnect,
-    reset,
-    data: { channelToken, url, nonce },
-    isSuccess: isConnected,
-    isError: isCreateChannelError,
-    error: createChannelError,
-  } = useCreateChannel({ ...createChannelArgs, onError });
-
-  const {
-    watch,
-    isPolling,
-    data: statusData,
-    isError: isWatchStatusError,
-    error: watchStatusError,
-  } = useWatchStatus({
-    channelToken,
-    timeout,
-    interval,
-    onError,
-    onResponse: onStatusResponse,
+  const mutationOptions = signInOptions(config);
+  const { mutate, mutateAsync, ...result } = useMutation({
+    ...mutation,
+    ...mutationOptions,
   });
-
-  const {
-    isSuccess,
-    data: { validSignature },
-    isError: isVerifyError,
-    error: verifyError,
-  } = useVerifySignInMessage({
-    nonce,
-    domain,
-    message: statusData?.message,
-    signature: statusData?.signature,
-    onError,
-  });
-
-  const isError = isCreateChannelError || isWatchStatusError || isVerifyError;
-  const error = createChannelError || watchStatusError || verifyError;
-
-  const signIn = useCallback(() => {
-    watch();
-  }, [watch]);
-
-  const signOut = useCallback(() => {
-    onSignOut();
-    reset();
-  }, [onSignOut, reset]);
 
   useEffect(() => {
-    if (isSuccess && statusData && validSignature) {
-      onSignIn(statusData);
-      onSuccess?.(statusData);
-    }
-  }, [isSuccess, statusData, validSignature, onSignIn, onSuccess]);
+    if (result.status !== "success") return;
 
-  return {
-    signIn,
-    signOut,
-    connect,
-    reconnect,
-    isConnected,
-    isSuccess,
-    isPolling,
-    isError,
-    error,
-    channelToken,
-    url,
-    appClient,
-    data: statusData,
-    validSignature,
-  };
+    setSignInMessage({ message: result.data.message, signature: result.data.signature });
+    setProfile({
+      isAuthenticated: result.data.isAuthenticated,
+      fid: result.data.fid,
+      pfpUrl: result.data.pfpUrl,
+      username: result.data.username,
+      displayName: result.data.displayName,
+      bio: result.data.bio,
+      custody: result.data.custody,
+      verifications: result.data.verifications,
+    });
+  }, [setSignInMessage, setProfile, result.data, result.status]);
+
+  const signOut = useCallback(() => {
+    result.reset();
+    resetProfile();
+    resetSignInMessage();
+  }, [result.reset, resetProfile, resetSignInMessage]);
+
+  return { signIn: mutate, signInAsync: mutateAsync, signOut, ...result };
 }
 
 export default useSignIn;

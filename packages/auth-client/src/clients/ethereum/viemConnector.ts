@@ -1,7 +1,7 @@
-import { Hex, createPublicClient, http } from "viem";
+import { type Hex, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
-import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry";
-import { EthereumConnector } from "./connector";
+import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry.js";
+import { type EthereumConnector } from "./connector.js";
 import { JsonRpcProvider } from "ethers";
 
 interface ViemConfigArgs {
@@ -14,7 +14,7 @@ export const viemConnector = (args?: ViemConfigArgs): EthereumConnector => {
     transport: http(args?.rpcUrl),
   });
 
-  const getFid = async (custody: Hex): Promise<BigInt> => {
+  const getFid = async (custody: Hex): Promise<bigint> => {
     return publicClient.readContract({
       address: ID_REGISTRY_ADDRESS,
       abi: idRegistryABI,

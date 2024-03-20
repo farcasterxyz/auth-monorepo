@@ -1,5 +1,3 @@
-import { Result } from "neverthrow";
-
 interface AuthClientErrorOpts {
   message: string;
   cause: Error | AuthClientError;
@@ -61,28 +59,3 @@ export type AuthClientErrorCode =
   | "unavailable"
   /* An unknown error was encountered */
   | "unknown";
-
-/** Type alias for shorthand when handling errors */
-export type AuthClientResult<T> = Result<T, AuthClientError>;
-export type AuthClientAsyncResult<T> = Promise<AuthClientResult<T>>;
-export type NoneOf<T> = {
-  [K in keyof T]: never;
-};
-export type Unwrapped<T> =
-  | (T & {
-      isError: false;
-      error?: never;
-    })
-  | (NoneOf<T> & {
-      isError: true;
-      error?: AuthClientError;
-    });
-export type AsyncUnwrapped<T> = Promise<Unwrapped<T>>;
-
-export const unwrap = <T>(result: AuthClientResult<T>): Unwrapped<T> => {
-  if (result.isErr()) {
-    return { error: result.error, isError: true };
-  } else {
-    return { ...result.value, isError: false };
-  }
-};

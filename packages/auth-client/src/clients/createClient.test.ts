@@ -1,5 +1,5 @@
-import { createClient, Client } from "./createClient";
-import { viemConnector } from "./ethereum/viemConnector";
+import { createClient, type Client } from "./createClient.js";
+import { viemConnector } from "./ethereum/viemConnector.js";
 
 describe("createClient", () => {
   const ethereum = viemConnector();

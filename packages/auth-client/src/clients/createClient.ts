@@ -1,6 +1,6 @@
-import { EthereumConnector } from "./ethereum/connector";
+import { type EthereumConnector } from "./ethereum/connector.js";
 
-export interface CreateClientArgs {
+export interface CreateClientParameters {
   relay?: string;
   version?: string;
   ethereum: EthereumConnector;
@@ -21,7 +21,7 @@ const configDefaults = {
   version: "v1",
 };
 
-export const createClient = ({ ethereum, ...config }: CreateClientArgs) => {
+export const createClient = ({ ethereum, ...config }: CreateClientParameters) => {
   return {
     config: { ...configDefaults, ...config },
     ethereum,

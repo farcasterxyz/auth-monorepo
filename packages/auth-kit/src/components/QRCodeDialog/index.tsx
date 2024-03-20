@@ -1,1 +1,1 @@
-export { QRCodeDialog } from "./QRCodeDialog";
+export { QRCodeDialog } from "./QRCodeDialog.js";

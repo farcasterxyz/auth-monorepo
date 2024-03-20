@@ -42,7 +42,7 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
             ethereum: viemConnector(),
           });
 
-          const verifyResponse = await appClient.verifySignInMessage({
+          const verifyResponse = await appClient.verifySiweMessage({
             message: credentials?.message as string,
             signature: credentials?.signature as `0x${string}`,
             domain: "example.com",

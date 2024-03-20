@@ -1,6 +1,6 @@
-import { createClient } from "../createClient";
-import { viemConnector } from "../ethereum/viemConnector";
-import { get, poll, post } from "./http";
+import { createClient } from "../createClient.js";
+import { viemConnector } from "../ethereum/viemConnector.js";
+import { get, poll, post } from "./http.js";
 import { jest } from "@jest/globals";
 
 describe("http", () => {
@@ -23,20 +23,10 @@ describe("http", () => {
   });
 
   describe("get", () => {
-    test("returns fetch response", async () => {
-      jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
-
-      const res = await get(client, "path");
-      const { response } = res._unsafeUnwrap();
-
-      expect(response).toEqual(httpResponse);
-    });
-
     test("returns parsed body data", async () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
-      const res = await get(client, "path");
-      const { data } = res._unsafeUnwrap();
+      const data = await get(client, "path");
 
       expect(data).toEqual(bodyData);
     });
@@ -76,20 +66,18 @@ describe("http", () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
-      const res = await post(client, "path", requestData);
+      const data = await post(client, "path", requestData);
 
-      const { response } = res._unsafeUnwrap();
-      expect(response).toEqual(httpResponse);
+      expect(data).toEqual(bodyData);
     });
 
     test("returns parsed body data", async () => {
       jest.spyOn(global, "fetch").mockResolvedValue(httpResponse);
 
       const requestData = { data: "request stub" };
-      const res = await post(client, "path", requestData);
+      const data = await post(client, "path", requestData);
 
-      const { data } = res._unsafeUnwrap();
-      expect(data).toEqual(data);
+      expect(data).toEqual(bodyData);
     });
 
     test("constructs fetch request", async () => {
@@ -116,28 +104,30 @@ describe("http", () => {
 
   describe("poll", () => {
     test("polls for success response", async () => {
-      const accepted1 = new Response(JSON.stringify({ state: "pending" }), {
-        status: 202,
+      let i = 0;
+      const spy = jest.spyOn(global, "fetch").mockImplementation(async () => {
+        if (i === 2)
+          return new Response(JSON.stringify({ state: "completed" }), {
+            status: 200,
+          });
+        i++;
+        return new Response(JSON.stringify({ state: "pending" }), {
+          status: 202,
+        });
       });
-      const accepted2 = new Response(JSON.stringify({ state: "pending" }), {
-        status: 202,
-      });
-      const ok = new Response(JSON.stringify({ state: "completed" }), {
-        status: 200,
-      });
+      // .mockResolvedValueOnce(accepted1)
+      // .mockResolvedValueOnce(accepted2)
+      // .mockResolvedValueOnce(ok);
 
-      const spy = jest
-        .spyOn(global, "fetch")
-        .mockResolvedValueOnce(accepted1)
-        .mockResolvedValueOnce(accepted2)
-        .mockResolvedValueOnce(ok);
-
-      const res = await poll(client, "path");
+      let data: { state: string } = {
+        state: "error",
+      };
+      for await (const generatorResponse of poll<typeof data>(client, "path", { interval: 100 })) {
+        data = generatorResponse;
+        if (generatorResponse.state === "completed") break;
+      }
 
       expect(spy).toHaveBeenCalledTimes(3);
-      expect(res.isOk()).toBe(true);
-      const { response, data } = res._unsafeUnwrap();
-      expect(response.status).toBe(200);
       expect(data).toEqual({ state: "completed" });
     });
 
@@ -148,9 +138,14 @@ describe("http", () => {
 
       jest.spyOn(global, "fetch").mockResolvedValue(accepted);
 
-      const res = await poll(client, "path", { timeout: 1, interval: 1 });
-      expect(res.isErr()).toBe(true);
-      expect(res._unsafeUnwrapErr().message).toBe("Polling timed out after 1ms");
+      let i = 0;
+      try {
+        for await (const _generatorResponse of poll(client, "path", { timeout: 1, interval: 1 })) {
+          if (i++ === 1) expect(true).toBe(false);
+        }
+      } catch (e: unknown) {
+        expect((e as Error).message).toBe("Polling timed out after 1ms");
+      }
     });
   });
 });

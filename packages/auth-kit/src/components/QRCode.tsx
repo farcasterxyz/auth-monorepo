@@ -1,3 +1,5 @@
+"use client";
+
 import QRCodeUtil from "qrcode";
 import { type ReactElement, useMemo } from "react";
 import { FarcasterLogo } from "./FarcasterLogo.js";

@@ -1,3 +1,5 @@
+"use client";
+
 import { FarcasterLogo } from "../FarcasterLogo.js";
 import { Button } from "../Button.js";
 

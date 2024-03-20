@@ -1,3 +1,5 @@
+"use client";
+
 import { type PollStatusTillSuccessReturnType } from "@farcaster/auth-client";
 import { create } from "zustand";
 

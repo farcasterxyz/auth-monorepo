@@ -9,8 +9,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const config = createConfig({
   relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
-  siweUri: "http://example.com/login",
-  domain: "example.com",
 });
 
 const queryClient = new QueryClient();

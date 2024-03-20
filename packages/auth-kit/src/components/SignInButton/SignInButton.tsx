@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { AuthClientError, type PollStatusTillSuccessReturnType } from "@farcaster/auth-client";
 import useSignIn from "../../hooks/useSignIn.js";
@@ -22,17 +24,11 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
   const { status: signInStatus, data: signInData, error: signInError, signIn, signOut, reset } = useSignIn();
 
   const {
-    createChannel,
-    createChannelAsync,
     data: createChannelData,
     status: createChannelDataStatus,
     error: createChannelError,
-  } = useCreateChannel();
-
-  // Create channel on mount
-  useEffect(() => {
-    createChannel(signInArgs);
-  }, [createChannel, signInArgs]);
+    refetch: recreateChannel,
+  } = useCreateChannel(signInArgs);
 
   useEffect(() => {
     if (signInStatus === "success") onSignIn?.(signInData);
@@ -44,12 +40,7 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
         signInError.message.startsWith("Polling timed out after")
       ) {
         (async () => {
-          const recreateChannelData = await createChannelAsync({
-            nonce: signInArgs.nonce,
-            notBefore: signInArgs.notBefore,
-            requestId: signInArgs.requestId,
-            expirationTime: signInArgs.expirationTime,
-          });
+          const { data: recreateChannelData } = await recreateChannel();
           if (recreateChannelData?.channelToken) {
             reset();
             signIn({
@@ -63,19 +54,14 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
       }
       onSignInError?.(signInError);
     }
-  }, [signInStatus, onSignIn, signInData, signInError, onSignInError, createChannelAsync, reset, signIn, signInArgs]);
+  }, [signInStatus, onSignIn, signInData, signInError, onSignInError, recreateChannel, reset, signIn, signInArgs]);
 
   const handleSignOut = useCallback(() => {
     setShowDialog(false);
     signOut();
-    createChannel({
-      nonce: signInArgs.nonce,
-      notBefore: signInArgs.notBefore,
-      requestId: signInArgs.requestId,
-      expirationTime: signInArgs.expirationTime,
-    });
+    recreateChannel();
     onSignOut?.();
-  }, [signOut, createChannel, signInArgs, onSignOut]);
+  }, [signOut, recreateChannel, onSignOut]);
 
   const [showDialog, setShowDialog] = useState(false);
 

@@ -1,3 +1,5 @@
+"use client";
+
 import useProfile from "../../hooks/useProfile.js";
 import { SignInButton } from "../SignInButton/index.js";
 import { AuthKitProvider, createConfig } from "../AuthKitProvider/index.js";

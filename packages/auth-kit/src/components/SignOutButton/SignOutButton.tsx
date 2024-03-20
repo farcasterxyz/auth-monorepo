@@ -1,3 +1,5 @@
+"use client";
+
 import { secondaryButton } from "../styles.css.js";
 import { signOutButtonContainer, signOutIcon } from "./SignOutButton.css.js";
 

@@ -1,39 +1,41 @@
 "use client";
 
 import { useConfig } from "../hooks/useConfig.js";
-import { useMutation } from "@tanstack/react-query";
-import { type UseMutationParameters, type UseMutationReturnType } from "../types/query.js";
+import { structuralSharing, useQuery, type UseQueryReturnType } from "../types/query.js";
 import {
   type CreateChannelData,
-  type CreateChannelMutate,
-  type CreateChannelMutateAsync,
-  type CreateChannelVariables,
-  createChannelOptions,
+  type CreateChannelOptions,
+  type CreateChannelQueryFnData,
+  type CreateChannelQueryKey,
+  createChannelQueryOptions,
 } from "../query/createChannel.js";
 import { type CreateChannelErrorType } from "../actions/createChannel.js";
-import { type Evaluate } from "../types/utils.js";
+import { type UnionEvaluate } from "../types/utils.js";
+import type { QueryParameter } from "../types/properties.js";
 
-export type UseCreateChannelParameters<context = unknown> = {
-  mutation?: UseMutationParameters<CreateChannelData, CreateChannelErrorType, CreateChannelVariables, context>;
-};
-
-export type UseCreateChannelReturnType<context = unknown> = Evaluate<
-  UseMutationReturnType<CreateChannelData, CreateChannelErrorType, CreateChannelVariables, context> & {
-    createChannel: CreateChannelMutate<context>;
-    createChannelAsync: CreateChannelMutateAsync<context>;
-  }
+export type UseCreateChannelParameters<selectData = CreateChannelData,> = UnionEvaluate<
+  CreateChannelOptions &
+    QueryParameter<CreateChannelQueryFnData, CreateChannelErrorType, selectData, CreateChannelQueryKey>
+>;
+export type UseCreateChannelReturnType<selectData = CreateChannelData,> = UseQueryReturnType<
+  selectData,
+  CreateChannelErrorType
 >;
 
-export function useCreateChannel<context = unknown>({
-  mutation,
-}: UseCreateChannelParameters<context> = {}): UseCreateChannelReturnType<context> {
+export function useCreateChannel<selectData = CreateChannelData>(
+  parameters: UseCreateChannelParameters<selectData> = {},
+): UseCreateChannelReturnType<selectData> {
+  const { query = {} } = parameters;
   const config = useConfig();
 
-  const mutationOptions = createChannelOptions(config);
-  const { mutate, mutateAsync, ...result } = useMutation({
-    ...mutation,
-    ...mutationOptions,
-  });
+  const options = createChannelQueryOptions(config, parameters);
 
-  return { createChannel: mutate, createChannelAsync: mutateAsync, ...result } as const;
+  const enabled = query.enabled ?? true;
+
+  return useQuery({
+    ...query,
+    ...options,
+    enabled,
+    structuralSharing: query.structuralSharing ?? structuralSharing,
+  });
 }

@@ -1,28 +1,40 @@
-import type { MutateOptions, MutationOptions } from "@tanstack/query-core";
+import type { QueryOptions } from "@tanstack/query-core";
 
-import { type CreateChannelParameters, type CreateChannelReturnType, createChannel } from "../actions/createChannel.js";
-import { type Evaluate } from "../types/utils.js";
+import {
+  type CreateChannelParameters,
+  type CreateChannelReturnType,
+  type CreateChannelErrorType,
+  createChannel,
+} from "../actions/createChannel.js";
+import { type UnionPartial } from "../types/utils.js";
 import { type Config } from "../types/config.js";
+import type { ScopeKeyParameter } from "../types/properties.js";
+import { filterQueryOptions } from "./utils.js";
 
-export function createChannelOptions(config: Config) {
+export type CreateChannelOptions = UnionPartial<CreateChannelParameters> & ScopeKeyParameter;
+
+export function createChannelQueryOptions(config: Config, options: CreateChannelOptions) {
   return {
-    mutationFn(variables) {
-      return createChannel(config, variables);
+    // TODO: Support `signal`
+    // https://tkdodo.eu/blog/why-you-want-react-query#bonus-cancellation
+    async queryFn({ queryKey }) {
+      const { scopeKey: _, ...args } = queryKey[1];
+      return createChannel(config, args);
     },
-    mutationKey: ["createChannel"],
-  } as const satisfies MutationOptions<CreateChannelData, Error, CreateChannelVariables>;
+    queryKey: createChannelQueryKey(options),
+  } as const satisfies QueryOptions<
+    CreateChannelQueryFnData,
+    CreateChannelErrorType,
+    CreateChannelData,
+    CreateChannelQueryKey
+  >;
 }
 
-export type CreateChannelData = Evaluate<CreateChannelReturnType>;
+export type CreateChannelQueryFnData = CreateChannelReturnType;
 
-export type CreateChannelVariables = CreateChannelParameters;
+export type CreateChannelData = CreateChannelQueryFnData;
 
-export type CreateChannelMutate<context = unknown> = (
-  variables: CreateChannelVariables,
-  options?: Evaluate<MutateOptions<CreateChannelData, Error, Evaluate<CreateChannelVariables>, context>> | undefined,
-) => void;
-
-export type CreateChannelMutateAsync<context = unknown> = (
-  variables: CreateChannelVariables,
-  options?: Evaluate<MutateOptions<CreateChannelData, Error, Evaluate<CreateChannelVariables>, context>> | undefined,
-) => Promise<CreateChannelData>;
+export function createChannelQueryKey(options: CreateChannelOptions = {}) {
+  return ["createChannel", filterQueryOptions(options)] as const;
+}
+export type CreateChannelQueryKey = ReturnType<typeof createChannelQueryKey>;

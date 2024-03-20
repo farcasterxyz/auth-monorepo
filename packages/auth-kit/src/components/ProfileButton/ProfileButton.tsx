@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState } from "react";
 import { secondaryButton } from "../styles.css.js";
 import useDetectClickOutside from "../../hooks/useDetectClickOutside.js";

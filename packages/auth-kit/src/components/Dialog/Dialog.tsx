@@ -1,3 +1,5 @@
+"use client";
+
 import { type MouseEventHandler, type ReactNode, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";

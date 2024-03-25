@@ -1,5 +1,5 @@
-import { VerificationsAPIResponse } from "../types";
-import { getConfig } from "./getConfig";
+import { type VerificationsAPIResponse } from "../types/verifications.js";
+import { getConfig } from "./getConfig.js";
 
 const { hubUrl } = getConfig();
 

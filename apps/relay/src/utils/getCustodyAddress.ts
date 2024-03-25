@@ -1,4 +1,4 @@
-import { getConfig } from "./getConfig";
+import { getConfig } from "./getConfig.js";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/core";
 
 const { publicClient } = getConfig();

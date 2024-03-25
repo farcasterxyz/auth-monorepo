@@ -1,5 +1,3 @@
-import { Result } from "neverthrow";
-
 interface RelayErrorOpts {
   message: string;
   cause: Error | RelayError;
@@ -64,7 +62,3 @@ export type RelayErrorCode =
   | "unavailable"
   /* An unknown error was encountered */
   | "unknown";
-
-/** Type alias for shorthand when handling errors */
-export type RelayResult<T> = Result<T, RelayError>;
-export type RelayAsyncResult<T> = Promise<RelayResult<T>>;

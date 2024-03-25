@@ -12,6 +12,8 @@ export class RelayError extends Error {
   /* Indicates if error message can be presented to the user */
   public readonly presentable: boolean = false;
 
+  public override readonly cause: RelayErrorOpts["cause"] | undefined;
+
   /**
    * @param errCode - the ConnectError code for this message
    * @param context - a message, another Error, or a ConnectErrorOpts
@@ -31,8 +33,9 @@ export class RelayError extends Error {
       parsedContext.message = parsedContext.cause?.message || "";
     }
 
-    super(parsedContext.message, { cause: parsedContext.cause });
+    super(parsedContext.message);
 
+    this.cause = parsedContext.cause;
     this.name = "ConnectError";
     this.errCode = errCode;
   }

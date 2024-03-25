@@ -1,4 +1,4 @@
-# `@farcaster/auth-relay`
+# `@farcaster/relay`
 
 Farcaster Auth HTTP relay server.
 

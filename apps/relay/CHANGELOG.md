@@ -1,4 +1,4 @@
-# @farcaster/auth-relay
+# @farcaster/relay
 
 ## 0.0.9
 

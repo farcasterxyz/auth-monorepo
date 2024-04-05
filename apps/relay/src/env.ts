@@ -13,6 +13,7 @@ export const URL_BASE =
   process.env["URL_BASE"] || process.env["CONNECT_URI_BASE"] || "https://warpcast.com/~/sign-in-with-farcaster";
 
 export const HUB_URL = process.env["HUB_URL"] || "https://nemes.farcaster.xyz:2281";
+export const HUB_FALLBACK_URL = process.env["HUB_FALLBACK_URL"] || "https://hoyt.farcaster.xyz:2281";
 
 export const OPTIMISM_RPC_URL = process.env["OPTIMISM_RPC_URL"] || "https://mainnet.optimism.io";
 

@@ -16,7 +16,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@farcaster/core": "^0.13.4",
+    "@farcaster/core": "^0.14.8",
     "@fastify/cors": "^8.4.2",
     "@fastify/rate-limit": "^9.0.1",
     "axios": "^1.6.2",

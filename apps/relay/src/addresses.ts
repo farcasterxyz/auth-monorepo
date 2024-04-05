@@ -6,7 +6,7 @@ import { optimism } from "viem/chains";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/core";
 
 import { RelayAsyncResult, RelayError } from "./errors";
-import { HUB_URL, OPTIMISM_RPC_URL } from "./env";
+import { HUB_URL, HUB_FALLBACK_URL, OPTIMISM_RPC_URL } from "./env";
 
 interface VerificationAddAddressBody {
   address: Hex;
@@ -75,16 +75,29 @@ export class AddressService {
 
   async verifications(fid?: number): RelayAsyncResult<Hex[]> {
     const url = `${HUB_URL}/v1/verificationsByFid?fid=${fid}`;
-    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url), (error) => {
+    const fallbackUrl = `${HUB_FALLBACK_URL}/v1/verificationsByFid?fid=${fid}`;
+
+    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url, { timeout: 1500 }), (error) => {
       return new RelayError("unknown", error as Error);
-    }).andThen((res) => {
-      return ok(
-        res.data.messages.map((message) => {
-          return (
-            message.data?.verificationAddAddressBody?.address || message.data?.verificationAddEthAddressBody?.address
-          );
-        }),
-      );
-    });
+    })
+      .orElse(() => {
+        return ResultAsync.fromPromise(
+          this.http.get<VerificationsAPIResponse>(fallbackUrl, {
+            timeout: 3500,
+          }),
+          (error) => {
+            return new RelayError("unknown", error as Error);
+          },
+        );
+      })
+      .andThen((res) => {
+        return ok(
+          res.data.messages.map((message) => {
+            return (
+              message.data?.verificationAddAddressBody?.address || message.data?.verificationAddEthAddressBody?.address
+            );
+          }),
+        );
+      });
   }
 }

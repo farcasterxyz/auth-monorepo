@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-export const LOG_LEVEL = process.env["LOG_LEVEL"] || "info";
+export const LOG_LEVEL = process.env["LOG_LEVEL"] || "warn";
 
 export const CHANNEL_TTL = Number(process.env["CHANNEL_TTL"] || "3600");
 

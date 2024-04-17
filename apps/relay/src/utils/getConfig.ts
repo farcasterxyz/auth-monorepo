@@ -11,6 +11,7 @@ const schema = z.object({
   host: z.string().optional().default("localhost"),
   baseUrl: z.string().url().optional().default("https://warpcast.com/~/sign-in-with-farcaster"),
   hubUrl: z.string().url().optional().default("https://nemes.farcaster.xyz:2281"),
+  hubFallbackUrl: z.string().url().optional().default("https://hoyt.farcaster.xyz:2281"),
   optimismRpcUrl: z.string().url().optional().default("https://mainnet.optimism.io"),
   authKey: z.string(),
 });
@@ -24,6 +25,7 @@ export function getConfig() {
     host: process.env.HOST,
     baseUrl: process.env.BASE_URL,
     hubUrl: process.env.HUB_URL,
+    hubFallbackUrl: process.env.HUB_FALLBACK_URL,
     optimismRpcUrl: process.env.OPTIMISM_RPC_URL,
     authKey: process.env.AUTH_KEY,
   });

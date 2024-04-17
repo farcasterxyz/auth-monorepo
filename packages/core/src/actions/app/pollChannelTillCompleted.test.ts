@@ -2,7 +2,7 @@ import { createAppClient } from "../../clients/createAppClient.js";
 import { jest } from "@jest/globals";
 import { viemConnector } from "../../clients/ethereum/viemConnector.js";
 
-describe("session", () => {
+describe("channel", () => {
   const client = createAppClient({
     ethereum: viemConnector(),
   });
@@ -11,7 +11,7 @@ describe("session", () => {
     jest.restoreAllMocks();
   });
 
-  test("polls for session changes", async () => {
+  test("polls for channel changes", async () => {
     const pending1 = new Response(JSON.stringify({ state: "pending" }), {
       status: 202,
     });
@@ -25,8 +25,8 @@ describe("session", () => {
       .mockResolvedValueOnce(pending2)
       .mockResolvedValueOnce(completed);
 
-    const res = await client.pollSessionTillCompleted({
-      sessionToken: "some-session-token",
+    const res = await client.pollChannelTillCompleted({
+      channelToken: "some-channel-token",
     });
 
     expect(res).toEqual({ state: "completed" });

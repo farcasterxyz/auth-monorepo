@@ -110,7 +110,7 @@ importers:
     dependencies:
       '@farcaster/auth-kit':
         specifier: workspace:*
-        version: link:../../packages/auth-kit
+        version: link:../../packages/react
       '@tanstack/react-query':
         specifier: ^5.28.8
         version: 5.28.8(react@18.2.0)
@@ -162,7 +162,7 @@ importers:
     dependencies:
       '@farcaster/auth-kit':
         specifier: workspace:*
-        version: link:../../packages/auth-kit
+        version: link:../../packages/react
       '@tanstack/react-query':
         specifier: ^5.28.8
         version: 5.28.8(react@18.2.0)
@@ -198,7 +198,7 @@ importers:
         specifier: ^5.4.3
         version: 5.4.3
 
-  packages/auth-client:
+  packages/core:
     dependencies:
       '@farcaster/relay':
         specifier: workspace:*
@@ -217,11 +217,11 @@ importers:
         specifier: ^1.21.4
         version: 1.21.4(typescript@5.4.3)(zod@3.22.4)
 
-  packages/auth-kit:
+  packages/react:
     dependencies:
       '@farcaster/auth-client':
         specifier: workspace:*
-        version: link:../auth-client
+        version: link:../core
       '@vanilla-extract/css':
         specifier: ^1.14.1
         version: 1.14.1

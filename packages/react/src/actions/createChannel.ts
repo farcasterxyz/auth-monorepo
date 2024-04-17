@@ -1,27 +1,27 @@
 import {
   AuthClientError,
-  type CreateSessionParameters as client_CreateSessionParameters,
-  type CreateSessionReturnType as client_CreateSessionReturnType,
+  type CreateChannelParameters as client_CreateChannelParameters,
+  type CreateChannelReturnType as client_CreateChannelReturnType,
 } from "@farcaster/auth-client";
 import { type Config } from "../types/config.js";
 import type { Omit } from "../types/utils.js";
 
-export type CreateSessionParameters = Omit<client_CreateSessionParameters, "nonce"> & {
+export type CreateChannelParameters = Omit<client_CreateChannelParameters, "nonce"> & {
   nonce?: string | (() => Promise<string>);
 };
 
-export type CreateSessionReturnType = client_CreateSessionReturnType;
-export type CreateSessionErrorType = AuthClientError;
+export type CreateChannelReturnType = client_CreateChannelReturnType;
+export type CreateChannelErrorType = AuthClientError;
 
-export async function createSession(
+export async function createChannel(
   config: Config,
-  parameters: CreateSessionParameters,
-): Promise<CreateSessionReturnType> {
+  parameters: CreateChannelParameters,
+): Promise<CreateChannelReturnType> {
   const { siweUri, domain } = config;
   const { nonce, expirationTime, notBefore, requestId } = parameters;
 
   const nonceVal = typeof nonce === "function" ? await nonce() : nonce;
-  return await config.appClient.createSession({
+  return await config.appClient.createChannel({
     nonce: nonceVal,
     siweUri,
     domain,

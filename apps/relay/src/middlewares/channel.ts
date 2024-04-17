@@ -2,30 +2,30 @@ import { createMiddleware } from "hono/factory";
 import { Redis } from "ioredis";
 import { getConfig } from "../utils/getConfig.js";
 import { RelayError } from "../utils/errors.js";
-import { type Session } from "../types/session.js";
+import { type Channel } from "../types/channel.js";
 
 const config = getConfig();
 
-export type SessionVariables = {
-  session: {
-    get: (token: string) => Promise<Session>;
-    update: (token: string, channels: Session) => Promise<void>;
+export type ChannelVariables = {
+  channel: {
+    get: (token: string) => Promise<Channel>;
+    update: (token: string, channels: Channel) => Promise<void>;
     create: (token: string) => Promise<void>;
     delete: (token: string) => Promise<void>;
   };
 };
 
-const { sessionTtl } = getConfig();
+const { channelTtl } = getConfig();
 
-export const session = createMiddleware<{ Variables: SessionVariables }>(async (c, next) => {
+export const channel = createMiddleware<{ Variables: ChannelVariables }>(async (c, next) => {
   const redis = new Redis(config.redisUrl);
 
-  c.set("session", {
+  c.set("channel", {
     get: async (token) => {
       try {
-        const serializedSession = await redis.get(token);
-        if (!serializedSession) throw new RelayError("not_found", "Session not found");
-        return JSON.parse(serializedSession);
+        const serializedChannel = await redis.get(token);
+        if (!serializedChannel) throw new RelayError("not_found", "Channel not found");
+        return JSON.parse(serializedChannel);
       } catch (e) {
         if (e instanceof RelayError) throw e;
 
@@ -34,14 +34,14 @@ export const session = createMiddleware<{ Variables: SessionVariables }>(async (
     },
     create: async (token) => {
       try {
-        await redis.set(token, JSON.stringify({}), "EX", sessionTtl);
+        await redis.set(token, JSON.stringify({}), "EX", channelTtl);
       } catch (e) {
         throw new RelayError("unknown", e as Error);
       }
     },
     update: async (token, channels) => {
       try {
-        await redis.set(token, JSON.stringify(channels), "EX", sessionTtl);
+        await redis.set(token, JSON.stringify(channels), "EX", channelTtl);
       } catch (e) {
         throw new RelayError("unknown", e as Error);
       }

@@ -41,7 +41,7 @@ describe("authenticate", () => {
 
     const res = await client.authenticate({
       authKey: "some-auth-key",
-      sessionToken: "some-session-token",
+      channelToken: "some-channel-token",
       message,
       signature,
       fid,
@@ -66,7 +66,7 @@ describe("authenticate", () => {
       }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer some-session-token",
+        Authorization: "Bearer some-channel-token",
         "X-Farcaster-Auth-Relay-Key": "some-auth-key",
       },
     });

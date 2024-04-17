@@ -1,20 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { AuthClientError, type PollSessionTillCompletedReturnType } from "@farcaster/auth-client";
+import { AuthClientError, type PollChannelTillCompletedReturnType } from "@farcaster/auth-client";
 import useSignIn from "../../hooks/useSignIn.js";
 import { ActionButton } from "../ActionButton/index.js";
 import { ProfileButton } from "../ProfileButton/index.js";
 import { QRCodeDialog } from "../QRCodeDialog/index.js";
 import { isMobile, type MaybePromise } from "../../utils.js";
-import { type CreateSessionParameters } from "../../actions/createSession.js";
+import { type CreateChannelParameters } from "../../actions/createChannel.js";
 import { type SignInParameters } from "../../actions/signIn.js";
 import { type Omit } from "../../types/utils.js";
-import { useCreateSession } from "../../hooks/useCreateSession.js";
+import { useCreateChannel } from "../../hooks/useCreateChannel.js";
 
-type SignInButtonProps = Omit<NonNullable<CreateSessionParameters>, "siweUri" | "domain"> &
-  Omit<SignInParameters, "sessionToken"> & {
-    onSignIn?: (signInData: PollSessionTillCompletedReturnType & { isAuthenticated: boolean }) => MaybePromise<unknown>;
+type SignInButtonProps = Omit<NonNullable<CreateChannelParameters>, "siweUri" | "domain"> &
+  Omit<SignInParameters, "channelToken"> & {
+    onSignIn?: (signInData: PollChannelTillCompletedReturnType & { isAuthenticated: boolean }) => MaybePromise<unknown>;
     onSignOut?: () => MaybePromise<unknown>;
     onSignInError?: (error: unknown) => MaybePromise<unknown>;
     hideSignOut?: boolean;
@@ -24,11 +24,11 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
   const { status: signInStatus, data: signInData, error: signInError, signIn, signOut, reset } = useSignIn();
 
   const {
-    data: createSessionData,
-    status: createSessionDataSession,
-    error: createSessionError,
-    refetch: recreateSession,
-  } = useCreateSession(signInArgs);
+    data: createChannelData,
+    status: createChannelDataChannel,
+    error: createChannelError,
+    refetch: recreateChannel,
+  } = useCreateChannel(signInArgs);
 
   useEffect(() => {
     if (signInStatus === "success") onSignIn?.(signInData);
@@ -40,11 +40,11 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
         signInError.message.startsWith("Polling timed out after")
       ) {
         (async () => {
-          const { data: recreateSessionData } = await recreateSession();
-          if (recreateSessionData?.sessionToken) {
+          const { data: recreateChannelData } = await recreateChannel();
+          if (recreateChannelData?.channelToken) {
             reset();
             signIn({
-              sessionToken: recreateSessionData.sessionToken,
+              channelToken: recreateChannelData.channelToken,
               timeout: signInArgs.timeout,
               interval: signInArgs.interval,
             });
@@ -54,14 +54,14 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
       }
       onSignInError?.(signInError);
     }
-  }, [signInStatus, onSignIn, signInData, signInError, onSignInError, recreateSession, reset, signIn, signInArgs]);
+  }, [signInStatus, onSignIn, signInData, signInError, onSignInError, recreateChannel, reset, signIn, signInArgs]);
 
   const handleSignOut = useCallback(() => {
     setShowDialog(false);
     signOut();
-    recreateSession();
+    recreateChannel();
     onSignOut?.();
-  }, [signOut, recreateSession, onSignOut]);
+  }, [signOut, recreateChannel, onSignOut]);
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -71,12 +71,12 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
     }
     setShowDialog(true);
 
-    if (!createSessionData) throw new Error("Missing `createSessionData`");
-    signIn({ ...signInArgs, sessionToken: createSessionData.sessionToken });
+    if (!createChannelData) throw new Error("Missing `createChannelData`");
+    signIn({ ...signInArgs, channelToken: createChannelData.channelToken });
     if (isMobile()) {
-      window.location.href = createSessionData.url;
+      window.location.href = createChannelData.url;
     }
-  }, [signInStatus, signIn, createSessionData, signInArgs, signOut]);
+  }, [signInStatus, signIn, createChannelData, signInArgs, signOut]);
 
   return (
     <div className="fc-authkit-signin-button">
@@ -84,20 +84,20 @@ export function SignInButton({ hideSignOut, onSignOut, onSignInError, onSignIn, 
         <ProfileButton userData={signInData} signOut={handleSignOut} hideSignOut={!!hideSignOut} />
       ) : (
         <>
-          <ActionButton disabled={createSessionDataSession !== "success"} onClick={onClick} label="Sign in" />
-          {createSessionDataSession === "success" ? (
+          <ActionButton disabled={createChannelDataChannel !== "success"} onClick={onClick} label="Sign in" />
+          {createChannelDataChannel === "success" ? (
             <QRCodeDialog
               variant="success"
               open={showDialog && !isMobile()}
               onClose={() => setShowDialog(false)}
-              url={createSessionData.url}
+              url={createChannelData.url}
             />
-          ) : createSessionDataSession === "error" ? (
+          ) : createChannelDataChannel === "error" ? (
             <QRCodeDialog
               variant="error"
               open={showDialog && !isMobile()}
               onClose={() => setShowDialog(false)}
-              error={createSessionError}
+              error={createChannelError}
             />
           ) : null}
         </>

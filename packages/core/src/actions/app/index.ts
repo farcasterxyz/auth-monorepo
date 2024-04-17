@@ -1,4 +1,4 @@
-export * from "./createSession.js";
-export * from "./session.js";
+export * from "./createChannel.js";
+export * from "./channel.js";
 export * from "./verifySiweMessage.js";
-export * from "./pollSessionTillCompleted.js";
+export * from "./pollChannelTillCompleted.js";

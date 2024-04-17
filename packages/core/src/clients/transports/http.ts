@@ -2,7 +2,7 @@ import { type Client } from "../createClient.js";
 import { AuthClientError } from "../../errors.js";
 
 export interface HttpOpts {
-  sessionToken?: string;
+  channelToken?: string;
   headers?: Record<string, string>;
 }
 
@@ -95,8 +95,8 @@ const getHeaders = (opts?: HttpOpts) => {
   const headers = {
     ...opts?.headers,
   };
-  if (opts?.sessionToken) {
-    headers["Authorization"] = `Bearer ${opts.sessionToken}`;
+  if (opts?.channelToken) {
+    headers["Authorization"] = `Bearer ${opts.channelToken}`;
   }
   return { ...headers, "Content-Type": "application/json" };
 };

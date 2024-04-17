@@ -5,55 +5,55 @@ import { z } from "zod";
 import { generateNonce } from "siwe";
 import { fromZodError } from "zod-validation-error";
 import { auth } from "./middlewares/auth.js";
-import { session as sessionMiddleware } from "./middlewares/session.js";
+import { channel as channelMiddleware } from "./middlewares/channel.js";
 import { getAddresses } from "./utils/getAddresses.js";
 import { getConfig } from "./utils/getConfig.js";
 import { RelayError } from "./utils/errors.js";
-import { sessionCreateSchema } from "./schemas/sessionCreate.js";
-import { sessionAuthenticateSchema } from "./schemas/sessionAuthenticate.js";
-import type { SessionAuthenticateReturnType, SessionCreateReturnType, SessionGetReturnType } from "./types/actions.js";
+import { channelCreateSchema } from "./schemas/channelCreate.js";
+import { channelAuthenticateSchema } from "./schemas/channelAuthenticate.js";
+import type { ChannelAuthenticateReturnType, ChannelCreateReturnType, ChannelGetReturnType } from "./types/actions.js";
 
 const { baseUrl, authKey } = getConfig();
 
-export const session = new Hono().use(
+export const channel = new Hono().use(
   rateLimiter({
     limit: 1000,
   }),
-  sessionMiddleware,
+  channelMiddleware,
 );
 
 function constructUrl(
-  parameters: { sessionToken: string; nonce: string } & z.infer<typeof sessionCreateSchema>,
+  parameters: { channelToken: string; nonce: string } & z.infer<typeof channelCreateSchema>,
 ): string {
   const query = new URLSearchParams(parameters);
   return `${baseUrl}?${query.toString()}`;
 }
 
-session.post("/create", async (c) => {
-  const parseResult = sessionCreateSchema.safeParse(c.req.json());
+channel.post("/create", async (c) => {
+  const parseResult = channelCreateSchema.safeParse(c.req.json());
   if (!parseResult.success) {
     c.status(400);
     return c.json({ error: "Validation error", message: fromZodError(parseResult.error) });
   }
   const body = parseResult.data;
 
-  const sessionToken = randomUUID();
+  const channelToken = randomUUID();
   try {
-    await c.var.session.create(sessionToken);
+    await c.var.channel.create(channelToken);
 
     const nonce = body.nonce ?? generateNonce();
-    const url = constructUrl({ sessionToken, nonce, ...body });
+    const url = constructUrl({ channelToken, nonce, ...body });
 
-    const pendingSession = {
+    const pendingChannel = {
       status: "pending",
       nonce,
       url,
-      sessionToken,
-    } as const satisfies SessionCreateReturnType;
+      channelToken,
+    } as const satisfies ChannelCreateReturnType;
 
-    await c.var.session.update(sessionToken, pendingSession);
+    await c.var.channel.update(channelToken, pendingChannel);
     c.status(201);
-    return c.json(pendingSession);
+    return c.json(pendingChannel);
   } catch (e) {
     if (!(e instanceof RelayError)) throw new Error("Unexpected error");
 
@@ -62,7 +62,7 @@ session.post("/create", async (c) => {
   }
 });
 
-session.post("/authenticate", auth, async (c) => {
+channel.post("/authenticate", auth, async (c) => {
   const reqAuthKey = c.req.header("x-farcaster-auth-relay-key") ?? c.req.header("x-farcaster-connect-auth-key");
   if (reqAuthKey !== authKey) {
     c.status(401);
@@ -70,7 +70,7 @@ session.post("/authenticate", auth, async (c) => {
   }
 
   try {
-    const parseResult = sessionAuthenticateSchema.safeParse(c.req.json());
+    const parseResult = channelAuthenticateSchema.safeParse(c.req.json());
     if (!parseResult.success) {
       c.status(400);
       return c.json({ error: "Validation error", message: fromZodError(parseResult.error) });
@@ -79,10 +79,10 @@ session.post("/authenticate", auth, async (c) => {
 
     const addresses = await getAddresses(fid);
 
-    const session = await c.var.session.get(c.var.sessionToken);
+    const channel = await c.var.channel.get(c.var.channelToken);
 
     const result = {
-      ...session,
+      ...channel,
       status: "completed",
       message,
       signature,
@@ -92,7 +92,7 @@ session.post("/authenticate", auth, async (c) => {
       bio,
       pfpUrl,
       ...addresses,
-    } satisfies SessionAuthenticateReturnType;
+    } satisfies ChannelAuthenticateReturnType;
     c.status(201);
     return c.json(result);
   } catch (e) {
@@ -110,14 +110,21 @@ session.post("/authenticate", auth, async (c) => {
   }
 });
 
-session.get("/", auth, async (c) => {
+channel.get("/", auth, async (c) => {
   try {
-    const session = (await c.var.session.get(c.var.sessionToken)) satisfies SessionGetReturnType;
-    if (session.status === "completed") {
-      return c.json(session);
+    const channel = (await c.var.channel.get(c.var.channelToken)) satisfies ChannelGetReturnType;
+    if (channel.status === "completed") {
+      try {
+        await c.var.channel.delete(c.var.channelToken);
+      } catch (e) {
+        if (!(e instanceof RelayError)) throw new Error("Unexpected error");
+        c.status(500);
+        return c.json({ error: e.message });
+      }
+      return c.json(channel);
     }
     c.status(202);
-    return c.json(session);
+    return c.json(channel);
   } catch (e) {
     if (!(e instanceof RelayError)) throw new Error("Unexpected error");
 

@@ -1,14 +1,14 @@
 import {
-  createSession,
-  type CreateSessionParameters,
-  type CreateSessionReturnType,
-} from "../actions/app/createSession.js";
-import { session, type SessionParameters, type SessionReturnType } from "../actions/app/session.js";
+  createChannel,
+  type CreateChannelParameters,
+  type CreateChannelReturnType,
+} from "../actions/app/createChannel.js";
+import { channel, type ChannelParameters, type ChannelReturnType } from "../actions/app/channel.js";
 import {
-  pollSessionTillCompleted,
-  type PollSessionTillCompletedParameters,
-  type PollSessionTillCompletedReturnType,
-} from "../actions/app/pollSessionTillCompleted.js";
+  pollChannelTillCompleted,
+  type PollChannelTillCompletedParameters,
+  type PollChannelTillCompletedReturnType,
+} from "../actions/app/pollChannelTillCompleted.js";
 import {
   verifySiweMessage,
   type VerifySiweMessageParameters,
@@ -17,9 +17,9 @@ import {
 import { type Client, type CreateClientParameters, createClient } from "./createClient.js";
 
 export interface AppClient extends Client {
-  createSession: (args: CreateSessionParameters) => Promise<CreateSessionReturnType>;
-  session: (args: SessionParameters) => Promise<SessionReturnType>;
-  pollSessionTillCompleted: (args: PollSessionTillCompletedParameters) => Promise<PollSessionTillCompletedReturnType>;
+  createChannel: (args: CreateChannelParameters) => Promise<CreateChannelReturnType>;
+  channel: (args: ChannelParameters) => Promise<ChannelReturnType>;
+  pollChannelTillCompleted: (args: PollChannelTillCompletedParameters) => Promise<PollChannelTillCompletedReturnType>;
   verifySiweMessage: (args: VerifySiweMessageParameters) => Promise<VerifySiweMessageReturnType>;
 }
 
@@ -27,9 +27,9 @@ export const createAppClient = (config: CreateClientParameters): AppClient => {
   const client = createClient(config);
   return {
     ...client,
-    createSession: (args: CreateSessionParameters) => createSession(client, args),
-    session: (args: SessionParameters) => session(client, args),
-    pollSessionTillCompleted: (args: PollSessionTillCompletedParameters) => pollSessionTillCompleted(client, args),
+    createChannel: (args: CreateChannelParameters) => createChannel(client, args),
+    channel: (args: ChannelParameters) => channel(client, args),
+    pollChannelTillCompleted: (args: PollChannelTillCompletedParameters) => pollChannelTillCompleted(client, args),
     verifySiweMessage: (args: VerifySiweMessageParameters) => verifySiweMessage(client, args),
   };
 };

@@ -1,19 +1,19 @@
-import { type SessionAuthenticateParameters, type SessionAuthenticateReturnType } from "@farcaster/relay";
+import { type ChannelAuthenticateParameters, type ChannelAuthenticateReturnType } from "@farcaster/relay";
 import { post } from "../../clients/transports/http.js";
 import { type Client } from "../../clients/createClient.js";
 
-export type AuthenticateParameters = SessionAuthenticateParameters & { sessionToken: string; authKey: string };
+export type AuthenticateParameters = ChannelAuthenticateParameters & { channelToken: string; authKey: string };
 
-export type AuthenticateReturnType = SessionAuthenticateReturnType;
+export type AuthenticateReturnType = ChannelAuthenticateReturnType;
 
-const path = "session/authenticate";
+const path = "channel/authenticate";
 
 export const authenticate = async (
   client: Client,
-  { sessionToken, authKey, ...request }: AuthenticateParameters,
+  { channelToken, authKey, ...request }: AuthenticateParameters,
 ): Promise<AuthenticateReturnType> => {
-  return post<Omit<AuthenticateParameters, "sessionToken" | "authKey">, AuthenticateReturnType>(client, path, request, {
-    sessionToken,
+  return post<Omit<AuthenticateParameters, "channelToken" | "authKey">, AuthenticateReturnType>(client, path, request, {
+    channelToken,
     headers: {
       "X-Farcaster-Auth-Relay-Key": authKey,
     },

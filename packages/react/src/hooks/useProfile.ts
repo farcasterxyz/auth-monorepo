@@ -1,10 +1,10 @@
 "use client";
 
-import { type PollSessionTillCompletedReturnType } from "@farcaster/auth-client";
+import { type PollChannelTillCompletedReturnType } from "@farcaster/auth-client";
 import { create } from "zustand";
 
 export type Profile = Pick<
-  PollSessionTillCompletedReturnType,
+  PollChannelTillCompletedReturnType,
   "fid" | "pfpUrl" | "username" | "displayName" | "bio" | "custody" | "verifications"
 > & { isAuthenticated: boolean };
 

@@ -1,12 +1,12 @@
 import type { z } from "zod";
-import type { CompletedSession, PendingSession, Session } from "./session.js";
-import type { sessionCreateSchema } from "../schemas/sessionCreate.js";
-import type { sessionAuthenticateSchema } from "../schemas/sessionAuthenticate.js";
+import type { CompletedChannel, PendingChannel, Channel } from "./channel.js";
+import type { channelCreateSchema } from "../schemas/channelCreate.js";
+import type { channelAuthenticateSchema } from "../schemas/channelAuthenticate.js";
 
-export type SessionCreateParameters = z.infer<typeof sessionCreateSchema>;
-export type SessionCreateReturnType = PendingSession & { sessionToken: string };
+export type ChannelCreateParameters = z.infer<typeof channelCreateSchema>;
+export type ChannelCreateReturnType = PendingChannel & { channelToken: string };
 
-export type SessionAuthenticateParameters = z.infer<typeof sessionAuthenticateSchema>;
-export type SessionAuthenticateReturnType = CompletedSession;
+export type ChannelAuthenticateParameters = z.infer<typeof channelAuthenticateSchema>;
+export type ChannelAuthenticateReturnType = CompletedChannel;
 
-export type SessionGetReturnType = Session;
+export type ChannelGetReturnType = Channel;

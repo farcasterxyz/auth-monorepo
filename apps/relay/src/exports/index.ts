@@ -1,2 +1,2 @@
 export * from "../types/actions.js";
-export * from "../types/session.js";
+export * from "../types/channel.js";

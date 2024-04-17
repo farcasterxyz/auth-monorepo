@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const sessionCreateSchema = z.object({
+export const channelCreateSchema = z.object({
   siweUri: z.string().url(),
   domain: z.string(),
   nonce: z.string().optional(),
@@ -9,4 +9,4 @@ export const sessionCreateSchema = z.object({
   requestId: z.string().optional(),
 });
 
-export type SessionCreateParameters = z.infer<typeof sessionCreateSchema>;
+export type ChannelCreateParameters = z.infer<typeof channelCreateSchema>;

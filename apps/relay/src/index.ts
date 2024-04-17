@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { session } from "./session.js";
+import { channel } from "./channel.js";
 import { healthcheck } from "./healthcheck.js";
 import { getConfig } from "./utils/getConfig.js";
 
@@ -11,4 +11,4 @@ export const app = new Hono().basePath("/v2");
 app.use(cors({ origin: config.corsOrigin }));
 
 app.route("/healthcheck", healthcheck);
-app.route("/session", session);
+app.route("/channel", channel);

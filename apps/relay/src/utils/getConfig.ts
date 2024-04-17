@@ -6,7 +6,7 @@ import { fromZodError } from "zod-validation-error";
 const schema = z.object({
   corsOrigin: z.string(),
   redisUrl: z.string().url(),
-  sessionTtl: z.coerce.number(),
+  channelTtl: z.coerce.number(),
   port: z.number().optional().default(8000),
   host: z.string().optional().default("localhost"),
   baseUrl: z.string().url().optional().default("https://warpcast.com/~/sign-in-with-farcaster"),
@@ -19,7 +19,7 @@ export function getConfig() {
   const parseResult = schema.safeParse({
     corsOrigin: process.env.CORS_ORIGIN,
     redisUrl: process.env.REDIS_URL,
-    sessionTtl: process.env.SESSION_TTL,
+    channelTtl: process.env.CHANNEL_TTL,
     port: process.env.PORT,
     host: process.env.HOST,
     baseUrl: process.env.BASE_URL,

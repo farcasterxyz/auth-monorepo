@@ -1,7 +1,7 @@
 import { type Hex } from "viem";
 
-export type PendingSession = { status: "pending"; nonce: string; url: string };
-export type CompletedSession = {
+export type PendingChannel = { status: "pending"; nonce: string; url: string };
+export type CompletedChannel = {
   status: "completed";
   message: string;
   signature: `0x${string}`;
@@ -16,4 +16,4 @@ export type CompletedSession = {
   url: string;
 };
 
-export type Session = PendingSession | CompletedSession;
+export type Channel = PendingChannel | CompletedChannel;

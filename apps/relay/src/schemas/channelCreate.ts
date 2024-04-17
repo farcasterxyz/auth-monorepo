@@ -7,6 +7,7 @@ export const channelCreateSchema = z.object({
   notBefore: z.string().optional(),
   expirationTime: z.string().optional(),
   requestId: z.string().optional(),
+  redirectUrl: z.string().optional(),
 });
 
 export type ChannelCreateParameters = z.infer<typeof channelCreateSchema>;

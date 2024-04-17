@@ -21,13 +21,16 @@ export function createConfig(config: Omit<Config, "appClient">): Config {
     ...config,
   };
 
-  const { relay, rpcUrl, version } = authKitConfig;
+  const { relay, rpcUrl, version, provider } = authKitConfig;
 
   const ethereum = viemConnector(rpcUrl ? { rpcUrl } : undefined);
-  const appClient = createAppClient({
-    relay,
-    ethereum,
-    version,
-  });
+  const appClient = createAppClient(
+    {
+      relay,
+      ethereum,
+      version,
+    },
+    provider,
+  );
   return { ...authKitConfig, appClient };
 }

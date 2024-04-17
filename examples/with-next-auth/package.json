@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@farcaster/auth-kit": "workspace:*",
+    "ethers": "^6.12.0",
     "@tanstack/react-query": "^5.28.8",
     "next": "14.0.4",
     "next-auth": "^4.24.7",

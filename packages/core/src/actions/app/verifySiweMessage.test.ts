@@ -3,11 +3,15 @@ import { viemConnector } from "../../clients/ethereum/viemConnector.js";
 import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 import { AuthClientError } from "../../errors.js";
 import { createSiweMessage } from "../../utils/createSiweMessage.js";
+import { JsonRpcProvider } from "ethers";
 
 describe("verifySiweMessage", () => {
-  const client = createAppClient({
-    ethereum: viemConnector(),
-  });
+  const client = createAppClient(
+    {
+      ethereum: viemConnector(),
+    },
+    new JsonRpcProvider("https://mainnet.optimism.io/", 10),
+  );
 
   const account = privateKeyToAccount(generatePrivateKey());
 

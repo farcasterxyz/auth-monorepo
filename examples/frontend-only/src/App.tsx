@@ -1,3 +1,4 @@
+import { JsonRpcProvider } from "ethers";
 import "@farcaster/auth-kit/styles.css";
 import { AuthKitProvider, createConfig, SignInButton, useProfile } from "@farcaster/auth-kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,6 +12,7 @@ const config = createConfig({
   rpcUrl: "https://mainnet.optimism.io",
   domain: "example.com",
   siweUri: "https://example.com/login",
+  provider: new JsonRpcProvider(undefined, 10)
 });
 
 function App() {

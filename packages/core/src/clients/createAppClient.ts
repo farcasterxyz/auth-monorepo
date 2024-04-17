@@ -15,6 +15,7 @@ import {
   type VerifySiweMessageReturnType,
 } from "../actions/app/verifySiweMessage.js";
 import { type Client, type CreateClientParameters, createClient } from "./createClient.js";
+import { type Provider } from "ethers";
 
 export interface AppClient extends Client {
   createChannel: (args: CreateChannelParameters) => Promise<CreateChannelReturnType>;
@@ -23,13 +24,13 @@ export interface AppClient extends Client {
   verifySiweMessage: (args: VerifySiweMessageParameters) => Promise<VerifySiweMessageReturnType>;
 }
 
-export const createAppClient = (config: CreateClientParameters): AppClient => {
+export const createAppClient = (config: CreateClientParameters, provider?: Provider): AppClient => {
   const client = createClient(config);
   return {
     ...client,
     createChannel: (args: CreateChannelParameters) => createChannel(client, args),
     channel: (args: ChannelParameters) => channel(client, args),
     pollChannelTillCompleted: (args: PollChannelTillCompletedParameters) => pollChannelTillCompleted(client, args),
-    verifySiweMessage: (args: VerifySiweMessageParameters) => verifySiweMessage(client, args),
+    verifySiweMessage: (args: VerifySiweMessageParameters) => verifySiweMessage(client, args, provider),
   };
 };

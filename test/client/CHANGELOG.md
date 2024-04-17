@@ -1,5 +1,12 @@
 # client-test
 
+## 0.0.5
+
+### Patch Changes
+
+- 62874a0: - support redirectUrl
+  - remove ethers hard dependency
+
 ## 0.0.4
 
 ### Patch Changes

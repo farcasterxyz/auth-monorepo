@@ -1,5 +1,14 @@
 # @farcaster/auth-kit
 
+## 0.2.2
+
+### Patch Changes
+
+- 62874a0: - support redirectUrl
+  - remove ethers hard dependency
+- Updated dependencies [62874a0]
+  - @farcaster/auth-client@0.1.1
+
 ## 0.2.1
 
 ### Patch Changes

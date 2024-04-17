@@ -50,7 +50,7 @@ function Content() {
         redirect: false,
       });
     },
-    [signIn]
+    []
   );
 
   return (
@@ -60,7 +60,7 @@ function Content() {
           nonce={getNonce}
           onSuccess={handleSuccess}
           onError={() => setError(true)}
-          onSignOut={() => signOut() }
+          onSignOut={() => signOut()}
         />
         {error && <div>Unable to sign in at this time.</div>}
       </div>
@@ -127,7 +127,7 @@ function Profile() {
     </div>
   ) : (
     <p>
-      Click the "Sign in with Farcaster" button above, then scan the QR code to
+      Click the &quot;Sign in with Farcaster&quote; button above, then scan the QR code to
       sign in.
     </p>
   );

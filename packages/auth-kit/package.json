@@ -20,6 +20,7 @@
   "dependencies": {
     "@farcaster/auth-client": "^0.1.0",
     "@vanilla-extract/css": "^1.14.0",
+    "ethers": "^6.12.0",
     "qrcode": "^1.5.3",
     "react-remove-scroll": "^2.5.7"
   },
@@ -34,6 +35,7 @@
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "ethers": "5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.2.2",

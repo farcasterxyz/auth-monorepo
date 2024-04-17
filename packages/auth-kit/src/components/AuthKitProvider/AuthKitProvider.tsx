@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
-import { AppClient, createAppClient, viemConnector } from "@farcaster/auth-client";
+import { AppClient, createAppClient, viemConnector, Provider } from "@farcaster/auth-client";
 import { UseSignInData } from "../../hooks/useSignIn";
 
 export interface AuthKitConfig {
@@ -7,7 +7,9 @@ export interface AuthKitConfig {
   domain?: string;
   siweUri?: string;
   rpcUrl?: string;
+  redirectUrl?: string;
   version?: string;
+  provider?: Provider;
 }
 
 export interface Profile {
@@ -51,15 +53,15 @@ export const AuthKitContext = createContext<AuthKitContextValues>({
   config: configDefaults,
   profile: {},
   signInMessage: {},
-  onSignIn: () => {},
-  onSignOut: () => {},
+  onSignIn: () => { },
+  onSignOut: () => { },
 });
 
 export function AuthKitProvider({
   config,
   children,
 }: {
-  config?: AuthKitConfig;
+  config: AuthKitConfig;
   children: ReactNode;
 }) {
   const [appClient, setAppClient] = useState<AppClient>();
@@ -71,7 +73,7 @@ export function AuthKitProvider({
     ...configDefaults,
     ...config,
   };
-  const { relay, rpcUrl, version } = authKitConfig;
+  const { relay, rpcUrl, version, provider } = authKitConfig;
 
   useEffect(() => {
     const ethereum = rpcUrl ? viemConnector({ rpcUrl }) : viemConnector();
@@ -79,9 +81,9 @@ export function AuthKitProvider({
       relay,
       ethereum,
       version,
-    });
+    }, provider);
     setAppClient(client);
-  }, [relay, rpcUrl, version]);
+  }, [relay, rpcUrl, version, provider]);
 
   const onSignIn = useCallback((signInData: UseSignInData) => {
     const { message, signature, fid, username, bio, displayName, pfpUrl, custody, verifications } = signInData;

@@ -9,7 +9,7 @@ import type { Provider } from "ethers";
 type Hex = `0x${string}`;
 type SignInOpts = {
   getFid: (custody: Hex) => Promise<BigInt>;
-  provider?: Provider;
+  provider?: Provider | undefined;
 };
 export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 

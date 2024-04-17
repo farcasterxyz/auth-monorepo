@@ -12,6 +12,7 @@ interface CreateChannelRequest {
   notBefore?: string;
   expirationTime?: string;
   requestId?: string;
+  redirectUrl?: string;
 }
 
 export interface CreateChannelAPIResponse {

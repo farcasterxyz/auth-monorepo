@@ -27,7 +27,7 @@ export function useSignIn(args: UseSignInArgs) {
   const {
     onSignIn,
     onSignOut,
-    config: { domain },
+    config: { domain, redirectUrl },
   } = useAuthKitContext();
   const { timeout, interval, onSuccess, onStatusResponse, onError, ...createChannelArgs } = {
     ...defaults,
@@ -42,7 +42,7 @@ export function useSignIn(args: UseSignInArgs) {
     isSuccess: isConnected,
     isError: isCreateChannelError,
     error: createChannelError,
-  } = useCreateChannel({ ...createChannelArgs, onError });
+  } = useCreateChannel({ ...createChannelArgs, redirectUrl, onError });
 
   const {
     watch,

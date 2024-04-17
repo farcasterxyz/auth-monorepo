@@ -3,11 +3,15 @@ import { createWalletClient } from "../../clients/createWalletClient";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
 import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 import { AuthClientError } from "../../errors";
+import { JsonRpcProvider } from "ethers";
 
 describe("verifySignInMessage", () => {
-  const client = createAppClient({
-    ethereum: viemConnector(),
-  });
+  const client = createAppClient(
+    {
+      ethereum: viemConnector(),
+    },
+    new JsonRpcProvider("https://mainnet.optimism.io/", 10),
+  );
 
   const walletClient = createWalletClient({
     ethereum: viemConnector(),

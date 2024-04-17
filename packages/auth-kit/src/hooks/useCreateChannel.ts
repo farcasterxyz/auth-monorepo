@@ -9,6 +9,7 @@ export interface UseCreateChannelArgs {
   notBefore?: string;
   expirationTime?: string;
   requestId?: string;
+  redirectUrl?: string;
   onSuccess?: (createChannelData: UseCreateChannelData) => void;
   onError?: (error?: AuthClientError) => void;
 }
@@ -26,6 +27,7 @@ export function useCreateChannel({
   requestId,
   onSuccess,
   onError,
+  redirectUrl,
 }: UseCreateChannelArgs) {
   const { config } = useAuthKitContext();
   const { siweUri, domain } = config;
@@ -53,6 +55,7 @@ export function useCreateChannel({
         notBefore,
         expirationTime,
         requestId,
+        redirectUrl,
       });
       if (isCreateChannelError) {
         setIsError(true);
@@ -80,6 +83,7 @@ export function useCreateChannel({
     requestId,
     onError,
     onSuccess,
+    redirectUrl,
   ]);
 
   useEffect(() => {

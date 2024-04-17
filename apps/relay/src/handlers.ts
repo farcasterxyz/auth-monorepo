@@ -10,6 +10,7 @@ export type CreateChannelRequest = {
   notBefore?: string;
   expirationTime?: string;
   requestId?: string;
+  redirectUrl?: string;
 };
 
 export type AuthenticateRequest = {

@@ -85,12 +85,14 @@ describe("relay server", () => {
       const notBefore = "2023-01-01T00:00:00Z";
       const expirationTime = "2023-12-31T00:00:00Z";
       const requestId = "some-request-id";
+      const redirectUrl = "http://some-redirect-url";
       const response = await http.post(getFullUrl("/v1/channel"), {
         ...channelParams,
         nonce: customNonce,
         notBefore,
         expirationTime,
         requestId,
+        redirectUrl,
       });
 
       expect(response.status).toBe(201);
@@ -103,6 +105,7 @@ describe("relay server", () => {
       expect(params.get("notBefore")).toBe(notBefore);
       expect(params.get("expirationTime")).toBe(expirationTime);
       expect(params.get("requestId")).toBe(requestId);
+      expect(params.get("redirectUrl")).toBe(redirectUrl);
       expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
       expect(nonce).toBe(customNonce);
       expect(url).toBe(connectUri);

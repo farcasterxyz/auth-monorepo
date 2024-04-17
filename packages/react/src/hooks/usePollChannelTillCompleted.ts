@@ -42,7 +42,6 @@ export function usePollChannelTillCompleted<selectData = PollChannelTillComplete
     ...query,
     ...options,
     enabled,
-    refetchOnWindowFocus: false,
     structuralSharing: query.structuralSharing ?? structuralSharing,
   });
 }

@@ -24,6 +24,9 @@ export const createChannelRequestSchema = {
     requestId: {
       type: "string",
     },
+    redirectUrl: {
+      type: "string",
+    },
   },
   required: ["siweUri", "domain"],
   additionalProperties: false,

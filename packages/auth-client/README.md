@@ -24,6 +24,7 @@ You can use an app client to create a Farcaster Auth relay channel, generate a U
 
 ```ts
 import { createAppClient, viemConnector } from "@farcaster/auth-client";
+import { JsonRpcProvider } from "ethers";
 
 const appClient = createAppClient({
   relay: "https://relay.farcaster.xyz",

@@ -1,5 +1,14 @@
 # @farcaster/relay
 
+## 0.0.10
+
+### Patch Changes
+
+- 1265f28: feat: add fallback hub
+- 62874a0: - support redirectUrl
+  - remove ethers hard dependency
+- 72239b1: chore: return response from async handler
+
 ## 0.0.9
 
 ### Patch Changes

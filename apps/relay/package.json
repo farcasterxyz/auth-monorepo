@@ -28,11 +28,13 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@farcaster/core": "^0.13.8",
-    "@fastify/rate-limit": "^9.1.0",
-    "ethers": "^6.11.1",
-    "hono": "^4.1.4",
-    "hono-rate-limiter": "^0.2.2",
+    "@farcaster/core": "^0.14.8",
+    "@fastify/cors": "^8.4.2",
+    "@fastify/rate-limit": "^9.0.1",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.0.8",
+    "fastify": "^4.24.3",
     "ioredis": "^5.3.2",
     "siwe": "^2.1.4",
     "undici": "^6.13.0",
@@ -45,11 +47,5 @@
     "jest": "^29.7.0",
     "tsx": "^4.7.1"
   },
-  "keywords": [
-    "farcaster",
-    "sign-in",
-    "sign-in with farcaster",
-    "siwe",
-    "auth-client"
-  ]
+  "keywords": ["farcaster", "sign-in", "sign-in with farcaster", "siwe", "auth-client"]
 }

@@ -9,6 +9,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const config = createConfig({
   relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
+  domain: 'example.com',
+  siweUri: 'https://example.com/login'
 });
 
 const queryClient = new QueryClient();
@@ -46,7 +48,7 @@ function Content() {
       pfp: res.pfpUrl,
       redirect: false,
     });
-  }, []);
+  }, [signIn]);
 
   return (
     <div>

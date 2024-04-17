@@ -19,7 +19,7 @@ describe("createChannel", () => {
 
   const createChannelResponseDataStub: CreateChannelReturnType = {
     url: "https://some-url",
-    status: "pending",
+    state: "pending",
     nonce,
   };
 

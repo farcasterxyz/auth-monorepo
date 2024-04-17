@@ -8,7 +8,7 @@ export type ChannelParameters = {
 
 export type ChannelReturnType = ChannelGetReturnType;
 
-const path = "channel";
+const path = "channel/status";
 
 export const channel = (client: Client, { channelToken }: ChannelParameters): Promise<ChannelReturnType> => {
   return get<ChannelReturnType>(client, path, {

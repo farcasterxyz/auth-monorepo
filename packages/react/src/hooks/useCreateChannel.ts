@@ -30,7 +30,7 @@ export function useCreateChannel<selectData = CreateChannelData>(
 
   const options = createChannelQueryOptions(config, parameters);
 
-  const enabled = Boolean(parameters.domain && parameters.siweUri && (query.enabled ?? true));
+  const enabled = query.enabled ?? true;
 
   return useQuery({
     ...query,

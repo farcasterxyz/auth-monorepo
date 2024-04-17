@@ -29,7 +29,7 @@ function constructUrl(
   return `${baseUrl}?${query.toString()}`;
 }
 
-channel.post("/create", async (c) => {
+channel.on("POST", ["/channel", "/connect"], async (c) => {
   const parseResult = channelCreateSchema.safeParse(c.req.json());
   if (!parseResult.success) {
     c.status(400);
@@ -45,7 +45,7 @@ channel.post("/create", async (c) => {
     const url = constructUrl({ channelToken, nonce, ...body });
 
     const pendingChannel = {
-      status: "pending",
+      state: "pending",
       nonce,
       url,
       channelToken,
@@ -62,7 +62,7 @@ channel.post("/create", async (c) => {
   }
 });
 
-channel.post("/authenticate", auth, async (c) => {
+channel.post("/(connect|channel)/authenticate", auth, async (c) => {
   const reqAuthKey = c.req.header("x-farcaster-auth-relay-key") ?? c.req.header("x-farcaster-connect-auth-key");
   if (reqAuthKey !== authKey) {
     c.status(401);
@@ -83,7 +83,7 @@ channel.post("/authenticate", auth, async (c) => {
 
     const result = {
       ...channel,
-      status: "completed",
+      state: "completed",
       message,
       signature,
       fid,
@@ -110,10 +110,10 @@ channel.post("/authenticate", auth, async (c) => {
   }
 });
 
-channel.get("/", auth, async (c) => {
+channel.get("/(connect|channel)/status", auth, async (c) => {
   try {
     const channel = (await c.var.channel.get(c.var.channelToken)) satisfies ChannelGetReturnType;
-    if (channel.status === "completed") {
+    if (channel.state === "completed") {
       try {
         await c.var.channel.delete(c.var.channelToken);
       } catch (e) {

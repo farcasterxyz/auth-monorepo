@@ -7,8 +7,8 @@ import { AuthKitProvider, createConfig } from "../AuthKitProvider/index.js";
 export function Demo() {
   const config = createConfig({
     rpcUrl: "https://mainnet.optimism.io",
-    siweUri: "idon;tknowwhattoputhere",
-    domain: "idon;tknowwhattoputhere",
+    siweUri: "https://example.com/login",
+    domain: "example.com",
   });
 
   return (

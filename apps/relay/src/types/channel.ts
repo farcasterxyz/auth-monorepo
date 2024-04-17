@@ -1,8 +1,8 @@
 import { type Hex } from "viem";
 
-export type PendingChannel = { status: "pending"; nonce: string; url: string };
+export type PendingChannel = { state: "pending"; nonce: string; url: string };
 export type CompletedChannel = {
-  status: "completed";
+  state: "completed";
   message: string;
   signature: `0x${string}`;
   fid: number;

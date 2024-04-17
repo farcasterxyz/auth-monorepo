@@ -6,9 +6,10 @@ export interface HttpOpts {
   headers?: Record<string, string>;
 }
 
-export interface PollOpts {
+export interface PollOpts<BodyType> {
   interval?: number;
   timeout?: number;
+  conditionToReturn?: (data: BodyType) => boolean;
 }
 
 export interface HttpResponse<ResponseDataType> {
@@ -69,7 +70,7 @@ export const post = async <BodyType, ResponseDataType>(
 export async function* poll<ResponseDataType>(
   client: Client,
   path: string,
-  pollOpts?: PollOpts,
+  pollOpts?: PollOpts<ResponseDataType>,
   opts?: HttpOpts,
 ): AsyncGenerator<ResponseDataType> {
   const { timeout, interval } = {
@@ -81,6 +82,7 @@ export async function* poll<ResponseDataType>(
 
   while (Date.now() < deadline) {
     const data = await get<ResponseDataType>(client, path, opts);
+    if (pollOpts?.conditionToReturn?.(data)) return data;
     yield data;
     await new Promise((resolve) => setTimeout(resolve, interval));
   }

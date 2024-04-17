@@ -13,7 +13,7 @@ describe("channel", () => {
   });
 
   const channelResponseDataStub: ChannelReturnType = {
-    status: "pending",
+    state: "pending",
     nonce: "abcd1234",
     url: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
   };

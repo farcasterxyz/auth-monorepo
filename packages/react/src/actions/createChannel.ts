@@ -17,8 +17,7 @@ export async function createChannel(
   config: Config,
   parameters: CreateChannelParameters,
 ): Promise<CreateChannelReturnType> {
-  const { siweUri, domain } = config;
-  const { nonce, expirationTime, notBefore, requestId } = parameters;
+  const { nonce, expirationTime, notBefore, requestId, siweUri = config.siweUri, domain = config.domain } = parameters;
 
   const nonceVal = typeof nonce === "function" ? await nonce() : nonce;
   return await config.appClient.createChannel({

@@ -24,7 +24,11 @@ export function createChannelQueryOptions(
       if (!siweUri || !domain) throw new Error("missing siweUri or domain");
       return createChannel(config, { siweUri, domain, ...args });
     },
-    queryKey: createChannelQueryKey(options),
+    queryKey: createChannelQueryKey({
+      ...options,
+      siweUri: options.siweUri ?? config.siweUri,
+      domain: options.domain ?? config.domain,
+    }),
   } as const;
 }
 

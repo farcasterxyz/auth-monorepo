@@ -39,7 +39,6 @@ function Content() {
   }, []);
 
   const handleSuccess = useCallback((res: SignInReturnType) => {
-    console.log(res);
     signIn("credentials", {
       message: res.message,
       signature: res.signature,

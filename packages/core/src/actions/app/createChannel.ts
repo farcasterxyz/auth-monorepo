@@ -6,7 +6,7 @@ export type CreateChannelParameters = ChannelCreateParameters;
 
 export type CreateChannelReturnType = ChannelCreateReturnType;
 
-const path = "sessions/create";
+const path = "channel";
 
 export const createChannel = (
   client: Client,

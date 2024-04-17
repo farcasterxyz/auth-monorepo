@@ -12,7 +12,7 @@ export type PollChannelTillCompletedParameters = {
 
 export type PollChannelTillCompletedReturnType = CompletedChannel;
 
-const path = "channel";
+const path = "channel/status";
 
 export const pollChannelTillCompleted = async (
   client: Client,
@@ -27,10 +27,10 @@ export const pollChannelTillCompleted = async (
     },
     { channelToken: args.channelToken },
   )) {
-    if (polledData.status === "completed") {
+    if (polledData.state === "completed") {
       // type coercing to completed as if the response status is 200
       // it is expected to have a completed status.
-      return polledData as PollChannelTillCompletedReturnType;
+      return polledData;
     }
   }
   // This error should not be thrown, as the `poll` function will throw an error on timeout

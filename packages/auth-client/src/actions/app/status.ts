@@ -10,7 +10,7 @@ export interface StatusArgs {
 export type StatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>>;
 
 export type StatusAPIResponse =
-  | {
+  | { 
       state: "pending";
       nonce: string;
     }

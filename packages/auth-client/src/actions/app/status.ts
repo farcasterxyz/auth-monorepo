@@ -19,10 +19,10 @@ export type StatusAPIResponse = {
   message: string;
   signature: `0x${string}`;
   fid: number;
-  username: string;
-  bio: string;
-  displayName: string;
-  pfpUrl: string;
+  username?: string;
+  bio?: string;
+  displayName?: string;
+  pfpUrl?: string;
   verifications?: Hex[];
   custody?: Hex;
 }

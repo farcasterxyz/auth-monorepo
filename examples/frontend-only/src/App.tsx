@@ -80,9 +80,8 @@ function Profile() {
           <p>
             Hello, {displayName}! Your FID is {fid}.
           </p>
-          <p>
-            Your custody address is: <pre>{custody}</pre>
-          </p>
+          <p>Your custody address is: </p>
+          <pre>{custody}</pre>
         </div>
       ) : (
         <p>

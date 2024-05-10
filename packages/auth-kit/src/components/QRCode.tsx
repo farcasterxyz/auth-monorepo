@@ -40,8 +40,8 @@ export function QRCode({
   const padding = "20";
   const size = sizeProp - parseInt(padding, 10) * 2;
 
-  const dots = useMemo(() => {
-    const dots: ReactElement[] = [];
+  const squares = useMemo(() => {
+    const squares: ReactElement[] = [];
     const matrix = generateMatrix(uri, ecl);
     const cellSize = size / matrix.length;
     const qrList = [
@@ -54,7 +54,7 @@ export function QRCode({
       const x1 = (matrix.length - 7) * cellSize * x;
       const y1 = (matrix.length - 7) * cellSize * y;
       for (let i = 0; i < 3; i++) {
-        dots.push(
+        squares.push(
           <rect
             fill={i % 2 !== 0 ? "white" : "black"}
             height={cellSize * (7 - i * 2)}
@@ -91,13 +91,14 @@ export function QRCode({
                 j < matrixMiddleEnd
               )
             ) {
-              dots.push(
-                <circle
-                  cx={i * cellSize + cellSize / 2}
-                  cy={j * cellSize + cellSize / 2}
+              squares.push(
+                <rect
                   fill="black"
-                  key={`circle-${i}-${j}`}
-                  r={cellSize / 3} // calculate size of single dots
+                  height={cellSize - 0.5}
+                  key={`square-${i}-${j}`}
+                  width={cellSize - 0.5}
+                  x={i * cellSize}
+                  y={j * cellSize}
                 />
               );
             }
@@ -106,7 +107,7 @@ export function QRCode({
       });
     });
 
-    return dots;
+    return squares;
   }, [ecl, logoSize, logoMargin, size, uri]);
 
   const logoPosition = size / 2 - logoSize / 2;
@@ -135,7 +136,7 @@ export function QRCode({
             </clipPath>
           </defs>
           <rect fill="transparent" height={size} width={size} />
-          {dots}
+          {squares}
         </svg>
       </div>
     </div>

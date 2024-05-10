@@ -32,6 +32,7 @@ export function QRCodeDialog({
               height={18}
               fill="none"
             >
+              <title>Sign in With Farcaster</title>
               <path
                 fill="rgba(0,0,0,0.5)"
                 fillRule="evenodd"
@@ -61,7 +62,7 @@ export function QRCodeDialog({
                   marginBottom: 12,
                 }}
               >
-                <QRCode uri={url} size={264} logoSize={22} logoMargin={12} />
+                <QRCode uri={url} size={300} logoSize={28} logoMargin={16} />
               </div>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
@@ -81,6 +82,7 @@ export function QRCodeDialog({
                     height={18}
                     fill="none"
                   >
+                    <title>Sign in With Farcaster QR Code</title>
                     <path
                       fill="#7C65C1"
                       fillRule="evenodd"

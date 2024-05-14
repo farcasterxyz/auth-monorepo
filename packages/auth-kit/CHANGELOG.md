@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.3.0
+
+### Minor Changes
+
+- 951a692: feat: improve QR code legibility
+
 ## 0.2.2
 
 ### Patch Changes

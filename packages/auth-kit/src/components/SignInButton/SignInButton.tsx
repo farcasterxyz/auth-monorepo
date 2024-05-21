@@ -11,12 +11,14 @@ type SignInButtonProps = UseSignInArgs & {
   onSignOut?: () => void;
   debug?: boolean;
   hideSignOut?: boolean;
+  Button?: (props: { onClick: () => void }) => JSX.Element;
 };
 
 export function SignInButton({
   debug,
   hideSignOut,
   onSignOut,
+  Button,
   ...signInArgs
 }: SignInButtonProps) {
   const { onSuccess, onStatusResponse, onError } = signInArgs;
@@ -103,7 +105,10 @@ export function SignInButton({
         />
       ) : (
         <>
-          <ActionButton onClick={onClick} label="Sign in" />
+        { Button
+            ? <Button onClick={onClick} />
+            : <ActionButton onClick={onClick} label="Sign in" />
+        }
           {url && (
             <QRCodeDialog
               open={showDialog && !isMobile()}

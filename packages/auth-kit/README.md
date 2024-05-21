@@ -132,6 +132,30 @@ export const SignIn = ({ nonce }: { nonce: string }) => {
 };
 ```
 
+#### Customizing the `SignInButton` button component
+
+```tsx
+import { SignInButton } from "@farcaster/auth-kit";
+
+export const SignIn = ({ nonce }: { nonce: string }) => {
+  return (
+    <SignInButton
+      nonce={nonce}
+      onSuccess={({ fid, username }) =>
+        console.log(`Hello, ${username}! Your fid is ${fid}.`)
+      }
+
+      Button={({ onClick }) => (
+        <button onClick={onClick}>
+            My custom sign in with farcaster button.
+            Only prop to ensure is onClick
+        </button>
+      )}
+    />
+  );
+};
+```
+
 #### Props
 
 | Prop               | Type                                | Required | Description                                                                         | Default              |

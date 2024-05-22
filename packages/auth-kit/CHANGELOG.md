@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.3.1
+
+### Patch Changes
+
+- 5c0623d: feat: add sign up CTA to modal
+
 ## 0.3.0
 
 ### Minor Changes

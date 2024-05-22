@@ -23,6 +23,17 @@ export const instructions = style({
   color: "rgba(0, 0, 0, 0.5)",
 });
 
+export const signUp = style({
+  textDecoration: "none",
+  color: "#7C65C1",
+});
+
+export const createAccount = style({
+  marginTop: 8,
+  fontSize: 15.5,
+  color: "rgba(0, 0, 0, 0.5)",
+});
+
 export const qrCodeImage = style({
   maxWidth: 480,
   width: "100%",

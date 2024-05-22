@@ -1,6 +1,12 @@
 import { AuthClientError } from "@farcaster/auth-client";
 import { Dialog } from "../Dialog/index.ts";
-import { body, siwfHeading, instructions } from "./QRCodeDialog.css.ts";
+import {
+  body,
+  siwfHeading,
+  instructions,
+  createAccount,
+  signUp
+} from "./QRCodeDialog.css.ts";
 import { Button } from "../Button.tsx";
 import { QRCode } from "../QRCode.tsx";
 
@@ -53,6 +59,9 @@ export function QRCodeDialog({
               <div className={siwfHeading}>Sign in with Farcaster</div>
               <div className={instructions}>
                 Scan with your phone's camera to continue.
+              </div>
+              <div className={createAccount}>
+                <a className={signUp} href="https://warpcast.com/~/signup" target="_blank" rel="noreferrer">Need to create an account?</a>
               </div>
               <div
                 style={{

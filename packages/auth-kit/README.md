@@ -132,20 +132,45 @@ export const SignIn = ({ nonce }: { nonce: string }) => {
 };
 ```
 
+#### Customizing the `SignInButton` button component
+
+```tsx
+import { SignInButton } from "@farcaster/auth-kit";
+
+export const SignIn = ({ nonce }: { nonce: string }) => {
+  return (
+    <SignInButton
+      nonce={nonce}
+      onSuccess={({ fid, username }) =>
+        console.log(`Hello, ${username}! Your fid is ${fid}.`)
+      }
+
+      Button={({ onClick }) => (
+        <button onClick={onClick}>
+            My custom sign in with farcaster button.
+            Only prop to ensure is onClick
+        </button>
+      )}
+    />
+  );
+};
+```
+
 #### Props
 
-| Prop               | Type                                | Required | Description                                                                         | Default              |
-| ------------------ | ----------------------------------- | -------- | ----------------------------------------------------------------------------------- | -------------------- |
-| `timeout`          | `number`                            | No       | Relay server timeout in ms.                                                         | `300000` (5 minutes) |
-| `interval`         | `number`                            | No       | Relay server polling interval in ms.                                                | `1500` (1.5 seconds) |
-| `nonce`            | `string`                            | No       | Random nonce to include in the Sign In With Farcaster message.                      | None                 |
-| `notBefore`        | `string`                            | No       | Time when the SIWF message becomes valid. ISO 8601 datetime string.                 | None                 |
-| `expirationTime`   | `string`                            | No       | Time when the SIWF message expires. ISO 8601 datetime string.                       | None                 |
-| `requestId`        | `string`                            | No       | An optional system specific ID to include in the SIWF message.                      | None                 |
-| `onSuccess`        | `(res: UseSignInData) => void`      | No       | Callback invoked when sign in is complete and the user is authenticated.            | None                 |
-| `onStatusResponse` | `(res: UseWatchStatusData) => void` | No       | Callback invoked when the component receives a status update from the relay server. | None                 |
-| `onError`          | `(error: AuthClientError) => void`  | No       | Error callback function.                                                            | None                 |
-| `debug`            | `boolean`                           | No       | Render a debug panel displaying internal AuthKit state.                             | `false`              |
+| Prop               | Type                                       | Required | Description                                                                         | Default              |
+| ------------------ | ------------------------------------------ | -------- | ----------------------------------------------------------------------------------- | -------------------- |
+| `Button`           | `({ onClick: () => void }) => JSX.Element` | No       | Pass in custom button component
+| `timeout`          | `number`                                   | No       | Relay server timeout in ms.                                                         | `300000` (5 minutes) |
+| `interval`         | `number`                                   | No       | Relay server polling interval in ms.                                                | `1500` (1.5 seconds) |
+| `nonce`            | `string`                                   | No       | Random nonce to include in the Sign In With Farcaster message.                      | None                 |
+| `notBefore`        | `string`                                   | No       | Time when the SIWF message becomes valid. ISO 8601 datetime string.                 | None                 |
+| `expirationTime`   | `string`                                   | No       | Time when the SIWF message expires. ISO 8601 datetime string.                       | None                 |
+| `requestId`        | `string`                                   | No       | An optional system specific ID to include in the SIWF message.                      | None                 |
+| `onSuccess`        | `(res: UseSignInData) => void`             | No       | Callback invoked when sign in is complete and the user is authenticated.            | None                 |
+| `onStatusResponse` | `(res: UseWatchStatusData) => void`        | No       | Callback invoked when the component receives a status update from the relay server. | None                 |
+| `onError`          | `(error: AuthClientError) => void`         | No       | Error callback function.                                                            | None                 |
+| `debug`            | `boolean`                                  | No       | Render a debug panel displaying internal AuthKit state.                             | `false`              |
 
 ## Hooks
 

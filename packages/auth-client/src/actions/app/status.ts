@@ -9,13 +9,16 @@ export interface StatusArgs {
 
 export type StatusResponse = AsyncUnwrapped<HttpResponse<StatusAPIResponse>>;
 
-export interface StatusAPIResponse {
-  state: "pending" | "completed";
+export type StatusAPIResponse = {
+  state: "pending";
+  nonce: string;
+} | {
+  state: "completed";
   nonce: string;
   url: string;
-  message?: string;
-  signature?: `0x${string}`;
-  fid?: number;
+  message: string;
+  signature: `0x${string}`;
+  fid: number;
   username?: string;
   bio?: string;
   displayName?: string;

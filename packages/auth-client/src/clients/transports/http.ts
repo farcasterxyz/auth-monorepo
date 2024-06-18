@@ -25,7 +25,7 @@ const defaultPollOpts = {
   interval: 1000,
   timeout: 10000,
   successCode: 200,
-  onResponse: () => {},
+  onResponse: () => { },
 };
 
 export const get = async <ResponseDataType>(
@@ -91,9 +91,9 @@ export const poll = async <ResponseDataType>(
     if (res.isOk()) {
       const { response } = res.value;
       if (response.status === successCode) {
+        onResponse(res.value);
         return ok(res.value);
       }
-      onResponse(res.value);
       await new Promise((resolve) => setTimeout(resolve, interval));
     } else {
       return err(res.error);

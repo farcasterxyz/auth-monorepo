@@ -1,4 +1,4 @@
-# with-next-auth
+# with-next-auth-pages-router
 
 ## 0.1.1
 

@@ -11,6 +11,7 @@ export type CreateChannelRequest = {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+  clientUrl?: string;
 };
 
 export type AuthenticateRequest = {
@@ -39,10 +40,14 @@ export type RelaySession = {
   custody?: Hex;
 };
 
-const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
+const constructUrl = (
+  channelToken: string,
+  nonce: string,
+  { clientUrl, ...extraParams }: CreateChannelRequest,
+): string => {
   const params = { channelToken, nonce, ...extraParams };
   const query = new URLSearchParams(params);
-  return `${URL_BASE}?${query.toString()}`;
+  return `${clientUrl ?? URL_BASE}?${query.toString()}`;
 };
 
 export async function createChannel(request: FastifyRequest<{ Body: CreateChannelRequest }>, reply: FastifyReply) {

@@ -36,6 +36,12 @@ export const button = {
   fontWeight: 600,
   display: "flex",
   alignItems: "center",
+
+  ":disabled": {
+    cursor: "not-allowed",
+    opacity: 0.75,
+  },
+  transition: "opacity 0.2s",
 };
 
 export const resetButton = style({

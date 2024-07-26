@@ -103,7 +103,7 @@ export function SignInButton({
         />
       ) : (
         <>
-          <ActionButton onClick={onClick} label="Sign in" />
+          <ActionButton initializing={!url} onClick={onClick} label={'Sign in' }/>
           {url && (
             <QRCodeDialog
               open={showDialog && !isMobile()}

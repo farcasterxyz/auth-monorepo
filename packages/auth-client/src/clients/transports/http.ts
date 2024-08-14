@@ -90,8 +90,8 @@ export const poll = async <ResponseDataType>(
     const res = await get<ResponseDataType>(client, path, opts);
     if (res.isOk()) {
       const { response } = res.value;
+      onResponse(res.value);
       if (response.status === successCode) {
-        onResponse(res.value);
         return ok(res.value);
       }
       await new Promise((resolve) => setTimeout(resolve, interval));

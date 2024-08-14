@@ -1,5 +1,4 @@
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { JsonRpcProvider } from "ethers";
 import { RelayServer } from "../../../apps/relay/src/server";
 import { createAppClient, createWalletClient } from "../../../packages/auth-client/src/clients";
 import { viemConnector } from "../../../packages/auth-client/src/clients/ethereum/viemConnector";

@@ -1,5 +1,8 @@
 import "dotenv/config";
 
+export const ENVIRONMENT = process.env["ENVIRONMENT"] || process.env["DD_ENV"] || "dev";
+export const SERVICE = process.env["DD_SERVICE"] || "auth-relay";
+
 export const LOG_LEVEL = process.env["LOG_LEVEL"] || "warn";
 
 export const CHANNEL_TTL = Number(process.env["CHANNEL_TTL"] || "3600");

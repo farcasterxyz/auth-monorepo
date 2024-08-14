@@ -35,6 +35,6 @@ describe("status", () => {
     expect(res.response.status).toEqual(200);
     expect(res.data).toEqual({ state: "completed" });
     expect(fetchSpy).toHaveBeenCalledTimes(3);
-    expect(callbackSpy).toHaveBeenCalledTimes(2);
+    expect(callbackSpy).toHaveBeenCalledTimes(3);
   });
 });

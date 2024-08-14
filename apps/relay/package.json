@@ -19,7 +19,7 @@
     "@farcaster/core": "^0.14.8",
     "@fastify/cors": "^8.4.2",
     "@fastify/rate-limit": "^9.0.1",
-    "axios": "^1.6.2",
+    "axios": "^1.7.4",
     "dotenv": "^16.3.1",
     "ethers": "^6.0.8",
     "fastify": "^4.24.3",

@@ -25,7 +25,7 @@ const defaultPollOpts = {
   interval: 1000,
   timeout: 10000,
   successCode: 200,
-  onResponse: () => { },
+  onResponse: () => {},
 };
 
 export const get = async <ResponseDataType>(

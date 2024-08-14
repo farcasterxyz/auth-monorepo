@@ -1,5 +1,5 @@
 {
-  "name": "with-next-auth",
+  "name": "with-next-auth-app-router",
   "version": "0.1.1",
   "private": true,
   "scripts": {
@@ -9,10 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@farcaster/auth-client": "*",
     "@farcaster/auth-kit": "*",
     "ethers": "^6.12.0",
     "next": "14.0.4",
-    "next-auth": "^4.24.5",
+    "next-auth": "^5.0.0-beta.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "viem": "^2.0.3"

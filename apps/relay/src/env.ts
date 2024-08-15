@@ -18,6 +18,7 @@ export const URL_BASE =
 export const HUB_URL = process.env["HUB_URL"] || "https://nemes.farcaster.xyz:2281";
 export const HUB_FALLBACK_URL = process.env["HUB_FALLBACK_URL"] || "https://hoyt.farcaster.xyz:2281";
 
-export const OPTIMISM_RPC_URL = process.env["OPTIMISM_RPC_URL"] || "https://mainnet.optimism.io";
+export const OPTIMISM_RPC_URL =
+  process.env["OPTIMISM_RPC_URL"] || process.env["OP_MAINNET_RPC_URL"] || "https://mainnet.optimism.io";
 
 export const AUTH_KEY = process.env["AUTH_KEY"];

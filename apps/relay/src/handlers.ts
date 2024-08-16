@@ -35,7 +35,7 @@ export type RelaySession = {
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
-  verifications?: Hex[];
+  verifications?: string[];
   custody?: Hex;
 };
 

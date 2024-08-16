@@ -21,7 +21,6 @@
     "@fastify/rate-limit": "^9.0.1",
     "dd-trace": "^5.21.0",
     "dotenv": "^16.3.1",
-    "ethers": "^6.0.8",
     "fastify": "^4.24.3",
     "ioredis": "^5.3.2",
     "neverthrow": "^6.1.0",

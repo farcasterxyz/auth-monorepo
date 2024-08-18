@@ -19,7 +19,7 @@ export interface Profile {
   displayName?: string;
   bio?: string;
   custody?: `0x${string}`;
-  verifications?: `0x${string}`[];
+  verifications?: string[];
 }
 
 export interface SignInMessage {

@@ -372,7 +372,12 @@ describe("relay server", () => {
       const { state, nonce, ...rest } = response.data;
       expect(state).toBe("pending");
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
-      expect(rest).toStrictEqual({});
+      expect(rest).toStrictEqual({
+        signatureParams: {
+          domain: "example.com",
+          siweUri: "https://example.com",
+        },
+      });
     });
 
     test("GET with invalid token", async () => {

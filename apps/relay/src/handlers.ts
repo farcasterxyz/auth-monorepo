@@ -134,11 +134,11 @@ export async function handleError(error: FastifyError, request: FastifyRequest, 
   const { validation, statusCode } = error;
   if (validation) {
     return reply.status(400).send({ error: "Validation error", message: error.message });
-  } else if (statusCode) {
-    reply.code(statusCode);
-    if (statusCode < 500) reply.send({ error: error.message });
+  }
+  if (statusCode && statusCode < 500) {
+    return reply.code(statusCode).send({ error: error.message });
   } else {
-    request.log.error({ err: error, errMsg: error.message, request }, "Error in http request");
+    request.log.error({ err: error, errMsg: error.message, request }, "Server error");
     return reply.code(500).send({ error: error.message });
   }
 }

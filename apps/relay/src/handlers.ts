@@ -58,7 +58,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       nonce,
       url,
       connectUri: url,
-      signatureParams: request.body,
+      signatureParams: { ...request.body, nonce },
     });
     if (update.isOk()) {
       return reply.code(201).send({ channelToken, url, connectUri: url, nonce });

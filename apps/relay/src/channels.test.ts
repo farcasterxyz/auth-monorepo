@@ -27,7 +27,7 @@ describe("channel store", () => {
   describe("open", () => {
     test("opens a channel and returns the token", async () => {
       const channel = await channels.open();
-      expect(channel._unsafeUnwrap()).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
+      expect(channel._unsafeUnwrap()).toMatch(/[2-9A-HJ-NP-Z]{8}/);
     });
   });
 

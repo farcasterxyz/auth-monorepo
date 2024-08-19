@@ -374,6 +374,7 @@ describe("relay server", () => {
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
       expect(rest).toStrictEqual({
         signatureParams: {
+          nonce,
           domain: "example.com",
           siweUri: "https://example.com",
         },

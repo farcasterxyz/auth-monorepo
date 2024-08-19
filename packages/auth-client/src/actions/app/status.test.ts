@@ -16,6 +16,10 @@ describe("status", () => {
     state: "pending",
     nonce: "abcd1234",
     url: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
+    signatureParams: {
+      domain: "example.com",
+      siweUri: "https://example.com/login",
+    },
   };
 
   test("constructs API request", async () => {

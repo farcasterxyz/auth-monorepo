@@ -37,6 +37,7 @@ export type RelaySession = {
   pfpUrl?: string;
   verifications?: string[];
   custody?: Hex;
+  signatureParams: CreateChannelRequest;
 };
 
 const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
@@ -57,6 +58,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       nonce,
       url,
       connectUri: url,
+      signatureParams: request.body,
     });
     if (update.isOk()) {
       return reply.code(201).send({ channelToken, url, connectUri: url, nonce });

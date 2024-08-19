@@ -20,8 +20,17 @@ export interface StatusAPIResponse {
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
-  verifications?: Hex[];
+  verifications?: string[];
   custody?: Hex;
+  signatureParams: {
+    siweUri: string;
+    domain: string;
+    nonce?: string;
+    notBefore?: string;
+    expirationTime?: string;
+    requestId?: string;
+    redirectUrl?: string;
+  };
 }
 
 const path = "channel/status";

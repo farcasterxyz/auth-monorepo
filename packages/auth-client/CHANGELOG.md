@@ -1,5 +1,15 @@
 # @farcaster/auth-client
 
+## 0.2.0
+
+### Minor Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+
+### Patch Changes
+
+- fb69861: fix: call onResponse before return
+
 ## 0.1.1
 
 ### Patch Changes

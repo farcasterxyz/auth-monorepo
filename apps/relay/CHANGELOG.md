@@ -1,5 +1,17 @@
 # @farcaster/auth-relay
 
+## 0.1.0
+
+### Minor Changes
+
+- fb16a2c: chore: remove deprecated routes
+- c4b36cf: chore: add dd-trace
+
+### Patch Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+- 70a4514: chore: add RPC URL env var
+
 ## 0.0.10
 
 ### Patch Changes

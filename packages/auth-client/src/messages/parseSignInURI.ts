@@ -4,7 +4,7 @@ import { SignInMessageParams } from "./build";
 
 export interface ParsedSignInURI {
   channelToken: string;
-  params: Partial<SignInMessageParams> & { redirectUrl?: string };
+  params?: Partial<SignInMessageParams> & { redirectUrl?: string };
 }
 
 export const parseSignInURI = (signInUri: string): AuthClientResult<ParsedSignInURI> => {
@@ -14,17 +14,21 @@ export const parseSignInURI = (signInUri: string): AuthClientResult<ParsedSignIn
   if (!channelToken) {
     return err(validationFail("No channel token provided"));
   }
-  if (!params["nonce"]) {
-    return err(validationFail("No nonce provided"));
+  if (params["nonce"] || params["siweUri"] || params["domain"]) {
+    if (!params["nonce"]) {
+      return err(validationFail("No nonce provided"));
+    }
+    if (!params["siweUri"]) {
+      return err(validationFail("No SIWE URI provided"));
+    }
+    if (!params["domain"]) {
+      return err(validationFail("No domain provided"));
+    }
+    const { siweUri, ...siweParams } = params;
+    return ok({ channelToken, params: { uri: siweUri, ...siweParams } });
+  } else {
+    return ok({ channelToken });
   }
-  if (!params["siweUri"]) {
-    return err(validationFail("No SIWE URI provided"));
-  }
-  if (!params["domain"]) {
-    return err(validationFail("No domain provided"));
-  }
-  const { siweUri, ...siweParams } = params;
-  return ok({ channelToken, params: { uri: siweUri, ...siweParams } });
 };
 
 const validationFail = (message: string): AuthClientError => {

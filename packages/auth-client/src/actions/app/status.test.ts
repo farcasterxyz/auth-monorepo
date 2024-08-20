@@ -20,6 +20,10 @@ describe("status", () => {
       domain: "example.com",
       siweUri: "https://example.com/login",
     },
+    metadata: {
+      ip: "127.0.0.1",
+      userAgent: "Mozilla/5.0",
+    },
   };
 
   test("constructs API request", async () => {

@@ -31,6 +31,10 @@ export interface StatusAPIResponse {
     requestId?: string;
     redirectUrl?: string;
   };
+  metadata: {
+    ip: string;
+    userAgent: string;
+  };
 }
 
 const path = "channel/status";

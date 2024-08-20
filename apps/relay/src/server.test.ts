@@ -378,6 +378,10 @@ describe("relay server", () => {
           domain: "example.com",
           siweUri: "https://example.com",
         },
+        metadata: {
+          ip: "127.0.0.1",
+          userAgent: "axios/1.7.4",
+        },
       });
     });
 

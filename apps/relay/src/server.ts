@@ -24,7 +24,7 @@ interface RelayServerConfig {
 }
 
 export class RelayServer {
-  app = fastify({ logger });
+  app = fastify({ logger, trustProxy: true });
   channels: ChannelStore<RelaySession>;
   addresses: AddressService;
 

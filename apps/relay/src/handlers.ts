@@ -23,6 +23,11 @@ export type AuthenticateRequest = {
   pfpUrl: string;
 };
 
+export type SessionMetadata = {
+  ip: string;
+  userAgent: string;
+};
+
 export type RelaySession = {
   state: "pending" | "completed";
   nonce: string;
@@ -38,6 +43,7 @@ export type RelaySession = {
   verifications?: string[];
   custody?: Hex;
   signatureParams: CreateChannelRequest;
+  metadata: SessionMetadata;
 };
 
 const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
@@ -59,6 +65,10 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       url,
       connectUri: url,
       signatureParams: { ...request.body, nonce },
+      metadata: {
+        userAgent: request.headers["user-agent"] ?? "Unknown",
+        ip: request.ip,
+      },
     });
     if (update.isOk()) {
       return reply.code(201).send({ channelToken, url, connectUri: url, nonce });

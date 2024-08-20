@@ -1,5 +1,12 @@
 # @farcaster/auth-client
 
+## 0.2.1
+
+### Patch Changes
+
+- 92b841c: add request metadata to channel
+- b23079b: allow channel token only in sign in URI
+
 ## 0.2.0
 
 ### Minor Changes

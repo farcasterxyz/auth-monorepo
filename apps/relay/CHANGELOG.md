@@ -1,5 +1,12 @@
 # @farcaster/auth-relay
 
+## 0.1.1
+
+### Patch Changes
+
+- d3d9e63: fix: set generated nonce in signature params
+- 92b841c: add request metadata to channel
+
 ## 0.1.0
 
 ### Minor Changes

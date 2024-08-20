@@ -76,10 +76,6 @@ export class RelayServer {
 
           protectedRoutes.post<{
             Body: AuthenticateRequest;
-          }>("/connect/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
-
-          protectedRoutes.post<{
-            Body: AuthenticateRequest;
           }>("/channel/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
 
           protectedRoutes.get("/channel/status", status);

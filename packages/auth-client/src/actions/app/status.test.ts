@@ -15,7 +15,7 @@ describe("status", () => {
   const statusResponseDataStub: StatusAPIResponse = {
     state: "pending",
     nonce: "abcd1234",
-    url: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
+    url: "https://warpcast.com/~/siwf?channelToken=ABCD2345",
     signatureParams: {
       domain: "example.com",
       siweUri: "https://example.com/login",

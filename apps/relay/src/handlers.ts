@@ -46,8 +46,8 @@ export type RelaySession = {
   metadata: SessionMetadata;
 };
 
-const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
-  const params = { channelToken, nonce, ...extraParams };
+const constructUrl = (channelToken: string): string => {
+  const params = { channelToken };
   const query = new URLSearchParams(params);
   return `${URL_BASE}?${query.toString()}`;
 };
@@ -57,7 +57,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
   if (channel.isOk()) {
     const channelToken = channel.value;
     const nonce = request.body.nonce ?? generateNonce();
-    const url = constructUrl(channelToken, nonce, request.body);
+    const url = constructUrl(channelToken);
 
     const update = await request.channels.update(channelToken, {
       state: "pending",

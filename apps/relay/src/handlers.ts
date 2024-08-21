@@ -1,6 +1,6 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import type { Hex } from "viem";
-import { AUTH_KEY, URL_BASE } from "./env";
+import { AUTH_KEY, DEFAULT_CLIENT_URL_BASE } from "./env";
 import { generateNonce } from "siwe";
 
 export type CreateChannelRequest = {
@@ -11,6 +11,7 @@ export type CreateChannelRequest = {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+  clientUrl?: string;
 };
 
 export type AuthenticateRequest = {
@@ -46,10 +47,14 @@ export type RelaySession = {
   metadata: SessionMetadata;
 };
 
-const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
+const constructUrl = (
+  channelToken: string,
+  nonce: string,
+  { clientUrl, ...extraParams }: CreateChannelRequest,
+): string => {
   const params = { channelToken, nonce, ...extraParams };
   const query = new URLSearchParams(params);
-  return `${URL_BASE}?${query.toString()}`;
+  return `${clientUrl ?? DEFAULT_CLIENT_URL_BASE}?${query.toString()}`;
 };
 
 export async function createChannel(request: FastifyRequest<{ Body: CreateChannelRequest }>, reply: FastifyReply) {

@@ -61,29 +61,36 @@ describe("clients", () => {
 
       // 3. Auth client generates a sign in message
 
-      // 3a. Parse connect URI to get channel token and SIWE message params
-      const { channelToken: token, params } = walletClient.parseSignInURI({
+      // 3a. Parse connect URI to get channel token
+      const { channelToken: token } = walletClient.parseSignInURI({
         uri: url,
       });
       expect(token).toBe(channelToken);
 
-      expect(params.uri).toBe("https://example.com");
+      // 3b. Get signature params from channel
+      const {
+        data: { signatureParams: params },
+      } = await appClient.status({ channelToken });
+
+      expect(params.siweUri).toBe("https://example.com");
       expect(params.domain).toBe("example.com");
       expect(params.nonce).toBe("abcd1234");
 
-      // 3b. Build sign in message
+      const messageParams = { ...params, uri: params.siweUri };
+
+      // 3c. Build sign in message
       const { message: messageString } = walletClient.buildSignInMessage({
-        ...params,
+        ...messageParams,
         address: account.address,
         fid: 1,
       });
 
-      // 3c. Collect user signature
+      // 3d. Collect user signature
       const sig = await account.signMessage({
         message: messageString,
       });
 
-      // 3d. Look up userData
+      // 3e. Look up userData
       const userData = {
         fid: 1,
         username: "alice",
@@ -92,7 +99,7 @@ describe("clients", () => {
         pfpUrl: "https://example.com/alice.png",
       };
 
-      // 3e. Send back signed message
+      // 3f. Send back signed message
       const { response: authResponse } = await walletClient.authenticate({
         channelToken,
         authKey: "farcaster-connect-auth-key",

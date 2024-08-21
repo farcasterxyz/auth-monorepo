@@ -23,6 +23,11 @@ export type AuthenticateRequest = {
   pfpUrl: string;
 };
 
+export type SessionMetadata = {
+  ip: string;
+  userAgent: string;
+};
+
 export type RelaySession = {
   state: "pending" | "completed";
   nonce: string;
@@ -37,6 +42,8 @@ export type RelaySession = {
   pfpUrl?: string;
   verifications?: string[];
   custody?: Hex;
+  signatureParams: CreateChannelRequest;
+  metadata: SessionMetadata;
 };
 
 const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
@@ -57,6 +64,11 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       nonce,
       url,
       connectUri: url,
+      signatureParams: { ...request.body, nonce },
+      metadata: {
+        userAgent: request.headers["user-agent"] ?? "Unknown",
+        ip: request.ip,
+      },
     });
     if (update.isOk()) {
       return reply.code(201).send({ channelToken, url, connectUri: url, nonce });
@@ -134,11 +146,11 @@ export async function handleError(error: FastifyError, request: FastifyRequest, 
   const { validation, statusCode } = error;
   if (validation) {
     return reply.status(400).send({ error: "Validation error", message: error.message });
-  } else if (statusCode) {
-    reply.code(statusCode);
-    if (statusCode < 500) reply.send({ error: error.message });
+  }
+  if (statusCode && statusCode < 500) {
+    return reply.code(statusCode).send({ error: error.message });
   } else {
-    request.log.error({ err: error, errMsg: error.message, request }, "Error in http request");
+    request.log.error({ err: error, errMsg: error.message, request }, "Server error");
     return reply.code(500).send({ error: error.message });
   }
 }

@@ -24,7 +24,7 @@ interface RelayServerConfig {
 }
 
 export class RelayServer {
-  app = fastify({ logger });
+  app = fastify({ logger, trustProxy: true });
   channels: ChannelStore<RelaySession>;
   addresses: AddressService;
 
@@ -73,10 +73,6 @@ export class RelayServer {
               return reply.code(401).send({ error: "Unauthorized " });
             }
           });
-
-          protectedRoutes.post<{
-            Body: AuthenticateRequest;
-          }>("/connect/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
 
           protectedRoutes.post<{
             Body: AuthenticateRequest;

@@ -1,5 +1,24 @@
 # @farcaster/auth-relay
 
+## 0.1.1
+
+### Patch Changes
+
+- d3d9e63: fix: set generated nonce in signature params
+- 92b841c: add request metadata to channel
+
+## 0.1.0
+
+### Minor Changes
+
+- fb16a2c: chore: remove deprecated routes
+- c4b36cf: chore: add dd-trace
+
+### Patch Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+- 70a4514: chore: add RPC URL env var
+
 ## 0.0.10
 
 ### Patch Changes

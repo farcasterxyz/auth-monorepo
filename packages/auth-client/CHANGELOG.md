@@ -1,5 +1,22 @@
 # @farcaster/auth-client
 
+## 0.2.1
+
+### Patch Changes
+
+- 92b841c: add request metadata to channel
+- b23079b: allow channel token only in sign in URI
+
+## 0.2.0
+
+### Minor Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+
+### Patch Changes
+
+- fb69861: fix: call onResponse before return
+
 ## 0.1.1
 
 ### Patch Changes

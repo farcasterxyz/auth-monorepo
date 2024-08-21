@@ -74,7 +74,7 @@ describe("relay server", () => {
 
       expect(response.status).toBe(201);
       const { channelToken, url, connectUri, nonce, ...rest } = response.data;
-      expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
+      expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
       expect(url).toMatch("https://warpcast.com/~/sign-in-with-farcaster");
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
@@ -106,7 +106,7 @@ describe("relay server", () => {
       expect(params.get("expirationTime")).toBe(expirationTime);
       expect(params.get("requestId")).toBe(requestId);
       expect(params.get("redirectUrl")).toBe(redirectUrl);
-      expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
+      expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
       expect(nonce).toBe(customNonce);
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
@@ -372,7 +372,17 @@ describe("relay server", () => {
       const { state, nonce, ...rest } = response.data;
       expect(state).toBe("pending");
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
-      expect(rest).toStrictEqual({});
+      expect(rest).toStrictEqual({
+        signatureParams: {
+          nonce,
+          domain: "example.com",
+          siweUri: "https://example.com",
+        },
+        metadata: {
+          ip: "127.0.0.1",
+          userAgent: "axios/1.7.4",
+        },
+      });
     });
 
     test("GET with invalid token", async () => {

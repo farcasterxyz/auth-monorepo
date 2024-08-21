@@ -1,5 +1,24 @@
 # @farcaster/auth-kit
 
+## 0.5.0
+
+### Minor Changes
+
+- 70825e6: restyle QR code dialog
+
+## 0.4.0
+
+### Minor Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+
+### Patch Changes
+
+- 9d4371f: Fixed Farcaster SVG Logo missing `viewBox` property that led to incorrect logo render.
+- Updated dependencies [4755c6d]
+- Updated dependencies [fb69861]
+  - @farcaster/auth-client@0.2.0
+
 ## 0.3.1
 
 ### Patch Changes

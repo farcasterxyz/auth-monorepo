@@ -36,6 +36,7 @@ export const button = {
   fontWeight: 600,
   display: "flex",
   alignItems: "center",
+  fontFamily: "Inter, sans-serif",
 
   ":disabled": {
     cursor: "not-allowed",
@@ -67,15 +68,6 @@ export const tertiaryButton = style({
   ...button,
   backgroundColor: "transparent",
   color: "#7C65C1",
-});
-
-export const qrCodeContainer = style({
-  borderColor: "rgba(229, 231, 235, 0.333)",
-  padding: 24,
-  backgroundColor: "white",
-  borderWidth: 1,
-  borderStyle: "solid",
-  borderRadius: 12,
 });
 
 export const qrCodeWrapper = style({

@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.3.0
+
+### Minor Changes
+
+- 088f6ca: Drop SIWE params from sign in URLs
+
 ## 0.2.1
 
 ### Patch Changes

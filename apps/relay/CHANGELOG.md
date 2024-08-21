@@ -1,5 +1,11 @@
 # @farcaster/auth-relay
 
+## 0.2.1
+
+### Patch Changes
+
+- 827053c: drop SIWE params in constructUrl
+
 ## 0.2.0
 
 ### Minor Changes

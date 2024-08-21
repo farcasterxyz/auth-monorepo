@@ -35,7 +35,7 @@ export function useCreateChannel({
 
   const [connected, setConnected] = useState<boolean>(false);
   const [channelToken, setChannelToken] = useState<string>();
-  const [url, setUrl] = useState<string>();
+  //const [url, setUrl] = useState<string>();
   const [nonce, setNonce] = useState<string>();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -64,7 +64,7 @@ export function useCreateChannel({
       } else {
         const { channelToken, url, nonce } = data;
         setChannelToken(channelToken);
-        setUrl(url);
+        //setUrl(url);
         setNonce(nonce);
 
         setIsSuccess(true);
@@ -96,11 +96,11 @@ export function useCreateChannel({
 
   const reset = useCallback(() => {
     setChannelToken(undefined);
-    setUrl(undefined);
+    //setUrl(undefined);
     setIsSuccess(false);
     setIsError(false);
     setError(undefined);
-  }, [setChannelToken, setUrl, setIsSuccess, setIsError, setError]);
+  }, [setChannelToken, setIsSuccess, setIsError, setError]);
 
   const reconnect = useCallback(() => {
     reset();
@@ -114,7 +114,11 @@ export function useCreateChannel({
     isSuccess,
     isError,
     error,
-    data: { channelToken, url, nonce },
+    data: {
+      channelToken,
+      url: `https://warpcast.com/~/siwf?channnelToken=${channelToken}`,
+      nonce,
+    },
   };
 }
 

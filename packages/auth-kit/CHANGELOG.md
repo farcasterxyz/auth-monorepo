@@ -1,5 +1,11 @@
 # @farcaster/auth-kit
 
+## 0.5.0
+
+### Minor Changes
+
+- 70825e6: restyle QR code dialog
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @farcaster/auth-relay
 
+## 0.2.0
+
+### Minor Changes
+
+- 088f6ca: Drop SIWE params from sign in URLs
+
 ## 0.1.1
 
 ### Patch Changes

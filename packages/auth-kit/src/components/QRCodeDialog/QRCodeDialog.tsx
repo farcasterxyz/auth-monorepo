@@ -4,8 +4,7 @@ import {
   body,
   siwfHeading,
   instructions,
-  createAccount,
-  signUp
+  qrCodeImage,
 } from "./QRCodeDialog.css.ts";
 import { Button } from "../Button.tsx";
 import { QRCode } from "../QRCode.tsx";
@@ -24,29 +23,9 @@ export function QRCodeDialog({
   error?: AuthClientError;
 }) {
   return (
-    <Dialog open={open} titleId="Sign In With Farcaster" onClose={onClose}>
+    <Dialog open={open} titleId="Sign in with Farcaster" onClose={onClose}>
       <div className="fc-authkit-qrcode-dialog">
         <div className={body}>
-          <Button
-            kind="reset"
-            onClick={onClose}
-            style={{ position: "absolute", top: 19, right: 13 }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={18}
-              height={18}
-              fill="none"
-            >
-              <title>Sign in With Farcaster</title>
-              <path
-                fill="rgba(0,0,0,0.5)"
-                fillRule="evenodd"
-                d="M1.15 1.15a.937.937 0 0 1 1.325 0L9 7.674l6.525-6.524a.937.937 0 1 1 1.325 1.325L10.326 9l6.524 6.525a.937.937 0 0 1-1.325 1.325L9 10.326 2.475 16.85a.938.938 0 0 1-1.325-1.325L7.674 9 1.15 2.475a.937.937 0 0 1 0-1.325Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </Button>
           {isError ? (
             <>
               <div className={siwfHeading}>Error</div>
@@ -58,20 +37,11 @@ export function QRCodeDialog({
             <>
               <div className={siwfHeading}>Sign in with Farcaster</div>
               <div className={instructions}>
-                Scan with your phone's camera to continue.
+                To sign in with Farcaster, scan the code below with your phone's
+                camera.
               </div>
-              <div className={createAccount}>
-                <a className={signUp} href="https://warpcast.com/~/signup" target="_blank" rel="noreferrer">Need to create an account?</a>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: 24,
-                  marginBottom: 12,
-                }}
-              >
-                <QRCode uri={url} size={300} logoSize={28} logoMargin={16} />
+              <div className={qrCodeImage}>
+                <QRCode uri={url} size={200} />
               </div>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button

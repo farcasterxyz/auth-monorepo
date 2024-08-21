@@ -2,24 +2,24 @@ import { style } from "@vanilla-extract/css";
 
 export const body = style({
   backgroundColor: "white",
-  fontFamily: "sans-serif",
+  fontFamily: "Inter, sans-serif",
+  letterSpacing: "-0.09px",
   borderRadius: 12,
-  maxWidth: 360,
+  maxWidth: 405,
   position: "relative",
-  paddingTop: 32,
-  paddingLeft: 32,
-  paddingRight: 32,
-  paddingBottom: 20,
+  padding: 16,
 });
 
 export const siwfHeading = style({
-  fontSize: 22,
+  lineHeight: "32px",
+  fontSize: 24,
   fontWeight: 600,
-  marginBottom: 6,
+  marginBottom: 8,
 });
 
 export const instructions = style({
-  fontSize: 15.5,
+  fontSize: 15,
+  lineHeight: "20px",
   color: "rgba(0, 0, 0, 0.5)",
 });
 
@@ -35,6 +35,14 @@ export const createAccount = style({
 });
 
 export const qrCodeImage = style({
-  maxWidth: 480,
-  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  marginTop: 16,
+  marginBottom: 16,
+  borderColor: "rgba(229, 231, 235, 0.333)",
+  padding: 16,
+  backgroundColor: "white",
+  borderWidth: 1,
+  borderStyle: "solid",
+  borderRadius: 12,
 });

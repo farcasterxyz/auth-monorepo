@@ -52,7 +52,7 @@ export function QRCodeDialog({
                     fontWeight: 500,
                   }}
                   onClick={() => {
-                    window.location.href = url;
+                    window.open(url, "_blank");
                   }}
                 >
                   <svg

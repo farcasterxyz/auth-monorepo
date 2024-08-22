@@ -81,7 +81,7 @@ export function SignInButton({
     setShowDialog(true);
     signIn();
     if (url && isMobile()) {
-      window.location.href = url;
+      window.open(url, "_blank");
     }
   }, [isError, reconnect, signIn, url]);
 

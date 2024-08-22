@@ -75,7 +75,7 @@ describe("relay server", () => {
       expect(response.status).toBe(201);
       const { channelToken, url, connectUri, nonce, ...rest } = response.data;
       expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
-      expect(url).toMatch("https://warpcast.com/~/sign-in-with-farcaster");
+      expect(url).toMatch("https://warpcast.com/~/siwf");
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
     });
@@ -86,7 +86,7 @@ describe("relay server", () => {
       const expirationTime = "2023-12-31T00:00:00Z";
       const requestId = "some-request-id";
       const redirectUrl = "http://some-redirect-url";
-      const response = await http.post(getFullUrl("/v1/channel"), {
+      let response = await http.post(getFullUrl("/v1/channel"), {
         ...channelParams,
         nonce: customNonce,
         notBefore,
@@ -99,17 +99,25 @@ describe("relay server", () => {
       const { channelToken, url, connectUri, nonce, ...rest } = response.data;
       // parse query params from URI
       const params = new URLSearchParams(url.split("?")[1]);
-      expect(params.get("siweUri")).toBe(channelParams.siweUri);
-      expect(params.get("domain")).toBe(channelParams.domain);
-      expect(params.get("nonce")).toBe(customNonce);
-      expect(params.get("notBefore")).toBe(notBefore);
-      expect(params.get("expirationTime")).toBe(expirationTime);
-      expect(params.get("requestId")).toBe(requestId);
-      expect(params.get("redirectUrl")).toBe(redirectUrl);
+      expect(params.get("channelToken")).toBe(channelToken);
       expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
       expect(nonce).toBe(customNonce);
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
+
+      response = await http.get(getFullUrl("/v1/channel/status"), {
+        headers: { Authorization: `Bearer ${channelToken}` },
+      });
+
+      const siweParams = response.data.signatureParams;
+
+      expect(siweParams.siweUri).toBe(channelParams.siweUri);
+      expect(siweParams.domain).toBe(channelParams.domain);
+      expect(siweParams.nonce).toBe(customNonce);
+      expect(siweParams.notBefore).toBe(notBefore);
+      expect(siweParams.expirationTime).toBe(expirationTime);
+      expect(siweParams.requestId).toBe(requestId);
+      expect(siweParams.redirectUrl).toBe(redirectUrl);
     });
 
     test("validates extra SIWE parameters", async () => {

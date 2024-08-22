@@ -1,5 +1,16 @@
 # @farcaster/auth-kit
 
+## 0.6.0
+
+### Minor Changes
+
+- 088f6ca: Drop SIWE params from sign in URLs
+
+### Patch Changes
+
+- Updated dependencies [088f6ca]
+  - @farcaster/auth-client@0.3.0
+
 ## 0.5.0
 
 ### Minor Changes

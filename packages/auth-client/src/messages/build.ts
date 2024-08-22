@@ -2,7 +2,6 @@ import { SiweMessage } from "siwe";
 import { err, ok } from "neverthrow";
 import { AuthClientResult } from "../errors";
 import { validate } from "./validate";
-import { parseSignInURI } from "./parseSignInURI";
 import { STATEMENT, CHAIN_ID } from "./constants";
 
 export type FarcasterResourceParams = {
@@ -27,10 +26,6 @@ export const build = (params: SignInMessageParams): AuthClientResult<BuildRespon
     const siweMessage = valid.value;
     return ok({ siweMessage, message: siweMessage.toMessage() });
   }
-};
-
-export const buildFromSignInURI = (signInUri: string, fid: number): AuthClientResult<BuildResponse> => {
-  return parseSignInURI(signInUri).andThen(({ params }) => build({ ...params, fid }));
 };
 
 const buildFidResource = (fid: number): string => {

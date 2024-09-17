@@ -77,13 +77,13 @@ export class AddressService {
     const url = `${HUB_URL}/v1/verificationsByFid?fid=${fid}`;
     const fallbackUrl = `${HUB_FALLBACK_URL}/v1/verificationsByFid?fid=${fid}`;
 
-    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url, { timeout: 1000 }), (error) => {
+    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url, { timeout: 5000 }), (error) => {
       return new RelayError("unknown", error as Error);
     })
       .orElse(() => {
         return ResultAsync.fromPromise(
           this.http.get<VerificationsAPIResponse>(fallbackUrl, {
-            timeout: 3000,
+            timeout: 5000,
           }),
           (error) => {
             return new RelayError("unknown", error as Error);

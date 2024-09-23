@@ -1,7 +1,7 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import type { Hex } from "viem";
 import { AUTH_KEY, URL_BASE } from "./env";
-import { generateNonce } from "siwe";
+import { generateSiweNonce as generateNonce } from "viem/siwe";
 
 export type CreateChannelRequest = {
   siweUri: string;

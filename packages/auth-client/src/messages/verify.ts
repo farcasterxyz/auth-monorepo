@@ -96,7 +96,6 @@ const verifyFidOwner = async (
   return ResultAsync.fromPromise(fidVerifier(signer), (e) => {
     return new AuthClientError("unavailable", e as Error);
   }).andThen((fid) => {
-    console.log("YOLO VERIFY FID OWNER CHECK", fid, BigInt(message.fid));
     if (fid !== BigInt(message.fid)) {
       return err(
         new AuthClientError("unauthorized", `Invalid resource: signer ${signer} does not own fid ${message.fid}.`),

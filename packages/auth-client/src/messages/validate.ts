@@ -1,21 +1,17 @@
-import { SiweMessage } from "siwe";
-import { Result, err, ok } from "neverthrow";
+import { SiweMessage, validateSiweMessage, parseSiweMessage } from "viem/siwe";
+import { err, fromThrowable, ok } from "neverthrow";
 import { AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
 import { FarcasterResourceParams } from "./build";
+import { InvalidAddressError, isAddress } from "viem";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 
-export const validate = (params: string | Partial<SiweMessage>): AuthClientResult<SiweMessage> => {
-  return Result.fromThrowable(
-    // SiweMessage validates itself when constructed
-    () => new SiweMessage(params),
-    // If construction time validation fails, propagate the error
-    (e) => new AuthClientError("bad_request.validation_failure", e as Error),
-  )()
-    .andThen(validateStatement)
-    .andThen(validateChainId)
-    .andThen(validateResources);
+export const validate = (message: SiweMessage): AuthClientResult<SiweMessage> => {
+  return validateBaseMessage(message)
+    .andThen(() => validateStatement(message))
+    .andThen(() => validateChainId(message))
+    .andThen(() => validateResources(message));
 };
 
 export const parseResources = (message: SiweMessage): AuthClientResult<FarcasterResourceParams> => {
@@ -36,6 +32,17 @@ export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
     return err(new AuthClientError("bad_request.validation_failure", "Invalid fid"));
   }
   return ok(fid);
+};
+
+export const validateBaseMessage = (message: SiweMessage): AuthClientResult<SiweMessage> => {
+  // how tf is it valid tho
+  const valid = validateSiweMessage({ message, ...message });
+  if (!valid) {
+    if (!isAddress(message.address))
+      return err(new AuthClientError("bad_request.validation_failure", "invalid address"));
+    return err(new AuthClientError("bad_request.validation_failure", `Base SIWE message is invalid'`));
+  }
+  return ok(message);
 };
 
 export const validateStatement = (message: SiweMessage): AuthClientResult<SiweMessage> => {

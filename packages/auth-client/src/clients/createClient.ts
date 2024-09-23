@@ -1,5 +1,4 @@
 import { EthereumConnector } from "./ethereum/connector";
-import type { Provider } from "ethers";
 
 export interface CreateClientArgs {
   relay?: string;

@@ -26,15 +26,12 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
-    "neverthrow": "^6.1.0",
-    "siwe": "^2.1.4"
+    "neverthrow": "^6.1.0"
   },
   "peerDependencies": {
-    "ethers": "5.x || 6.x",
     "viem": "1.x || 2.x"
   },
   "devDependencies": {
-    "ethers": "^6.12.0",
-    "viem": "^1.19.11"
+    "viem": "^2.21.12"
   }
 }

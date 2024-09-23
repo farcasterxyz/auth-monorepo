@@ -7,8 +7,8 @@ const siweParams = {
   uri: "https://example.com/login",
   version: "1",
   nonce: "12345678",
-  issuedAt: "2023-10-01T00:00:00.000Z",
-};
+  issuedAt: new Date("2023-10-01T00:00:00"),
+} as const;
 
 const authParams = {
   ...siweParams,
@@ -20,13 +20,14 @@ const authParams = {
 describe("validate", () => {
   test("default parameters are valid", () => {
     const result = validate(authParams);
+    console.log(result.isErr() ? result.error : "");
     expect(result.isOk()).toBe(true);
   });
 
   test("propagates SIWE message errors", () => {
     const result = validate({
       ...authParams,
-      address: "Invalid address",
+      address: "0xInvalid address",
     });
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().errCode).toEqual("bad_request.validation_failure");

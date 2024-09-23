@@ -1,5 +1,6 @@
 import { createWalletClient } from "../../clients/createWalletClient";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
+import { createSiweMessage } from "viem/siwe";
 
 describe("buildSignInMessage", () => {
   const client = createWalletClient({
@@ -13,6 +14,7 @@ describe("buildSignInMessage", () => {
       uri: "https://example.com/login",
       domain: "example.com",
       nonce: "12345678",
+      issuedAt: new Date(),
       fid: 1,
       resources: ["https://example.com/resource"],
     });
@@ -27,6 +29,6 @@ describe("buildSignInMessage", () => {
       nonce: "12345678",
       resources: ["farcaster://fid/1", "https://example.com/resource"],
     });
-    expect(message).toBe(siweMessage.toMessage());
+    expect(message).toBe(createSiweMessage(siweMessage));
   });
 });

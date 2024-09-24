@@ -1,4 +1,4 @@
-import { type Hex, createPublicClient, http, type PublicClient } from "viem";
+import { type Hex, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry";
 import type { EthereumConnector } from "./connector";
@@ -24,7 +24,6 @@ export const viemConnector = (args?: ViemConfigArgs): EthereumConnector => {
 
   return {
     getFid,
-    // https://github.com/wevm/viem/issues/2763
-    viemClient: publicClient as PublicClient,
+    viemClient: publicClient,
   };
 };

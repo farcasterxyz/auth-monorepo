@@ -1,7 +1,7 @@
 import { build } from "./build";
 import { verify } from "./verify";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { type Hex, type PublicClient, zeroAddress, createPublicClient, http } from "viem";
+import { type Hex, zeroAddress, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
 import { parseNonPartialSiweMessage } from "../utils/parseNonPartialSiweMessage";
 
@@ -30,7 +30,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
@@ -53,7 +53,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
@@ -75,7 +75,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
@@ -98,7 +98,7 @@ describe("verify", () => {
   //   const parsedSiweMessage = parseNonPartialSiweMessage(message);
   //   const result = await verify(nonce, domain, parsedSiweMessage, sig, {
   //     getFid,
-  //     client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+  //     client: createPublicClient({ chain: optimism, transport: http() })
   //   });
   //   expect(result.isOk()).toBe(false);
   //   const err = result._unsafeUnwrapErr();
@@ -121,7 +121,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
@@ -144,7 +144,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
@@ -167,7 +167,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
@@ -206,7 +206,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify("mismatched-nonce", domain, parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
@@ -228,7 +228,7 @@ describe("verify", () => {
     const parsedSiweMessage = parseNonPartialSiweMessage(message);
     const result = await verify(nonce, "mismatched-domain", parsedSiweMessage, sig, {
       getFid,
-      client: createPublicClient({ chain: optimism, transport: http() }) as PublicClient,
+      client: createPublicClient({ chain: optimism, transport: http() }),
     });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();

@@ -3,14 +3,15 @@ import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../err
 
 import { validate, parseResources } from "./validate";
 import { FarcasterResourceParams } from "./build";
-import { PublicClient } from "viem";
+import { PublicClient, Transport } from "viem";
 
 import { SiweMessage, createSiweMessage, parseSiweMessage } from "viem/siwe";
+import type { optimism } from "viem/chains";
 
 type Hex = `0x${string}`;
 type SignInOpts = {
   getFid: (custody: Hex) => Promise<bigint>;
-  client: PublicClient;
+  client: PublicClient<Transport, typeof optimism>;
 };
 export type VerifyResponse = SiweMessage & FarcasterResourceParams;
 

@@ -1,7 +1,7 @@
 import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import type { Hex } from "viem";
 import { AUTH_KEY, URL_BASE } from "./env";
-import { generateSiweNonce as generateNonce } from "viem/siwe";
+import { generateSiweNonce } from "viem/siwe";
 
 export type CreateChannelRequest = {
   siweUri: string;
@@ -56,7 +56,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
   const channel = await request.channels.open();
   if (channel.isOk()) {
     const channelToken = channel.value;
-    const nonce = request.body.nonce ?? generateNonce();
+    const nonce = request.body.nonce ?? generateSiweNonce();
     const url = constructUrl(channelToken);
 
     const update = await request.channels.update(channelToken, {

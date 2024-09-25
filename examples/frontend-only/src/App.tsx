@@ -15,7 +15,6 @@ const config = {
 function App() {
   return (
     <main style={{ fontFamily: 'Inter, "Inter Placeholder", sans-serif' }}>
-      {/* @ts-expect-error ethers version type incompat */}
       <AuthKitProvider config={config}>
         <div style={{ position: "fixed", top: "12px", right: "12px" }}>
           <SignInButton />

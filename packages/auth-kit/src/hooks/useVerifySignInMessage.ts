@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AuthClientError } from "@farcaster/auth-client";
 import useAppClient from "./useAppClient";
-import { parseSiweMessage, type SiweMessage } from "viem/siwe";
 
 export interface UseVerifySignInMessageArgs {
   nonce?: string;
@@ -46,7 +45,7 @@ export function useVerifySignInMessage({
         await appClient.verifySignInMessage({
           nonce,
           domain,
-          message: parseSiweMessage(message) as SiweMessage,
+          message,
           signature,
         });
         setValidSignature(true);

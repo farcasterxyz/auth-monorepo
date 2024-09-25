@@ -3,7 +3,7 @@ import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../err
 
 import { validate, parseResources } from "./validate";
 import { FarcasterResourceParams } from "./build";
-import { PublicClient, Transport } from "viem";
+import { ExactPartial, PublicClient, Transport } from "viem";
 
 import { SiweMessage, createSiweMessage, parseSiweMessage } from "viem/siwe";
 import type { optimism } from "viem/chains";
@@ -15,9 +15,6 @@ type SignInOpts = {
 };
 export type VerifyResponse = SiweMessage & FarcasterResourceParams;
 
-// @NOTE: do we actually need this?
-const voidVerifyFid = (_custody: Hex) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
-
 /**
  * Verify signature of a Sign In With Farcaster message. Returns an error if the
  * message is invalid or the signature is invalid.
@@ -25,7 +22,7 @@ const voidVerifyFid = (_custody: Hex) => Promise.reject(new Error("Not implement
 export const verify = async (
   nonce: string,
   domain: string,
-  message: string,
+  message: string | ExactPartial<SiweMessage>,
   signature: Hex,
   options: SignInOpts,
 ): AuthClientAsyncResult<VerifyResponse> => {

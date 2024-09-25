@@ -2,13 +2,13 @@ import { SiweMessage } from "viem/siwe";
 import { Client } from "../../clients/createClient";
 import { VerifyResponse, verify } from "../../messages/verify";
 import { Unwrapped, unwrap } from "../../errors";
-import type { PublicClient, Transport } from "viem";
+import type { ExactPartial, PublicClient, Transport } from "viem";
 import { optimism } from "viem/chains";
 
 export interface VerifySignInMessageArgs {
   nonce: string;
   domain: string;
-  message: string;
+  message: string | ExactPartial<SiweMessage>;
   signature: `0x${string}`;
 }
 

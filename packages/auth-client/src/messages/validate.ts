@@ -7,7 +7,7 @@ import { ExactPartial, isAddress } from "viem";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 
-export const validate = (message: string | SiweMessage): AuthClientResult<SiweMessage> => {
+export const validate = (message: string | ExactPartial<SiweMessage>): AuthClientResult<SiweMessage> => {
   const parsedMessage = typeof message === "string" ? parseSiweMessage(message) : message;
   return validateBaseMessage(parsedMessage)
     .andThen((message) => validateStatement(message))

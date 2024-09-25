@@ -20,7 +20,6 @@ const authParams = {
 describe("validate", () => {
   test("default parameters are valid", () => {
     const result = validate(authParams);
-    console.log(result.isErr() ? result.error : "");
     expect(result.isOk()).toBe(true);
   });
 

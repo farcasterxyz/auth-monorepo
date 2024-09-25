@@ -25,7 +25,7 @@ const voidVerifyFid = (_custody: Hex) => Promise.reject(new Error("Not implement
 export const verify = async (
   nonce: string,
   domain: string,
-  message: SiweMessage,
+  message: string,
   signature: Hex,
   options: SignInOpts,
 ): AuthClientAsyncResult<VerifyResponse> => {
@@ -81,7 +81,7 @@ const validateDomain = (message: SiweMessage, domain: string): AuthClientResult<
 const verifySiweMessage = async (
   message: string,
   signature: Hex,
-  client: PublicClient,
+  client: PublicClient<Transport, typeof optimism>,
 ): AuthClientAsyncResult<boolean> => {
   const parsed = parseSiweMessage(message);
   return ResultAsync.fromPromise(client.verifySiweMessage({ signature, message, ...parsed }), (e) => {

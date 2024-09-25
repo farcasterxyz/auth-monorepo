@@ -1,17 +1,18 @@
 import { SiweMessage, validateSiweMessage, parseSiweMessage } from "viem/siwe";
-import { err, fromThrowable, ok } from "neverthrow";
+import { err, ok } from "neverthrow";
 import { AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
 import { FarcasterResourceParams } from "./build";
-import { InvalidAddressError, isAddress } from "viem";
+import { ExactPartial, isAddress } from "viem";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 
-export const validate = (message: SiweMessage): AuthClientResult<SiweMessage> => {
-  return validateBaseMessage(message)
-    .andThen(() => validateStatement(message))
-    .andThen(() => validateChainId(message))
-    .andThen(() => validateResources(message));
+export const validate = (message: string | SiweMessage): AuthClientResult<SiweMessage> => {
+  const parsedMessage = typeof message === "string" ? parseSiweMessage(message) : message;
+  return validateBaseMessage(parsedMessage)
+    .andThen((message) => validateStatement(message))
+    .andThen((message) => validateChainId(message))
+    .andThen((message) => validateResources(message));
 };
 
 export const parseResources = (message: SiweMessage): AuthClientResult<FarcasterResourceParams> => {
@@ -34,15 +35,16 @@ export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
   return ok(fid);
 };
 
-export const validateBaseMessage = (message: SiweMessage): AuthClientResult<SiweMessage> => {
+export const validateBaseMessage = (message: ExactPartial<SiweMessage>): AuthClientResult<SiweMessage> => {
   // how tf is it valid tho
   const valid = validateSiweMessage({ message, ...message });
   if (!valid) {
-    if (!isAddress(message.address))
+    if (!message.address || !isAddress(message.address))
       return err(new AuthClientError("bad_request.validation_failure", "invalid address"));
     return err(new AuthClientError("bad_request.validation_failure", `Base SIWE message is invalid'`));
   }
-  return ok(message);
+  // Safely cast to `SiweMessage` since validation succeeded.
+  return ok(message as SiweMessage);
 };
 
 export const validateStatement = (message: SiweMessage): AuthClientResult<SiweMessage> => {

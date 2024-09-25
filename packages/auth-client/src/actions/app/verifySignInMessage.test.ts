@@ -3,7 +3,6 @@ import { createWalletClient } from "../../clients/createWalletClient";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
 import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 import { AuthClientError } from "../../errors";
-import { parseNonPartialSiweMessage } from "../../utils/parseNonPartialSiweMessage";
 
 describe("verifySignInMessage", () => {
   const client = createAppClient({
@@ -41,7 +40,7 @@ describe("verifySignInMessage", () => {
     const { isError, error } = await client.verifySignInMessage({
       nonce,
       domain,
-      message: parseNonPartialSiweMessage(message),
+      message,
       signature,
     });
     expect(isError).toBe(true);
@@ -65,7 +64,7 @@ describe("verifySignInMessage", () => {
     const { isError, error } = await client.verifySignInMessage({
       nonce,
       domain,
-      message: parseNonPartialSiweMessage(message),
+      message,
       signature,
     });
     expect(isError).toBe(true);

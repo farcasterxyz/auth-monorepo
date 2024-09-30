@@ -3,7 +3,7 @@ import { verify } from "./verify";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { type Hex, zeroAddress, createPublicClient, http } from "viem";
 import { optimism } from "viem/chains";
-import { parseNonPartialSiweMessage } from "../utils/parseNonPartialSiweMessage";
+import { parseSiweMessage } from "viem/siwe";
 
 const account = privateKeyToAccount(generatePrivateKey());
 
@@ -27,7 +27,7 @@ describe("verify", () => {
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -50,7 +50,7 @@ describe("verify", () => {
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
 
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -72,7 +72,7 @@ describe("verify", () => {
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -96,7 +96,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -119,7 +119,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -142,7 +142,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -164,7 +164,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify("mismatched-nonce", domain, parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),
@@ -186,7 +186,7 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const parsedSiweMessage = parseNonPartialSiweMessage(message);
+    const parsedSiweMessage = parseSiweMessage(message);
     const result = await verify(nonce, "mismatched-domain", parsedSiweMessage, sig, {
       getFid,
       client: createPublicClient({ chain: optimism, transport: http() }),

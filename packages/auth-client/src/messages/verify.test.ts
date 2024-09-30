@@ -84,28 +84,6 @@ describe("verify", () => {
     });
   });
 
-  // provider is mandatory now
-  // test("1271 signatures fail without provider", async () => {
-  //   const getFid = (_custody: Hex) => Promise.resolve(1234n);
-  //
-  //   const res = build({
-  //     ...siweParams,
-  //     address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
-  //     fid: 1234,
-  //   });
-  //   const { message } = res._unsafeUnwrap();
-  //   const sig = await account.signMessage({ message });
-  //   const parsedSiweMessage = parseNonPartialSiweMessage(message);
-  //   const result = await verify(nonce, domain, parsedSiweMessage, sig, {
-  //     getFid,
-  //     client: createPublicClient({ chain: optimism, transport: http() })
-  //   });
-  //   expect(result.isOk()).toBe(false);
-  //   const err = result._unsafeUnwrapErr();
-  //   expect(err.errCode).toBe("unauthorized");
-  //   expect(err.message).toBe("Signature does not match address of the message.");
-  // });
-
   test("invalid SIWE message", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(1234n);
 
@@ -174,23 +152,6 @@ describe("verify", () => {
     expect(err.errCode).toBe("unavailable");
     expect(err.message).toBe("client error");
   });
-
-  // test("missing verifier", async () => {
-  //   const res = build({
-  //     ...siweParams,
-  //     address: account.address,
-  //     fid: 1234,
-  //   });
-  //   const { message } = res._unsafeUnwrap();
-  //   const sig = await account.signMessage({
-  //     message,
-  //   });
-  //   const result = await verify(nonce, domain, message, sig);
-  //   expect(result.isOk()).toBe(false);
-  //   const err = result._unsafeUnwrapErr();
-  //   expect(err.errCode).toBe("unavailable");
-  //   expect(err.message).toBe("Not implemented: Must provide an fid verifier");
-  // });
 
   test("mismatched nonce", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(5678n);

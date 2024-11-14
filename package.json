@@ -17,6 +17,7 @@
     "test": "./node_modules/.bin/turbo run test",
     "test:ci": "./node_modules/.bin/turbo run test:ci -- --passWithNoTests",
     "lint": "./node_modules/.bin/turbo run lint --parallel",
+    "lint:fix": "./node_modules/.bin/turbo run lint:fix --parallel",
     "lint:ci": "./node_modules/.bin/turbo run lint:ci --parallel",
     "prepare": "husky install",
     "version-packages": "changeset version",

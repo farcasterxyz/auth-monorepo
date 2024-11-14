@@ -1,0 +1,29 @@
+{
+  "name": "@farcaster/frame-host",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "preversion": "npm run build",
+    "postversion": "git push --follow-tags"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "react-native-webview": "^13.8.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.6.3"
+  },
+  "peerDependencies": {
+    "comlink": ">=4.0.0",
+    "react": ">=18.0.0",
+    "react-native-webview": ">=13.0.0"
+  },
+  "dependencies": {
+    "@farcaster/frame-core": "*"
+  }
+}

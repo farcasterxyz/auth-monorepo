@@ -1,0 +1,29 @@
+{
+  "name": "@farcaster/frame-sdk",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "preversion": "npm run build",
+    "postversion": "git push --follow-tags"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@farcaster/frame-core": "*",
+    "comlink": "^4.4.2",
+    "eventemitter3": "^5.0.1"
+  },
+  "peerDependencies": {
+    "ox": "^0.2.2"
+  }
+}

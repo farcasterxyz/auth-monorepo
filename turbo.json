@@ -15,6 +15,10 @@
       "dependsOn": ["build"],
       "outputs": []
     },
+    "lint:fix": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
     "lint:ci": {
       "outputs": []
     },

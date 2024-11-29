@@ -1,13 +1,13 @@
-import { SiweMessage } from "siwe";
+import { createSiweMessage, type SiweMessage } from "viem/siwe";
 import { err, ok } from "neverthrow";
-import { AuthClientResult } from "../errors";
+import type { AuthClientResult } from "../errors";
 import { validate } from "./validate";
 import { STATEMENT, CHAIN_ID } from "./constants";
 
 export type FarcasterResourceParams = {
   fid: number;
 };
-export type SignInMessageParams = Partial<SiweMessage> & FarcasterResourceParams;
+export type SignInMessageParams = Omit<SiweMessage, "chainId" | "version"> & FarcasterResourceParams;
 export interface BuildResponse {
   siweMessage: SiweMessage;
   message: string;
@@ -15,16 +15,17 @@ export interface BuildResponse {
 
 export const build = (params: SignInMessageParams): AuthClientResult<BuildResponse> => {
   const { fid, ...siweParams } = params;
-  const resources = siweParams.resources ?? [];
-  siweParams.version = "1";
-  siweParams.statement = STATEMENT;
-  siweParams.chainId = CHAIN_ID;
-  siweParams.resources = [buildFidResource(fid), ...resources];
-  const valid = validate(siweParams);
+  const valid = validate({
+    ...siweParams,
+    version: "1",
+    statement: STATEMENT,
+    chainId: CHAIN_ID,
+    resources: [buildFidResource(fid), ...(siweParams.resources ?? [])],
+  });
   if (valid.isErr()) return err(valid.error);
   else {
     const siweMessage = valid.value;
-    return ok({ siweMessage, message: siweMessage.toMessage() });
+    return ok({ siweMessage, message: createSiweMessage(siweMessage) });
   }
 };
 

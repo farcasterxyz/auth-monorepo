@@ -41,24 +41,34 @@ export function useVerifySignInMessage({
 
   const verifySignInMessage = useCallback(async () => {
     if (appClient && nonce && domain && message && signature) {
-      const {
-        success,
-        isError: isVerifyError,
-        error: verifyError,
-      } = await appClient.verifySignInMessage({
-        nonce,
-        domain,
-        message,
-        signature,
-      });
-      if (isVerifyError) {
-        setIsError(true);
-        setError(verifyError);
-        onError?.(verifyError);
-      } else {
-        setValidSignature(success);
+      try {
+        await appClient.verifySignInMessage({
+          nonce,
+          domain,
+          message,
+          signature,
+        });
+        setValidSignature(true);
         setIsSuccess(true);
-        onSuccess?.({ message, signature, validSignature: success });
+        onSuccess?.({ message, signature, validSignature: true });
+      } catch (e) {
+        if (
+          e instanceof AuthClientError &&
+          e.errCode === "unauthorized" &&
+          e.message === "Signature does not match address of the message."
+        ) {
+          setValidSignature(false);
+          setIsSuccess(false);
+          onSuccess?.({ message, signature, validSignature: false });
+          return;
+        }
+        if (e instanceof AuthClientError) {
+          setIsError(true);
+          setError(e);
+          onError?.(e);
+          return;
+        }
+        throw e;
       }
     }
   }, [appClient, nonce, domain, message, signature, onSuccess, onError]);

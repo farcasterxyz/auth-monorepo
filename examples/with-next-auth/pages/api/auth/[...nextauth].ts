@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createAppClient, viemConnector } from "@farcaster/auth-client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { JsonRpcProvider } from "ethers";
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, {
@@ -43,23 +42,23 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
             ethereum: viemConnector(),
           });
 
+          try {
           const verifyResponse = await appClient.verifySignInMessage({
             message: credentials?.message as string,
             signature: credentials?.signature as `0x${string}`,
             domain: "example.com",
             nonce: csrfToken,
           });
-          const { success, fid } = verifyResponse;
-
-          if (!success) {
-            return null;
-          }
+          const { fid } = verifyResponse;
 
           return {
             id: fid.toString(),
             name: credentials?.name,
             image: credentials?.pfp,
           };
+          } catch {
+            return null;
+          }
         },
       }),
     ],

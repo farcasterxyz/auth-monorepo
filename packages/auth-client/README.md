@@ -333,7 +333,7 @@ Example: `"0x9335c3055d4778013fdabad293c68c84ea350a11794cdc121c71fd51b[...]"`
 
 If you're building a [wallet app](https://docs.farcaster.xyz/learn/what-is-farcaster/apps#wallet-apps) and receiving signature requests, use a _wallet client_.
 
-You can use an wallet client to parse an incoming Sign In With Farcaster request URL, build a Sign In With Farcaster message to present to the user, and submit the signed message to a Farcaster Auth relay channel.
+You can use a wallet client to parse an incoming Sign In With Farcaster request URL, build a Sign In With Farcaster message to present to the user, and submit the signed message to a Farcaster Auth relay channel.
 
 ```ts
 import { createWalletClient, viemConnector } from "@farcaster/auth-client";

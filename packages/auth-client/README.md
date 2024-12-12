@@ -1,6 +1,6 @@
 # `@farcaster/auth-client`
 
-A framework agnostic client library for Farcaster Auth.
+A framework-agnostic client library for Farcaster Auth.
 
 ## Getting Started
 

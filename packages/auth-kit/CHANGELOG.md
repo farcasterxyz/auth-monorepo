@@ -196,7 +196,7 @@
 
 ### Patch Changes
 
-- 1c02300: relax react-dom and viem peerDependency verion ranges
+- 1c02300: relax react-dom and viem peerDependency version ranges
 - 55d37f4: esm only build
 
 ## 0.0.25

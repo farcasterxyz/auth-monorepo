@@ -90,6 +90,12 @@ export function useSignIn(args: UseSignInArgs) {
     }
   }, [isSuccess, statusData, validSignature, onSignIn, onSuccess]);
 
+  useEffect(() => {
+    if (!channelToken) {
+      connect();
+    }
+  }, [channelToken, connect]);
+
   return {
     signIn,
     signOut,

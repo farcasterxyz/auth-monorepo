@@ -1,3 +1,4 @@
+import type { Hex, Address } from "viem";
 import { SiweMessage, SiweResponse, SiweError } from "siwe";
 import { ResultAsync, err, ok } from "neverthrow";
 import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../errors";
@@ -6,14 +7,17 @@ import { validate, parseResources } from "./validate";
 import { FarcasterResourceParams } from "./build";
 import type { Provider } from "ethers";
 
-type Hex = `0x${string}`;
 type SignInOpts = {
-  getFid: (custody: Hex) => Promise<BigInt>;
+  getFid: (custody: Address) => Promise<bigint>;
+  isValidAuthAddress: (authAddress: Address, fid: bigint) => Promise<boolean>;
   provider?: Provider | undefined;
 };
 export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 
-const voidVerifyFid = (_custody: Hex) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
+const voidGetFid = (_custody: Address) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
+
+const voidIsValidAuthAddress = (_custody: Address) =>
+  Promise.reject(new Error("Not implemented: Must provide an auth address verifier"));
 
 /**
  * Verify signature of a Sign In With Farcaster message. Returns an error if the
@@ -25,10 +29,11 @@ export const verify = async (
   message: string | Partial<SiweMessage>,
   signature: string,
   options: SignInOpts = {
-    getFid: voidVerifyFid,
+    getFid: voidGetFid,
+    isValidAuthAddress: voidIsValidAuthAddress,
   },
 ): AuthClientAsyncResult<VerifyResponse> => {
-  const { getFid, provider } = options;
+  const { getFid, isValidAuthAddress, provider } = options;
   const valid = validate(message)
     .andThen((message) => validateNonce(message, nonce))
     .andThen((message) => validateDomain(message, domain));
@@ -41,7 +46,7 @@ export const verify = async (
     return err(new AuthClientError("unauthorized", errMessage));
   }
 
-  const fid = await verifyFidOwner(siwe.value, getFid);
+  const fid = await verifyFidOwner(siwe.value, getFid, isValidAuthAddress);
   if (fid.isErr()) return err(fid.error);
   if (!fid.value.success) {
     const errMessage = siwe.value.error?.type ?? "Failed to validate fid owner";
@@ -79,22 +84,37 @@ const verifySiweMessage = async (
 
 const verifyFidOwner = async (
   response: SiweResponse & FarcasterResourceParams,
-  fidVerifier: (custody: Hex) => Promise<BigInt>,
+  getFid: (custody: Address) => Promise<bigint>,
+  isValidAuthAddress: (authAddress: Address, fid: bigint) => Promise<boolean>,
 ): AuthClientAsyncResult<SiweResponse & FarcasterResourceParams> => {
-  const signer = response.data.address as Hex;
-  return ResultAsync.fromPromise(fidVerifier(signer), (e) => {
-    return new AuthClientError("unavailable", e as Error);
-  }).andThen((fid) => {
-    if (fid !== BigInt(response.fid)) {
-      response.success = false;
-      response.error = new SiweError(
-        `Invalid resource: signer ${signer} does not own fid ${response.fid}.`,
-        response.fid.toString(),
-        fid.toString(),
-      );
-    }
-    return ok(response);
-  });
+  const signer = response.data.address as Address;
+  if (response.method === "authAddress") {
+    return ResultAsync.fromPromise(isValidAuthAddress(signer, BigInt(response.fid)), (e) => {
+      return new AuthClientError("unavailable", e as Error);
+    }).andThen((isValid) => {
+      if (isValid !== true) {
+        response.success = false;
+        response.error = new SiweError(
+          `Invalid resource: signer ${signer} is not an auth address for fid ${response.fid}.`,
+        );
+      }
+      return ok(response);
+    });
+  } else {
+    return ResultAsync.fromPromise(getFid(signer), (e) => {
+      return new AuthClientError("unavailable", e as Error);
+    }).andThen((fid) => {
+      if (fid !== BigInt(response.fid)) {
+        response.success = false;
+        response.error = new SiweError(
+          `Invalid resource: signer ${signer} does not own fid ${response.fid}.`,
+          response.fid.toString(),
+          fid.toString(),
+        );
+      }
+      return ok(response);
+    });
+  }
 };
 
 const mergeResources = (response: SiweResponse): AuthClientResult<SiweResponse & FarcasterResourceParams> => {

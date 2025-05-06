@@ -22,7 +22,9 @@ export const validate = (params: string | Partial<SiweMessage>): AuthClientResul
 export const parseResources = (message: SiweMessage): AuthClientResult<FarcasterResourceParams> => {
   const fid = parseFid(message);
   if (fid.isErr()) return err(fid.error);
-  return ok({ fid: fid.value });
+  const method = parseMethod(message);
+  if (method.isErr()) return err(method.error);
+  return ok({ fid: fid.value, method: method.value });
 };
 
 export const parseFid = (message: SiweMessage): AuthClientResult<number> => {

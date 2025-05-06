@@ -35,6 +35,7 @@ export interface StatusAPIResponse {
     ip: string;
     userAgent: string;
   };
+  acceptMethods: string[];
 }
 
 const path = "channel/status";

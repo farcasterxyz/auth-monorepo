@@ -27,6 +27,38 @@ export const createChannelRequestSchema = {
     redirectUrl: {
       type: "string",
     },
+    acceptMethods: {
+      oneOf: [
+        {
+          type: "array",
+          minItems: 1,
+          maxItems: 1,
+          items: {
+            type: "string",
+            enum: ["custody"],
+          },
+        },
+        {
+          type: "array",
+          minItems: 1,
+          maxItems: 1,
+          items: {
+            type: "string",
+            enum: ["auth"],
+          },
+        },
+        {
+          type: "array",
+          minItems: 2,
+          maxItems: 2,
+          uniqueItems: true,
+          items: {
+            type: "string",
+            enum: ["custody", "auth"],
+          },
+        },
+      ],
+    },
   },
   required: ["siweUri", "domain"],
   additionalProperties: false,

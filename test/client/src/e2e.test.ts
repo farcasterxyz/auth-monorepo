@@ -120,7 +120,10 @@ describe("clients", () => {
       expect(signature).toBe(sig);
       expect(nonce).toBe(nonce);
       expect(custody).toBe("0x8773442740C17C9d0F0B87022c722F9a136206eD");
-      expect(verifications).toStrictEqual(["0x86924c37a93734e8611eb081238928a9d18a63c0"]);
+      expect(verifications).toStrictEqual([
+        "0x86924c37a93734e8611eb081238928a9d18a63c0",
+        "0xdb83ae472f108049828db5f429595c4b5932b62c",
+      ]);
 
       // 5. Channel is now closed
       const { response: channelClosedResponse } = await appClient.status({

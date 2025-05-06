@@ -11,6 +11,7 @@ export type CreateChannelRequest = {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+  acceptMethods?: AuthMethod[];
 };
 
 export type AuthenticateRequest = {
@@ -28,6 +29,8 @@ export type SessionMetadata = {
   userAgent: string;
 };
 
+export type AuthMethod = "custody" | "authAddress";
+
 export type RelaySession = {
   state: "pending" | "completed";
   nonce: string;
@@ -44,6 +47,7 @@ export type RelaySession = {
   custody?: Hex;
   signatureParams: CreateChannelRequest;
   metadata: SessionMetadata;
+  acceptMethods: AuthMethod[];
 };
 
 const constructUrl = (channelToken: string): string => {
@@ -57,6 +61,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
   if (channel.isOk()) {
     const channelToken = channel.value;
     const nonce = request.body.nonce ?? generateNonce();
+    const acceptMethods = request.body.acceptMethods ?? ["custody"];
     const url = constructUrl(channelToken);
 
     const update = await request.channels.update(channelToken, {
@@ -64,6 +69,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       nonce,
       url,
       connectUri: url,
+      acceptMethods,
       signatureParams: { ...request.body, nonce },
       metadata: {
         userAgent: request.headers["user-agent"] ?? "Unknown",

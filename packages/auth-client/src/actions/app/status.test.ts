@@ -24,6 +24,7 @@ describe("status", () => {
       ip: "127.0.0.1",
       userAgent: "Mozilla/5.0",
     },
+    acceptMethods: ["custody", "auth"],
   };
 
   test("constructs API request", async () => {

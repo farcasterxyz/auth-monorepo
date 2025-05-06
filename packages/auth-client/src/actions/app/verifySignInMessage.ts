@@ -20,6 +20,7 @@ export const verifySignInMessage = async (
 ): VerifySignInMessageResponse => {
   const result = await verify(nonce, domain, message, signature, {
     getFid: client.ethereum.getFid,
+    isValidAuthAddress: client.ethereum.isValidAuthAddress,
     provider,
   });
   return unwrap(result);

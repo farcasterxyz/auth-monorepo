@@ -84,4 +84,15 @@ describe("validate", () => {
       new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"),
     );
   });
+
+  test("message must only include one auth method resource", () => {
+    const result = validate({
+      ...authParams,
+      resources: ["farcaster://fid/1", "farcaster://signer/type/custody", "farcaster://signer/type/authAddress"],
+    });
+    expect(result.isErr()).toBe(true);
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new AuthClientError("bad_request.validation_failure", "Multiple auth method resources provided"),
+    );
+  });
 });

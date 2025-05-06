@@ -2,9 +2,10 @@ import { SiweMessage } from "siwe";
 import { Result, err, ok } from "neverthrow";
 import { AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
-import { FarcasterResourceParams } from "./build";
+import { AuthMethod, FarcasterResourceParams } from "./build";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
+const AUTH_METHOD_URI_REGEX = /^farcaster:\/\/signer\/type\/(custody|authAddress)\/?$/;
 
 export const validate = (params: string | Partial<SiweMessage>): AuthClientResult<SiweMessage> => {
   return Result.fromThrowable(
@@ -38,6 +39,20 @@ export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
   return ok(fid);
 };
 
+export const parseMethod = (message: SiweMessage): AuthClientResult<AuthMethod> => {
+  const resource = (message.resources ?? []).find((resource) => {
+    return AUTH_METHOD_URI_REGEX.test(resource);
+  });
+  if (!resource) {
+    return ok("custody");
+  }
+  const method = resource.match(AUTH_METHOD_URI_REGEX)?.[1];
+  if (method !== "custody" && method !== "authAddress") {
+    return err(new AuthClientError("bad_request.validation_failure", "Invalid method"));
+  }
+  return ok(method);
+};
+
 export const validateStatement = (message: SiweMessage): AuthClientResult<SiweMessage> => {
   const validStatement = message.statement === STATEMENT || message.statement === "Farcaster Connect";
   if (!validStatement) {
@@ -61,6 +76,12 @@ export const validateResources = (message: SiweMessage): AuthClientResult<SiweMe
     return err(new AuthClientError("bad_request.validation_failure", "No fid resource provided"));
   } else if (fidResources.length > 1) {
     return err(new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"));
+  }
+  const authMethodResources = (message.resources ?? []).filter((resource) => {
+    return AUTH_METHOD_URI_REGEX.test(resource);
+  });
+  if (authMethodResources.length > 1) {
+    return err(new AuthClientError("bad_request.validation_failure", "Multiple auth method resources provided"));
   } else {
     return ok(message);
   }

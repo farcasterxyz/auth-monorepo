@@ -4,8 +4,11 @@ import { AuthClientResult } from "../errors";
 import { validate } from "./validate";
 import { STATEMENT, CHAIN_ID } from "./constants";
 
+export type AuthMethod = "custody" | "authAddress";
+
 export type FarcasterResourceParams = {
   fid: number;
+  method?: AuthMethod;
 };
 export type SignInMessageParams = Partial<SiweMessage> & FarcasterResourceParams;
 export interface BuildResponse {
@@ -14,12 +17,13 @@ export interface BuildResponse {
 }
 
 export const build = (params: SignInMessageParams): AuthClientResult<BuildResponse> => {
-  const { fid, ...siweParams } = params;
+  const { fid, method, ...siweParams } = params;
   const resources = siweParams.resources ?? [];
+  const authMethod = method ?? "custody";
   siweParams.version = "1";
   siweParams.statement = STATEMENT;
   siweParams.chainId = CHAIN_ID;
-  siweParams.resources = [buildFidResource(fid), ...resources];
+  siweParams.resources = [buildFidResource(fid), buildSignerResource(authMethod), ...resources];
   const valid = validate(siweParams);
   if (valid.isErr()) return err(valid.error);
   else {
@@ -30,4 +34,8 @@ export const build = (params: SignInMessageParams): AuthClientResult<BuildRespon
 
 const buildFidResource = (fid: number): string => {
   return `farcaster://fid/${fid}`;
+};
+
+const buildSignerResource = (method: AuthMethod): string => {
+  return `farcaster://signer/type/${method}`;
 };

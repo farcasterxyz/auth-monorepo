@@ -1,18 +1,19 @@
-import type { Hex, Address } from "viem";
+import type { Address } from "viem";
+import type { Provider } from "ethers";
 import { SiweMessage, SiweResponse, SiweError } from "siwe";
 import { ResultAsync, err, ok } from "neverthrow";
-import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../errors";
 
+import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../errors";
 import { validate, parseResources } from "./validate";
-import { FarcasterResourceParams } from "./build";
-import type { Provider } from "ethers";
+import type { FarcasterResourceParams } from "../types";
+
+export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 
 type SignInOpts = {
   getFid: (custody: Address) => Promise<bigint>;
   isValidAuthAddress: (authAddress: Address, fid: bigint) => Promise<boolean>;
   provider?: Provider | undefined;
 };
-export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams;
 
 const voidGetFid = (_custody: Address) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
 

@@ -1,5 +1,6 @@
 import { Client } from "clients/createClient";
-import { build, BuildResponse, SignInMessageParams } from "../../messages/build";
+import { build, BuildResponse } from "../../messages/build";
+import { SignInMessageParams } from "../../types";
 import { Unwrapped, unwrap } from "../../errors";
 
 export type BuildSignInMessageArgs = SignInMessageParams;

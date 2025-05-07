@@ -137,7 +137,7 @@ describe("relay server", () => {
     test("creates a channel with accepted auth methods", async () => {
       let response = await http.post(getFullUrl("/v1/channel"), {
         ...channelParams,
-        acceptMethods: ["custody", "auth"],
+        acceptMethods: ["custody", "authAddress"],
       });
 
       expect(response.status).toBe(201);
@@ -155,7 +155,7 @@ describe("relay server", () => {
 
       const { acceptMethods } = response.data;
 
-      expect(acceptMethods).toStrictEqual(["custody", "auth"]);
+      expect(acceptMethods).toStrictEqual(["custody", "authAddress"]);
     });
 
     test("missing siweUri", async () => {

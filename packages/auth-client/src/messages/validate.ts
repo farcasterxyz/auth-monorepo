@@ -2,7 +2,7 @@ import { SiweMessage } from "siwe";
 import { Result, err, ok } from "neverthrow";
 import { AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
-import { AuthMethod, FarcasterResourceParams } from "./build";
+import type { AuthMethod, FarcasterResourceParams } from "../types";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 const AUTH_METHOD_URI_REGEX = /^farcaster:\/\/signer\/type\/(custody|authAddress)\/?$/;

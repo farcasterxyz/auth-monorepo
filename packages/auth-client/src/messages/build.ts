@@ -1,16 +1,10 @@
-import { SiweMessage } from "siwe";
+import type { SiweMessage } from "siwe";
 import { err, ok } from "neverthrow";
 import { AuthClientResult } from "../errors";
 import { validate } from "./validate";
 import { STATEMENT, CHAIN_ID } from "./constants";
+import type { SignInMessageParams, AuthMethod } from "../types";
 
-export type AuthMethod = "custody" | "authAddress";
-
-export type FarcasterResourceParams = {
-  fid: number;
-  method?: AuthMethod;
-};
-export type SignInMessageParams = Partial<SiweMessage> & FarcasterResourceParams;
 export interface BuildResponse {
   siweMessage: SiweMessage;
   message: string;

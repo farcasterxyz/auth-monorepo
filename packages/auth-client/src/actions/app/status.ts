@@ -1,7 +1,8 @@
+import type { Hex } from "viem";
 import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
 import { get, HttpResponse } from "../../clients/transports/http";
-import type { Hex } from "viem";
+import type { AuthMethod } from "../../types";
 
 export interface StatusArgs {
   channelToken: string;
@@ -35,7 +36,7 @@ export interface StatusAPIResponse {
     ip: string;
     userAgent: string;
   };
-  acceptMethods: string[];
+  acceptMethods: AuthMethod[];
 }
 
 const path = "channel/status";

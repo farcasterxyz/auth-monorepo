@@ -44,7 +44,7 @@ export const createChannelRequestSchema = {
           maxItems: 1,
           items: {
             type: "string",
-            enum: ["auth"],
+            enum: ["authAddress"],
           },
         },
         {
@@ -54,7 +54,7 @@ export const createChannelRequestSchema = {
           uniqueItems: true,
           items: {
             type: "string",
-            enum: ["custody", "auth"],
+            enum: ["custody", "authAddress"],
           },
         },
       ],

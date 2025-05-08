@@ -14,7 +14,7 @@ describe("buildSignInMessage", () => {
       domain: "example.com",
       nonce: "12345678",
       fid: 1,
-      method: "authAddress",
+      authMethod: "authAddress",
       resources: ["https://example.com/resource"],
     });
 

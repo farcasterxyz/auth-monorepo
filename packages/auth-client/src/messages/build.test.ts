@@ -30,7 +30,7 @@ describe("build", () => {
     const result = build({
       ...siweParams,
       fid: 5678,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
     expect(result.isOk()).toBe(true);
     const { siweMessage, message } = result._unsafeUnwrap();

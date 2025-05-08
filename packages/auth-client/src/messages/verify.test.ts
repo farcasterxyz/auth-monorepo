@@ -37,7 +37,7 @@ describe("verify", () => {
       data: siweMessage,
       success: true,
       fid: 1234,
-      method: "custody",
+      authMethod: "custody",
     });
   });
 
@@ -49,7 +49,7 @@ describe("verify", () => {
       ...siweParams,
       address: account.address,
       fid: 1234,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
@@ -62,7 +62,7 @@ describe("verify", () => {
       data: siweMessage,
       success: true,
       fid: 1234,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
   });
 
@@ -74,7 +74,7 @@ describe("verify", () => {
       ...siweParams,
       address: account.address,
       fid: 1234,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
     const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
@@ -105,7 +105,7 @@ describe("verify", () => {
       data: siweMessage,
       success: true,
       fid: 1234,
-      method: "custody",
+      authMethod: "custody",
     });
   });
 
@@ -131,7 +131,7 @@ describe("verify", () => {
       data: siweMessage,
       success: true,
       fid: 1234,
-      method: "custody",
+      authMethod: "custody",
     });
   });
 
@@ -144,7 +144,7 @@ describe("verify", () => {
       ...siweParams,
       address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
       fid: 1234,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
@@ -158,7 +158,7 @@ describe("verify", () => {
       data: siweMessage,
       success: true,
       fid: 1234,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
   });
 

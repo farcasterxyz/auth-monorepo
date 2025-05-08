@@ -24,7 +24,7 @@ export const parseResources = (message: SiweMessage): AuthClientResult<Farcaster
   if (fid.isErr()) return err(fid.error);
   const method = parseMethod(message);
   if (method.isErr()) return err(method.error);
-  return ok({ fid: fid.value, method: method.value });
+  return ok({ fid: fid.value, authMethod: method.value });
 };
 
 export const parseFid = (message: SiweMessage): AuthClientResult<number> => {

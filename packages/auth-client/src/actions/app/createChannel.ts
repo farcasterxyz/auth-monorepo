@@ -1,7 +1,6 @@
 import { AsyncUnwrapped, unwrap } from "../../errors";
 import { Client } from "../../clients/createClient";
 import { HttpResponse, post } from "../../clients/transports/http";
-import { AuthMethod } from "../../types";
 
 export type CreateChannelArgs = CreateChannelRequest;
 export type CreateChannelResponse = AsyncUnwrapped<HttpResponse<CreateChannelAPIResponse>>;
@@ -14,7 +13,7 @@ interface CreateChannelRequest {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
-  acceptMethods?: AuthMethod[];
+  acceptAuthAddress?: boolean;
 }
 
 export interface CreateChannelAPIResponse {

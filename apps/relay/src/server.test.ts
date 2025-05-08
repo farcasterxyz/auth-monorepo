@@ -109,6 +109,8 @@ describe("relay server", () => {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
 
+      expect(response.data.acceptAuthAddress).toBe(false);
+
       const siweParams = response.data.signatureParams;
 
       expect(siweParams.siweUri).toBe(channelParams.siweUri);
@@ -134,10 +136,10 @@ describe("relay server", () => {
       });
     });
 
-    test("creates a channel with accepted auth methods", async () => {
+    test("creates a channel with accepted auth method", async () => {
       let response = await http.post(getFullUrl("/v1/channel"), {
         ...channelParams,
-        acceptMethods: ["custody", "authAddress"],
+        acceptAuthAddress: true,
       });
 
       expect(response.status).toBe(201);
@@ -153,9 +155,9 @@ describe("relay server", () => {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
 
-      const { acceptMethods } = response.data;
+      const { acceptAuthAddress } = response.data;
 
-      expect(acceptMethods).toStrictEqual(["custody", "authAddress"]);
+      expect(acceptAuthAddress).toBe(true);
     });
 
     test("missing siweUri", async () => {
@@ -405,7 +407,7 @@ describe("relay server", () => {
       expect(state).toBe("pending");
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
       expect(rest).toStrictEqual({
-        acceptMethods: ["custody"],
+        acceptAuthAddress: false,
         signatureParams: {
           nonce,
           domain: "example.com",

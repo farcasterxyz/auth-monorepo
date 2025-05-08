@@ -34,7 +34,7 @@ describe("authenticate", () => {
       ip: "127.0.0.1",
       userAgent: "Mozilla/5.0",
     },
-    acceptMethods: ["custody"],
+    acceptAuthAddress: false,
     message,
     signature,
     fid,

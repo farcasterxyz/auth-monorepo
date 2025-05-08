@@ -89,7 +89,7 @@ const verifyFidOwner = async (
   isValidAuthAddress: (authAddress: Address, fid: bigint) => Promise<boolean>,
 ): AuthClientAsyncResult<SiweResponse & FarcasterResourceParams> => {
   const signer = response.data.address as Address;
-  if (response.method === "authAddress") {
+  if (response.authMethod === "authAddress") {
     return ResultAsync.fromPromise(isValidAuthAddress(signer, BigInt(response.fid)), (e) => {
       return new AuthClientError("unavailable", e as Error);
     }).andThen((isValid) => {

@@ -80,7 +80,7 @@ describe("verifySignInMessage", () => {
       ...siweParams,
       address: account.address,
       fid: 1234,
-      method: "authAddress",
+      authMethod: "authAddress",
     });
 
     const signature = await account.signMessage({

@@ -2,10 +2,9 @@ import { SiweMessage } from "siwe";
 import { Result, err, ok } from "neverthrow";
 import { AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
-import type { AuthMethod, FarcasterResourceParams } from "../types";
+import type { FarcasterResourceParams } from "../types";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
-const AUTH_METHOD_URI_REGEX = /^farcaster:\/\/signer\/type\/(custody|authAddress)\/?$/;
 
 export const validate = (params: string | Partial<SiweMessage>): AuthClientResult<SiweMessage> => {
   return Result.fromThrowable(
@@ -22,9 +21,7 @@ export const validate = (params: string | Partial<SiweMessage>): AuthClientResul
 export const parseResources = (message: SiweMessage): AuthClientResult<FarcasterResourceParams> => {
   const fid = parseFid(message);
   if (fid.isErr()) return err(fid.error);
-  const method = parseMethod(message);
-  if (method.isErr()) return err(method.error);
-  return ok({ fid: fid.value, authMethod: method.value });
+  return ok({ fid: fid.value });
 };
 
 export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
@@ -39,20 +36,6 @@ export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
     return err(new AuthClientError("bad_request.validation_failure", "Invalid fid"));
   }
   return ok(fid);
-};
-
-export const parseMethod = (message: SiweMessage): AuthClientResult<AuthMethod> => {
-  const resource = (message.resources ?? []).find((resource) => {
-    return AUTH_METHOD_URI_REGEX.test(resource);
-  });
-  if (!resource) {
-    return ok("custody");
-  }
-  const method = resource.match(AUTH_METHOD_URI_REGEX)?.[1];
-  if (method !== "custody" && method !== "authAddress") {
-    return err(new AuthClientError("bad_request.validation_failure", "Invalid method"));
-  }
-  return ok(method);
 };
 
 export const validateStatement = (message: SiweMessage): AuthClientResult<SiweMessage> => {
@@ -79,12 +62,5 @@ export const validateResources = (message: SiweMessage): AuthClientResult<SiweMe
   } else if (fidResources.length > 1) {
     return err(new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"));
   }
-  const authMethodResources = (message.resources ?? []).filter((resource) => {
-    return AUTH_METHOD_URI_REGEX.test(resource);
-  });
-  if (authMethodResources.length > 1) {
-    return err(new AuthClientError("bad_request.validation_failure", "Multiple auth method resources provided"));
-  } else {
-    return ok(message);
-  }
+  return ok(message);
 };

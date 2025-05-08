@@ -21,24 +21,7 @@ describe("build", () => {
       ...siweParams,
       statement: "Farcaster Auth",
       chainId: 10,
-      resources: ["farcaster://fid/5678", "farcaster://signer/type/custody"],
-    });
-    expect(message).toEqual(siweMessage.toMessage());
-  });
-
-  test("adds auth method", () => {
-    const result = build({
-      ...siweParams,
-      fid: 5678,
-      authMethod: "authAddress",
-    });
-    expect(result.isOk()).toBe(true);
-    const { siweMessage, message } = result._unsafeUnwrap();
-    expect(siweMessage).toMatchObject({
-      ...siweParams,
-      statement: "Farcaster Auth",
-      chainId: 10,
-      resources: ["farcaster://fid/5678", "farcaster://signer/type/authAddress"],
+      resources: ["farcaster://fid/5678"],
     });
     expect(message).toEqual(siweMessage.toMessage());
   });
@@ -55,7 +38,7 @@ describe("build", () => {
       ...siweParams,
       statement: "Farcaster Auth",
       chainId: 10,
-      resources: ["farcaster://fid/5678", "farcaster://signer/type/custody", "https://example.com/resource"],
+      resources: ["farcaster://fid/5678", "https://example.com/resource"],
     });
   });
 });

@@ -29,6 +29,7 @@ describe("verify", () => {
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
       getFid,
       isValidAuthAddress,
     });
@@ -49,11 +50,11 @@ describe("verify", () => {
       ...siweParams,
       address: account.address,
       fid: 1234,
-      authMethod: "authAddress",
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: true,
       getFid,
       isValidAuthAddress,
     });
@@ -74,18 +75,20 @@ describe("verify", () => {
       ...siweParams,
       address: account.address,
       fid: 1234,
-      authMethod: "authAddress",
     });
     const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: true,
       getFid,
       isValidAuthAddress,
     });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe(`Invalid resource: signer ${account.address} is not an auth address for fid 1234.`);
+    expect(err.message).toBe(
+      `Invalid resource: signer ${account.address} is not an auth address or owner of fid 1234.`,
+    );
   });
 
   test("adds parsed resources to response", async () => {
@@ -99,13 +102,17 @@ describe("verify", () => {
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const result = await verify(nonce, domain, message, sig, { getFid, isValidAuthAddress });
+    const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
+      getFid,
+      isValidAuthAddress,
+    });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
+      authMethod: "custody",
       data: siweMessage,
       success: true,
       fid: 1234,
-      authMethod: "custody",
     });
   });
 
@@ -122,16 +129,17 @@ describe("verify", () => {
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
       getFid,
       isValidAuthAddress,
       provider,
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
+      authMethod: "custody",
       data: siweMessage,
       success: true,
       fid: 1234,
-      authMethod: "custody",
     });
   });
 
@@ -144,21 +152,21 @@ describe("verify", () => {
       ...siweParams,
       address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
       fid: 1234,
-      authMethod: "authAddress",
     });
     const { siweMessage, message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
     const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: true,
       getFid,
       isValidAuthAddress,
       provider,
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
+      authMethod: "authAddress",
       data: siweMessage,
       success: true,
       fid: 1234,
-      authMethod: "authAddress",
     });
   });
 
@@ -173,7 +181,11 @@ describe("verify", () => {
     });
     const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({ message });
-    const result = await verify(nonce, domain, message, sig, { getFid, isValidAuthAddress });
+    const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
+      getFid,
+      isValidAuthAddress,
+    });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -193,7 +205,11 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig, { getFid, isValidAuthAddress });
+    const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
+      getFid,
+      isValidAuthAddress,
+    });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -213,7 +229,11 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig, { getFid, isValidAuthAddress });
+    const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
+      getFid,
+      isValidAuthAddress,
+    });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
@@ -233,7 +253,11 @@ describe("verify", () => {
     const sig = await account.signMessage({
       message,
     });
-    const result = await verify(nonce, domain, message, sig, { getFid, isValidAuthAddress });
+    const result = await verify(nonce, domain, message, sig, {
+      acceptAuthAddress: false,
+      getFid,
+      isValidAuthAddress,
+    });
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unavailable");

@@ -80,20 +80,20 @@ describe("verifySignInMessage", () => {
       ...siweParams,
       address: account.address,
       fid: 1234,
-      authMethod: "authAddress",
     });
 
     const signature = await account.signMessage({
       message,
     });
 
-    const errMsg = `Invalid resource: signer ${account.address} is not an auth address for fid 1234.`;
+    const errMsg = `Invalid resource: signer ${account.address} is not an auth address or owner of fid 1234.`;
     const err = new AuthClientError("unauthorized", errMsg);
     const { isError, error } = await client.verifySignInMessage({
       nonce,
       domain,
       message,
       signature,
+      acceptAuthAddress: true,
     });
     expect(isError).toBe(true);
     expect(error).toStrictEqual(err);

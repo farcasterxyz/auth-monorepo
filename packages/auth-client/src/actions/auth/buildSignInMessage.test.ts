@@ -14,7 +14,6 @@ describe("buildSignInMessage", () => {
       domain: "example.com",
       nonce: "12345678",
       fid: 1,
-      authMethod: "authAddress",
       resources: ["https://example.com/resource"],
     });
 
@@ -26,7 +25,7 @@ describe("buildSignInMessage", () => {
       domain: "example.com",
       version: "1",
       nonce: "12345678",
-      resources: ["farcaster://fid/1", "farcaster://signer/type/authAddress", "https://example.com/resource"],
+      resources: ["farcaster://fid/1", "https://example.com/resource"],
     });
     expect(message).toBe(siweMessage.toMessage());
   });

@@ -3,7 +3,7 @@ import { err, ok } from "neverthrow";
 import { AuthClientResult } from "../errors";
 import { validate } from "./validate";
 import { STATEMENT, CHAIN_ID } from "./constants";
-import type { SignInMessageParams, AuthMethod } from "../types";
+import type { SignInMessageParams } from "../types";
 
 export interface BuildResponse {
   siweMessage: SiweMessage;
@@ -11,13 +11,12 @@ export interface BuildResponse {
 }
 
 export const build = (params: SignInMessageParams): AuthClientResult<BuildResponse> => {
-  const { fid, authMethod, ...siweParams } = params;
+  const { fid, ...siweParams } = params;
   const resources = siweParams.resources ?? [];
-  const method = authMethod ?? "custody";
   siweParams.version = "1";
   siweParams.statement = STATEMENT;
   siweParams.chainId = CHAIN_ID;
-  siweParams.resources = [buildFidResource(fid), buildSignerResource(method), ...resources];
+  siweParams.resources = [buildFidResource(fid), ...resources];
   const valid = validate(siweParams);
   if (valid.isErr()) return err(valid.error);
   else {
@@ -28,8 +27,4 @@ export const build = (params: SignInMessageParams): AuthClientResult<BuildRespon
 
 const buildFidResource = (fid: number): string => {
   return `farcaster://fid/${fid}`;
-};
-
-const buildSignerResource = (method: AuthMethod): string => {
-  return `farcaster://signer/type/${method}`;
 };

@@ -347,6 +347,19 @@ describe("relay server", () => {
       });
     });
 
+    test("invalid authMethod", async () => {
+      const response = await http.post(
+        getFullUrl("/v1/channel/authenticate"),
+        { ...authenticateParams, authMethod: "invalid" },
+        { headers: { Authorization: `Bearer ${channelToken}` } },
+      );
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({
+        error: "Validation error",
+        message: "body/authMethod must be equal to one of the allowed values",
+      });
+    });
+
     test("read channel error", async () => {
       jest.spyOn(httpServer.channels, "read").mockImplementation(() => {
         throw new Error("read error");

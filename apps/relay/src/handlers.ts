@@ -17,6 +17,7 @@ export type CreateChannelRequest = {
 export type AuthenticateRequest = {
   message: string;
   signature: string;
+  authMethod?: "custody" | "authAddress";
   fid: number;
   username: string;
   bio: string;
@@ -36,6 +37,7 @@ export type RelaySession = {
   connectUri: string;
   message?: string;
   signature?: string;
+  authMethod?: "custody" | "authAddress";
   fid?: number;
   username?: string;
   bio?: string;
@@ -91,7 +93,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
   }
 
   const channelToken = request.channelToken;
-  const { message, signature, fid, username, displayName, bio, pfpUrl } = request.body;
+  const { message, signature, authMethod, fid, username, displayName, bio, pfpUrl } = request.body;
 
   const addrs = await request.addresses.getAddresses(fid);
   if (addrs.isOk()) {
@@ -102,6 +104,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
         state: "completed",
         message,
         signature,
+        authMethod: authMethod ?? "custody",
         fid,
         username,
         displayName,

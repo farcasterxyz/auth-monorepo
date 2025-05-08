@@ -46,6 +46,10 @@ export const authenticateRequestSchema = {
       type: "string",
       pattern: "^0x[a-fA-F0-9]{130}$",
     },
+    authMethod: {
+      type: "string",
+      enum: ["custody", "authAddress"],
+    },
     fid: {
       type: "integer",
     },

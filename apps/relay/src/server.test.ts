@@ -109,6 +109,8 @@ describe("relay server", () => {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
 
+      expect(response.data.acceptAuthAddress).toBe(false);
+
       const siweParams = response.data.signatureParams;
 
       expect(siweParams.siweUri).toBe(channelParams.siweUri);
@@ -132,6 +134,30 @@ describe("relay server", () => {
         error: "Validation error",
         message: 'body/notBefore must match format "date-time"',
       });
+    });
+
+    test("creates a channel with accepted auth method", async () => {
+      let response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        acceptAuthAddress: true,
+      });
+
+      expect(response.status).toBe(201);
+      const { channelToken, url, connectUri, nonce, ...rest } = response.data;
+      // parse query params from URI
+      const params = new URLSearchParams(url.split("?")[1]);
+      expect(params.get("channelToken")).toBe(channelToken);
+      expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
+      expect(url).toBe(connectUri);
+      expect(rest).toStrictEqual({});
+
+      response = await http.get(getFullUrl("/v1/channel/status"), {
+        headers: { Authorization: `Bearer ${channelToken}` },
+      });
+
+      const { acceptAuthAddress } = response.data;
+
+      expect(acceptAuthAddress).toBe(true);
     });
 
     test("missing siweUri", async () => {
@@ -321,6 +347,19 @@ describe("relay server", () => {
       });
     });
 
+    test("invalid authMethod", async () => {
+      const response = await http.post(
+        getFullUrl("/v1/channel/authenticate"),
+        { ...authenticateParams, authMethod: "invalid" },
+        { headers: { Authorization: `Bearer ${channelToken}` } },
+      );
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({
+        error: "Validation error",
+        message: "body/authMethod must be equal to one of the allowed values",
+      });
+    });
+
     test("read channel error", async () => {
       jest.spyOn(httpServer.channels, "read").mockImplementation(() => {
         throw new Error("read error");
@@ -381,6 +420,7 @@ describe("relay server", () => {
       expect(state).toBe("pending");
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
       expect(rest).toStrictEqual({
+        acceptAuthAddress: false,
         signatureParams: {
           nonce,
           domain: "example.com",

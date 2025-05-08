@@ -11,11 +11,13 @@ export type CreateChannelRequest = {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+  acceptAuthAddress?: boolean;
 };
 
 export type AuthenticateRequest = {
   message: string;
   signature: string;
+  authMethod?: "custody" | "authAddress";
   fid: number;
   username: string;
   bio: string;
@@ -35,6 +37,7 @@ export type RelaySession = {
   connectUri: string;
   message?: string;
   signature?: string;
+  authMethod?: "custody" | "authAddress";
   fid?: number;
   username?: string;
   bio?: string;
@@ -44,6 +47,7 @@ export type RelaySession = {
   custody?: Hex;
   signatureParams: CreateChannelRequest;
   metadata: SessionMetadata;
+  acceptAuthAddress: boolean;
 };
 
 const constructUrl = (channelToken: string): string => {
@@ -57,6 +61,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
   if (channel.isOk()) {
     const channelToken = channel.value;
     const nonce = request.body.nonce ?? generateNonce();
+    const acceptAuthAddress = request.body.acceptAuthAddress ?? false;
     const url = constructUrl(channelToken);
 
     const update = await request.channels.update(channelToken, {
@@ -64,6 +69,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
       nonce,
       url,
       connectUri: url,
+      acceptAuthAddress,
       signatureParams: { ...request.body, nonce },
       metadata: {
         userAgent: request.headers["user-agent"] ?? "Unknown",
@@ -87,7 +93,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
   }
 
   const channelToken = request.channelToken;
-  const { message, signature, fid, username, displayName, bio, pfpUrl } = request.body;
+  const { message, signature, authMethod, fid, username, displayName, bio, pfpUrl } = request.body;
 
   const addrs = await request.addresses.getAddresses(fid);
   if (addrs.isOk()) {
@@ -98,6 +104,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
         state: "completed",
         message,
         signature,
+        authMethod: authMethod ?? "custody",
         fid,
         username,
         displayName,

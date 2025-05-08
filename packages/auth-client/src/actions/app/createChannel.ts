@@ -13,6 +13,7 @@ interface CreateChannelRequest {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+  acceptAuthAddress?: boolean;
 }
 
 export interface CreateChannelAPIResponse {

@@ -74,4 +74,28 @@ describe("verifySignInMessage", () => {
     expect(isError).toBe(true);
     expect(error).toStrictEqual(err);
   });
+
+  test("verifies auth address sign in message", async () => {
+    const { message } = walletClient.buildSignInMessage({
+      ...siweParams,
+      address: account.address,
+      fid: 1234,
+    });
+
+    const signature = await account.signMessage({
+      message,
+    });
+
+    const errMsg = `Invalid resource: signer ${account.address} is not an auth address or owner of fid 1234.`;
+    const err = new AuthClientError("unauthorized", errMsg);
+    const { isError, error } = await client.verifySignInMessage({
+      nonce,
+      domain,
+      message,
+      signature,
+      acceptAuthAddress: true,
+    });
+    expect(isError).toBe(true);
+    expect(error).toStrictEqual(err);
+  });
 });

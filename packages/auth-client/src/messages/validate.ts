@@ -2,7 +2,7 @@ import { SiweMessage } from "siwe";
 import { Result, err, ok } from "neverthrow";
 import { AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
-import { FarcasterResourceParams } from "./build";
+import type { FarcasterResourceParams } from "../types";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 
@@ -61,7 +61,6 @@ export const validateResources = (message: SiweMessage): AuthClientResult<SiweMe
     return err(new AuthClientError("bad_request.validation_failure", "No fid resource provided"));
   } else if (fidResources.length > 1) {
     return err(new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"));
-  } else {
-    return ok(message);
   }
+  return ok(message);
 };

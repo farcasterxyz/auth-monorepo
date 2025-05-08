@@ -69,9 +69,10 @@ describe("clients", () => {
 
       // 3b. Get signature params from channel
       const {
-        data: { signatureParams: params },
+        data: { signatureParams: params, acceptAuthAddress },
       } = await appClient.status({ channelToken });
 
+      expect(acceptAuthAddress).toBe(false);
       expect(params.siweUri).toBe("https://example.com");
       expect(params.domain).toBe("example.com");
       expect(params.nonce).toBe("abcd1234");
@@ -112,12 +113,13 @@ describe("clients", () => {
       // 4. App client polls channel status
       const {
         response: completedStatusResponse,
-        data: { state: completedState, message, signature, nonce, verifications, custody },
+        data: { state: completedState, message, signature, authMethod, nonce, verifications, custody },
       } = await appClient.status({ channelToken });
       expect(completedStatusResponse.status).toBe(200);
       expect(completedState).toBe("completed");
       expect(message).toBe(messageString);
       expect(signature).toBe(sig);
+      expect(authMethod).toBe("custody");
       expect(nonce).toBe(nonce);
       expect(custody).toBe("0x8773442740C17C9d0F0B87022c722F9a136206eD");
       expect(verifications).toStrictEqual([

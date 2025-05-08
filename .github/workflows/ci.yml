@@ -69,6 +69,7 @@ jobs:
         run: yarn build
 
       - name: Log in to Docker Hub to avoid rate limiting
+        if: secrets.FARCASTERXYZ_DOCKER_HUB_TOKEN != ''
         uses: docker/login-action@v2
         with:
           username: ${{ vars.FARCASTERXYZ_DOCKER_HUB_USER }}

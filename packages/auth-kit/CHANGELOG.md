@@ -1,5 +1,15 @@
 # @farcaster/auth-kit
 
+## 0.6.1
+
+### Patch Changes
+
+- 1384177: chore: update dependencies
+- 782c742: fix: use window.open for mobile links
+- Updated dependencies [c9027f9]
+- Updated dependencies [1384177]
+  - @farcaster/auth-client@0.4.0
+
 ## 0.6.0
 
 ### Minor Changes

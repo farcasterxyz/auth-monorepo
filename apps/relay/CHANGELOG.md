@@ -1,5 +1,17 @@
 # @farcaster/auth-relay
 
+## 0.3.0
+
+### Minor Changes
+
+- c9027f9: feat: auth addresses
+
+### Patch Changes
+
+- a4c367e: fix: Allow log level to be configured via environment variable
+- 1384177: chore: update dependencies
+- 41e83c0: fix: bump relay timeouts
+
 ## 0.2.1
 
 ### Patch Changes

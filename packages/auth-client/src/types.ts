@@ -1,4 +1,4 @@
-import type { SiweMessage } from "siwe";
+import type { SiweMessage } from "viem/siwe";
 
 export type AuthMethod = "custody" | "authAddress";
 

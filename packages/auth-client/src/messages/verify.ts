@@ -1,20 +1,33 @@
-import type { Address } from "viem";
-import type { Provider } from "ethers";
-import { SiweMessage, SiweResponse, SiweError } from "siwe";
+import { type Address, type Client, createPublicClient, http, type Hex } from "viem";
+import { type SiweMessage, verifySiweMessage as verifySiweMessageViem } from "viem/siwe";
 import { ResultAsync, err, ok } from "neverthrow";
 
-import { AuthClientAsyncResult, AuthClientResult, AuthClientError } from "../errors";
+import { type AuthClientAsyncResult, type AuthClientResult, AuthClientError } from "../errors";
 import { validate, parseResources } from "./validate";
 import type { FarcasterResourceParams, AuthMethod } from "../types";
+import { optimism } from "viem/chains";
 
-export type VerifyResponse = Omit<SiweResponse, "error"> & FarcasterResourceParams & { authMethod: AuthMethod };
+export interface SiweResponse {
+  success: boolean;
+  data: SiweMessage;
+}
+
+export type VerifyResponse = SiweResponse &
+  FarcasterResourceParams & { authMethod: AuthMethod } & {
+    data: SiweMessage;
+  };
 
 type VerifyOpts = {
   acceptAuthAddress: boolean;
   getFid: (custody: Address) => Promise<bigint>;
   isValidAuthAddress: (authAddress: Address, fid: bigint) => Promise<boolean>;
-  provider?: Provider | undefined;
+  publicClient?: Client | undefined;
 };
+
+const defaultPublicClient = createPublicClient({
+  chain: optimism,
+  transport: http(),
+});
 
 const voidGetFid = (_custody: Address) => Promise.reject(new Error("Not implemented: Must provide an fid verifier"));
 
@@ -28,7 +41,7 @@ const voidIsValidAuthAddress = (_custody: Address) =>
 export const verify = async (
   nonce: string,
   domain: string,
-  message: string | Partial<SiweMessage>,
+  message: string,
   signature: string,
   options: VerifyOpts = {
     acceptAuthAddress: false,
@@ -36,52 +49,48 @@ export const verify = async (
     isValidAuthAddress: voidIsValidAuthAddress,
   },
 ): AuthClientAsyncResult<VerifyResponse> => {
+  const { publicClient = defaultPublicClient } = options;
+
   const valid = validate(message)
     .andThen((message) => validateNonce(message, nonce))
     .andThen((message) => validateDomain(message, domain));
   if (valid.isErr()) return err(valid.error);
 
-  const siwe = (await verifySiweMessage(valid.value, signature, options.provider)).andThen(mergeResources);
+  const siwe = (await verifySiweMessage(message, signature, publicClient)).andThen(() => mergeResources(valid.value));
   if (siwe.isErr()) return err(siwe.error);
-  if (!siwe.value.success) {
-    const errMessage = siwe.value.error?.type ?? "Failed to verify SIWE message";
-    return err(new AuthClientError("unauthorized", errMessage));
-  }
 
   const auth = await verifyAuthorizedSigner(siwe.value, options);
   if (auth.isErr()) return err(auth.error);
-  if (!auth.value.success) {
-    const errMessage = siwe.value.error?.type ?? "Failed to verify signer";
-    return err(new AuthClientError("unauthorized", errMessage));
-  }
-  const { error, ...response } = auth.value;
-  return ok(response);
+  return ok(auth.value);
 };
 
 const validateNonce = (message: SiweMessage, nonce: string): AuthClientResult<SiweMessage> => {
   if (message.nonce !== nonce) {
     return err(new AuthClientError("unauthorized", "Invalid nonce"));
-  } else {
-    return ok(message);
   }
+
+  return ok(message);
 };
 
 const validateDomain = (message: SiweMessage, domain: string): AuthClientResult<SiweMessage> => {
   if (message.domain !== domain) {
     return err(new AuthClientError("unauthorized", "Invalid domain"));
-  } else {
-    return ok(message);
   }
+
+  return ok(message);
 };
 
-const verifySiweMessage = async (
-  message: SiweMessage,
-  signature: string,
-  provider?: Provider,
-): AuthClientAsyncResult<SiweResponse> => {
-  return ResultAsync.fromPromise(message.verify({ signature }, { provider, suppressExceptions: true }), (e) => {
-    return new AuthClientError("unauthorized", e as Error);
-  });
+const verifySiweMessage = async (message: string, signature: string, client: Client): AuthClientAsyncResult<void> => {
+  try {
+    const verified = await verifySiweMessageViem(client, { message, signature: signature as Hex });
+    if (verified) {
+      return ok(undefined);
+    }
+
+    return err(new AuthClientError("unauthorized", "Failed to verify message"));
+  } catch (e) {
+    return err(new AuthClientError("unknown", e as Error));
+  }
 };
 
 const verifyAuthorizedSigner = async (
@@ -116,36 +125,32 @@ const verifyAuthorizedSigner = async (
     }
 
     if (fidResult.isOk() && fidResult.value !== BigInt(response.fid)) {
-      // Return error if custody verification also failed
-      response.success = false;
-      response.error = new SiweError(
-        `Invalid resource: signer ${signer} is not an auth address or owner of fid ${response.fid}.`,
-        response.fid.toString(),
-        fidResult.value.toString(),
+      return err(
+        new AuthClientError(
+          "unauthorized",
+          `Invalid resource: signer ${signer} is not an auth address or owner of fid ${response.fid}.`,
+        ),
       );
     }
 
     return ok({ ...response, authMethod: "custody" });
-  } else {
-    // Custody only verification
-    return ResultAsync.fromPromise(getFid(signer), (e) => {
-      return new AuthClientError("unavailable", e as Error);
-    }).andThen((fid) => {
-      if (fid !== BigInt(response.fid)) {
-        response.success = false;
-        response.error = new SiweError(
-          `Invalid resource: signer ${signer} does not own fid ${response.fid}.`,
-          response.fid.toString(),
-          fid.toString(),
-        );
-      }
-      return ok({ ...response, authMethod: "custody" as AuthMethod });
-    });
   }
+
+  // Custody only verification
+  return ResultAsync.fromPromise(getFid(signer), (e) => {
+    return new AuthClientError("unavailable", e as Error);
+  }).andThen((fid) => {
+    if (fid !== BigInt(response.fid)) {
+      return err(
+        new AuthClientError("unauthorized", `Invalid resource: signer ${signer} does not own fid ${response.fid}.`),
+      );
+    }
+    return ok({ ...response, authMethod: "custody" as AuthMethod });
+  });
 };
 
-const mergeResources = (response: SiweResponse): AuthClientResult<SiweResponse & FarcasterResourceParams> => {
-  return parseResources(response.data).andThen((resources) => {
-    return ok({ ...resources, ...response });
+const mergeResources = (message: SiweMessage): AuthClientResult<SiweResponse & FarcasterResourceParams> => {
+  return parseResources(message).andThen((resources) => {
+    return ok({ ...resources, data: message, success: true });
   });
 };

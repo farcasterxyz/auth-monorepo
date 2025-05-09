@@ -1,3 +1,4 @@
+import { createSiweMessage } from "viem/siwe";
 import { build } from "./build";
 
 const siweParams = {
@@ -6,8 +7,7 @@ const siweParams = {
   uri: "https://example.com/login",
   version: "1",
   nonce: "12345678",
-  issuedAt: "2023-10-01T00:00:00.000Z",
-};
+} as const;
 
 describe("build", () => {
   test("adds auth-specific parameters", () => {
@@ -23,7 +23,7 @@ describe("build", () => {
       chainId: 10,
       resources: ["farcaster://fid/5678"],
     });
-    expect(message).toEqual(siweMessage.toMessage());
+    expect(message).toEqual(createSiweMessage(siweMessage));
   });
 
   test("handles additional resources", () => {

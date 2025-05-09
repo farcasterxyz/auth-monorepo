@@ -1,3 +1,4 @@
+import { createSiweMessage } from "viem/siwe";
 import { createWalletClient } from "../../clients/createWalletClient";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
 
@@ -27,6 +28,6 @@ describe("buildSignInMessage", () => {
       nonce: "12345678",
       resources: ["farcaster://fid/1", "https://example.com/resource"],
     });
-    expect(message).toBe(siweMessage.toMessage());
+    expect(message).toBe(createSiweMessage(siweMessage));
   });
 });

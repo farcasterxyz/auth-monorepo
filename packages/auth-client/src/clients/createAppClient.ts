@@ -1,15 +1,13 @@
-import { createChannel, CreateChannelArgs, CreateChannelResponse } from "../actions/app/createChannel";
-import { status, StatusArgs, StatusResponse } from "../actions/app/status";
-import { watchStatus, WatchStatusArgs, WatchStatusResponse } from "../actions/app/watchStatus";
+import { createChannel, type CreateChannelArgs, type CreateChannelResponse } from "../actions/app/createChannel";
+import { status, type StatusArgs, type StatusResponse } from "../actions/app/status";
+import { watchStatus, type WatchStatusArgs, type WatchStatusResponse } from "../actions/app/watchStatus";
 import {
   verifySignInMessage,
-  VerifySignInMessageArgs,
-  VerifySignInMessageResponse,
+  type VerifySignInMessageArgs,
+  type VerifySignInMessageResponse,
 } from "../actions/app/verifySignInMessage";
-import { Client, CreateClientArgs, createClient } from "./createClient";
-import type { Provider } from "ethers";
-
-export { Provider };
+import { type Client, type CreateClientArgs, createClient } from "./createClient";
+import type { PublicClient } from "viem";
 
 export interface AppClient extends Client {
   createChannel: (args: CreateChannelArgs) => CreateChannelResponse;
@@ -18,13 +16,13 @@ export interface AppClient extends Client {
   verifySignInMessage: (args: VerifySignInMessageArgs) => VerifySignInMessageResponse;
 }
 
-export const createAppClient = (config: CreateClientArgs, provider?: Provider): AppClient => {
+export const createAppClient = (config: CreateClientArgs, publicClient?: PublicClient): AppClient => {
   const client = createClient(config);
   return {
     ...client,
     createChannel: (args: CreateChannelArgs) => createChannel(client, args),
     status: (args: StatusArgs) => status(client, args),
     watchStatus: (args: WatchStatusArgs) => watchStatus(client, args),
-    verifySignInMessage: (args: VerifySignInMessageArgs) => verifySignInMessage(client, args, provider),
+    verifySignInMessage: (args: VerifySignInMessageArgs) => verifySignInMessage(client, args, publicClient),
   };
 };

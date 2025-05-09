@@ -1,5 +1,6 @@
 import { validate } from "./validate";
 import { AuthClientError } from "../errors";
+import type { Hex } from "viem";
 
 const siweParams = {
   domain: "example.com",
@@ -7,8 +8,7 @@ const siweParams = {
   uri: "https://example.com/login",
   version: "1",
   nonce: "12345678",
-  issuedAt: "2023-10-01T00:00:00.000Z",
-};
+} as const;
 
 const authParams = {
   ...siweParams,
@@ -23,14 +23,13 @@ describe("validate", () => {
     expect(result.isOk()).toBe(true);
   });
 
-  test("propagates SIWE message errors", () => {
+  test("behavior: invalid address", () => {
     const result = validate({
       ...authParams,
-      address: "Invalid address",
+      address: "Invalid address" as unknown as Hex,
     });
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().errCode).toEqual("bad_request.validation_failure");
-    expect(result._unsafeUnwrapErr().message).toMatch("invalid address");
   });
 
   test("message must contain 'Farcaster Auth'", () => {

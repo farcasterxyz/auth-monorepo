@@ -11631,9 +11631,9 @@ path-scurry@^1.10.1:
     minipass "^5.0.0 || ^6.0.2 || ^7.0.0"
 
 path-to-regexp@^0.1.2:
-  version "0.1.8"
-  resolved "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.8.tgz#5124958014ebf90d4c0d3f29d996a86bdc959ca8"
-  integrity sha512-EErxvEqTuliG5GCVHNt3K3UmfKhlOM26QtiJZ6XBnZgCd7n+P5aHNV37wFHGJSpbjN4danT+1CpOFT4giETmRQ==
+  version "0.1.12"
+  resolved "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.12.tgz#d5e1a12e478a976d432ef3c58d534b9923164bb7"
+  integrity sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==
 
 path-type@^4.0.0:
   version "4.0.0"

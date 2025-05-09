@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
-import { AppClient, createAppClient, viemConnector, Provider } from "@farcaster/auth-client";
+import { AppClient, createAppClient, viemConnector } from "@farcaster/auth-client";
 import { UseSignInData } from "../../hooks/useSignIn";
+import type { PublicClient } from "viem";
 
 export interface AuthKitConfig {
   relay?: string;
@@ -9,7 +10,7 @@ export interface AuthKitConfig {
   rpcUrl?: string;
   redirectUrl?: string;
   version?: string;
-  provider?: Provider;
+  publicClient?: PublicClient;
 }
 
 export interface Profile {
@@ -37,15 +38,18 @@ export interface AuthKitContextValues {
   onSignOut: () => void;
 }
 
-const domainDefaults = (typeof window !== 'undefined' && window?.location) ? {
-  domain: window.location.host,
-  siweUri: window.location.href
-} : {};
+const domainDefaults =
+  typeof window !== "undefined" && window?.location
+    ? {
+        domain: window.location.host,
+        siweUri: window.location.href,
+      }
+    : {};
 
 const configDefaults = {
   relay: "https://relay.farcaster.xyz",
   version: "v1",
-  ...domainDefaults
+  ...domainDefaults,
 };
 
 export const AuthKitContext = createContext<AuthKitContextValues>({
@@ -53,8 +57,8 @@ export const AuthKitContext = createContext<AuthKitContextValues>({
   config: configDefaults,
   profile: {},
   signInMessage: {},
-  onSignIn: () => { },
-  onSignOut: () => { },
+  onSignIn: () => {},
+  onSignOut: () => {},
 });
 
 export function AuthKitProvider({
@@ -73,17 +77,20 @@ export function AuthKitProvider({
     ...configDefaults,
     ...config,
   };
-  const { relay, rpcUrl, version, provider } = authKitConfig;
+  const { relay, rpcUrl, version, publicClient } = authKitConfig;
 
   useEffect(() => {
     const ethereum = rpcUrl ? viemConnector({ rpcUrl }) : viemConnector();
-    const client = createAppClient({
-      relay,
-      ethereum,
-      version,
-    }, provider);
+    const client = createAppClient(
+      {
+        relay,
+        ethereum,
+        version,
+      },
+      publicClient,
+    );
     setAppClient(client);
-  }, [relay, rpcUrl, version, provider]);
+  }, [relay, rpcUrl, version, publicClient]);
 
   const onSignIn = useCallback((signInData: UseSignInData) => {
     const { message, signature, fid, username, bio, displayName, pfpUrl, custody, verifications } = signInData;
@@ -96,7 +103,7 @@ export function AuthKitProvider({
     setIsAuthenticated(false);
     setProfile({});
     setSignInMessage({});
-  }
+  };
 
   return (
     <AuthKitContext.Provider
@@ -107,7 +114,7 @@ export function AuthKitProvider({
         signInMessage,
         config: authKitConfig,
         onSignIn,
-        onSignOut
+        onSignOut,
       }}
     >
       {children}

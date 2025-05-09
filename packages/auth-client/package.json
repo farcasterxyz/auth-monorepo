@@ -6,14 +6,12 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.mjs"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "license": "MIT",
   "scripts": {
     "build": "tsup --config tsup.config.ts",
@@ -26,15 +24,12 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
-    "neverthrow": "^6.1.0",
-    "siwe": "^2.1.4"
+    "neverthrow": "^6.1.0"
   },
   "peerDependencies": {
-    "ethers": "5.x || 6.x",
-    "viem": "1.x || 2.x"
+    "viem": "2.x"
   },
   "devDependencies": {
-    "ethers": "^6.14.0",
     "viem": "^2.29.1"
   }
 }

@@ -1,5 +1,15 @@
 # @farcaster/auth-client
 
+## 0.4.0
+
+### Minor Changes
+
+- c9027f9: feat: auth addresses
+
+### Patch Changes
+
+- 1384177: chore: update dependencies
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,5 +1,5 @@
 import "@farcaster/auth-kit/styles.css";
-import { providers } from "ethers";
+import { JsonRpcProvider } from "ethers";
 import { AuthKitProvider, SignInButton, useProfile } from "@farcaster/auth-kit";
 
 const config = {
@@ -9,13 +9,12 @@ const config = {
   rpcUrl: "https://mainnet.optimism.io",
   domain: "example.com",
   siweUri: "https://example.com/login",
-  provider: new providers.JsonRpcProvider(undefined, 10)
+  provider: new JsonRpcProvider(undefined, 10)
 };
 
 function App() {
   return (
     <main style={{ fontFamily: 'Inter, "Inter Placeholder", sans-serif' }}>
-      {/* @ts-expect-error ethers version type incompat */}
       <AuthKitProvider config={config}>
         <div style={{ position: "fixed", top: "12px", right: "12px" }}>
           <SignInButton />

@@ -1,5 +1,16 @@
 # @farcaster/auth-kit
 
+## 0.7.0
+
+### Minor Changes
+
+- 14c4fb8: Removed siwe and ethers dependencies.
+
+### Patch Changes
+
+- Updated dependencies [14c4fb8]
+  - @farcaster/auth-client@0.5.0
+
 ## 0.6.1
 
 ### Patch Changes

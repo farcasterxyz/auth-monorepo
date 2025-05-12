@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.5.0
+
+### Minor Changes
+
+- 14c4fb8: Removed siwe and ethers dependencies.
+
 ## 0.4.0
 
 ### Minor Changes

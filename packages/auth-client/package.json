@@ -24,12 +24,7 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
-    "neverthrow": "^6.1.0"
-  },
-  "peerDependencies": {
-    "viem": "2.x"
-  },
-  "devDependencies": {
-    "viem": "^2.29.1"
+    "neverthrow": "^6.1.0",
+    "viem": "^2.29.2"
   }
 }

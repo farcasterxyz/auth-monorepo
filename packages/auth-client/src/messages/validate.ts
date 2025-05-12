@@ -3,7 +3,6 @@ import { Result, err, ok } from "neverthrow";
 import { type AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
 import type { FarcasterResourceParams } from "../types";
-import { isAddress } from "viem";
 
 const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 
@@ -17,11 +16,6 @@ export const validate = (params: string | Partial<SiweMessage>): AuthClientResul
 
         return params;
       })();
-
-      // Missing validating in viem's validateSiweMessage, see https://github.com/wevm/viem/pull/3637
-      if (!siweMessage.address || !isAddress(siweMessage.address, { strict: false })) {
-        throw new Error("Invalid message");
-      }
 
       const isValid = validateSiweMessage({ message: siweMessage });
       if (isValid) {

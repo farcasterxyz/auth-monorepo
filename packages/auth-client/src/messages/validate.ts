@@ -1,6 +1,6 @@
-import { SiweMessage } from "siwe";
+import { validateSiweMessage, type SiweMessage, parseSiweMessage } from "viem/siwe";
 import { Result, err, ok } from "neverthrow";
-import { AuthClientResult, AuthClientError } from "../errors";
+import { type AuthClientResult, AuthClientError } from "../errors";
 import { STATEMENT, CHAIN_ID } from "./constants";
 import type { FarcasterResourceParams } from "../types";
 
@@ -8,8 +8,22 @@ const FID_URI_REGEX = /^farcaster:\/\/fid\/([1-9]\d*)\/?$/;
 
 export const validate = (params: string | Partial<SiweMessage>): AuthClientResult<SiweMessage> => {
   return Result.fromThrowable(
-    // SiweMessage validates itself when constructed
-    () => new SiweMessage(params),
+    () => {
+      const siweMessage = (() => {
+        if (typeof params === "string") {
+          return parseSiweMessage(params);
+        }
+
+        return params;
+      })();
+
+      const isValid = validateSiweMessage({ message: siweMessage });
+      if (isValid) {
+        return siweMessage as SiweMessage;
+      }
+
+      throw new Error("Invalid message");
+    },
     // If construction time validation fails, propagate the error
     (e) => new AuthClientError("bad_request.validation_failure", e as Error),
   )()
@@ -31,8 +45,8 @@ export const parseFid = (message: SiweMessage): AuthClientResult<number> => {
   if (!resource) {
     return err(new AuthClientError("bad_request.validation_failure", "No fid resource provided"));
   }
-  const fid = parseInt(resource.match(FID_URI_REGEX)?.[1] ?? "");
-  if (isNaN(fid)) {
+  const fid = Number.parseInt(resource.match(FID_URI_REGEX)?.[1] ?? "");
+  if (Number.isNaN(fid)) {
     return err(new AuthClientError("bad_request.validation_failure", "Invalid fid"));
   }
   return ok(fid);
@@ -59,8 +73,11 @@ export const validateResources = (message: SiweMessage): AuthClientResult<SiweMe
   });
   if (fidResources.length === 0) {
     return err(new AuthClientError("bad_request.validation_failure", "No fid resource provided"));
-  } else if (fidResources.length > 1) {
+  }
+
+  if (fidResources.length > 1) {
     return err(new AuthClientError("bad_request.validation_failure", "Multiple fid resources provided"));
   }
+
   return ok(message);
 };

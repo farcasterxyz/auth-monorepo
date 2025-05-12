@@ -1,8 +1,7 @@
 import { build } from "./build";
 import { verify } from "./verify";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { Hex, zeroAddress } from "viem";
-import { getDefaultProvider } from "ethers";
+import { type Hex, zeroAddress } from "viem";
 
 const account = privateKeyToAccount(generatePrivateKey());
 
@@ -12,8 +11,8 @@ const siweParams = {
   uri: "https://example.com/login",
   version: "1",
   nonce: "12345678",
-  issuedAt: "2023-10-01T00:00:00.000Z",
-};
+} as const;
+
 const { nonce, domain } = siweParams;
 
 describe("verify", () => {
@@ -36,9 +35,9 @@ describe("verify", () => {
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       data: siweMessage,
-      success: true,
       fid: 1234,
       authMethod: "custody",
+      success: true,
     });
   });
 
@@ -61,9 +60,9 @@ describe("verify", () => {
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       data: siweMessage,
-      success: true,
       fid: 1234,
       authMethod: "authAddress",
+      success: true,
     });
   });
 
@@ -111,15 +110,14 @@ describe("verify", () => {
     expect(result._unsafeUnwrap()).toEqual({
       authMethod: "custody",
       data: siweMessage,
-      success: true,
       fid: 1234,
+      success: true,
     });
   });
 
   test("verifies valid 1271 signatures", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(1234n);
     const isValidAuthAddress = (_authAddress: Hex, _fid: bigint) => Promise.resolve(false);
-    const provider = getDefaultProvider("https://mainnet.optimism.io");
 
     const res = build({
       ...siweParams,
@@ -132,21 +130,19 @@ describe("verify", () => {
       acceptAuthAddress: false,
       getFid,
       isValidAuthAddress,
-      provider,
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       authMethod: "custody",
       data: siweMessage,
-      success: true,
       fid: 1234,
+      success: true,
     });
   });
 
   test("verifies valid 1271 signatures from auth address", async () => {
     const getFid = (_custody: Hex) => Promise.resolve(0n);
     const isValidAuthAddress = (_authAddress: Hex, _fid: bigint) => Promise.resolve(true);
-    const provider = getDefaultProvider("https://mainnet.optimism.io");
 
     const res = build({
       ...siweParams,
@@ -159,37 +155,14 @@ describe("verify", () => {
       acceptAuthAddress: true,
       getFid,
       isValidAuthAddress,
-      provider,
     });
     expect(result.isOk()).toBe(true);
     expect(result._unsafeUnwrap()).toEqual({
       authMethod: "authAddress",
       data: siweMessage,
+      fid: 1234,
       success: true,
-      fid: 1234,
     });
-  });
-
-  test("1271 signatures fail without provider", async () => {
-    const getFid = (_custody: Hex) => Promise.resolve(1234n);
-    const isValidAuthAddress = (_authAddress: Hex, _fid: bigint) => Promise.resolve(false);
-
-    const res = build({
-      ...siweParams,
-      address: "0xC89858205c6AdDAD842E1F58eD6c42452671885A",
-      fid: 1234,
-    });
-    const { message } = res._unsafeUnwrap();
-    const sig = await account.signMessage({ message });
-    const result = await verify(nonce, domain, message, sig, {
-      acceptAuthAddress: false,
-      getFid,
-      isValidAuthAddress,
-    });
-    expect(result.isOk()).toBe(false);
-    const err = result._unsafeUnwrapErr();
-    expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe("Signature does not match address of the message.");
   });
 
   test("invalid SIWE message", async () => {
@@ -200,6 +173,7 @@ describe("verify", () => {
       ...siweParams,
       address: zeroAddress,
       fid: 1234,
+      success: true,
     });
     const { message } = res._unsafeUnwrap();
     const sig = await account.signMessage({
@@ -213,7 +187,7 @@ describe("verify", () => {
     expect(result.isOk()).toBe(false);
     const err = result._unsafeUnwrapErr();
     expect(err.errCode).toBe("unauthorized");
-    expect(err.message).toBe("Signature does not match address of the message.");
+    expect(err.message).toBe("Failed to verify message");
   });
 
   test("invalid fid owner", async () => {

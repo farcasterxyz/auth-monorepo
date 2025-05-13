@@ -1,15 +1,13 @@
 import "@farcaster/auth-kit/styles.css";
-import { JsonRpcProvider } from "ethers";
 import { AuthKitProvider, SignInButton, useProfile } from "@farcaster/auth-kit";
 
 const config = {
+  relay: "https://relay.farcaster.xyz",
   // For a production app, replace this with an Optimism Mainnet
   // RPC URL from a provider like Alchemy or Infura.
-  relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
   domain: "example.com",
   siweUri: "https://example.com/login",
-  provider: new JsonRpcProvider(undefined, 10)
 };
 
 function App() {

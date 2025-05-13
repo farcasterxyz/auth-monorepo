@@ -51,18 +51,17 @@ export class RelayServer {
 
   initHandlers() {
     this.app.register(
-      (v1, _opts, next) => {
-        v1.register(async (publicRoutes, _opts, next) => {
+      async (v1, _opts) => {
+        await v1.register(async (publicRoutes, _opts) => {
           await publicRoutes.register(rateLimit);
           publicRoutes.post<{ Body: CreateChannelRequest }>(
             "/channel",
             { schema: { body: createChannelRequestSchema } },
             createChannel,
           );
-          next();
         });
 
-        v1.register((protectedRoutes, _opts, next) => {
+        await v1.register(async (protectedRoutes, _opts) => {
           protectedRoutes.decorateRequest("channelToken", "");
           protectedRoutes.addHook("preHandler", async (request, reply) => {
             const auth = request.headers.authorization;
@@ -79,10 +78,7 @@ export class RelayServer {
           }>("/channel/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
 
           protectedRoutes.get("/channel/status", status);
-
-          next();
         });
-        next();
       },
       { prefix: "/v1" },
     );

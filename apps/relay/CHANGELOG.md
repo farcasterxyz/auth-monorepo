@@ -1,5 +1,12 @@
 # @farcaster/auth-relay
 
+## 0.3.1
+
+### Patch Changes
+
+- 5f30b12: chore: remove ethers.js dependency
+- 185293a: fix: use consistent plugin registration style
+
 ## 0.3.0
 
 ### Minor Changes

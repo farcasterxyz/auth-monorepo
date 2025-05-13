@@ -1,5 +1,11 @@
 # frontend-only
 
+## 0.0.3
+
+### Patch Changes
+
+- 5f30b12: chore: remove ethers.js dependency
+
 ## 0.0.2
 
 ### Patch Changes

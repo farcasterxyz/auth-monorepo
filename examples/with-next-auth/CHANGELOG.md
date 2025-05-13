@@ -1,5 +1,11 @@
 # with-next-auth
 
+## 0.1.3
+
+### Patch Changes
+
+- 5f30b12: chore: remove ethers.js dependency
+
 ## 0.1.2
 
 ### Patch Changes

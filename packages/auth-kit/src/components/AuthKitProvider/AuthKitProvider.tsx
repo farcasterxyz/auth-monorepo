@@ -65,7 +65,7 @@ export function AuthKitProvider({
   config,
   children,
 }: {
-  config: AuthKitConfig;
+  config?: AuthKitConfig;
   children: ReactNode;
 }) {
   const [appClient, setAppClient] = useState<AppClient>();

@@ -14,8 +14,8 @@ export const RELAY_SERVER_HOST = process.env["RELAY_SERVER_HOST"] || "localhost"
 
 export const URL_BASE = process.env["URL_BASE"] || process.env["CONNECT_URI_BASE"] || "https://warpcast.com/~/siwf";
 
-export const HUB_URL = process.env["HUB_URL"] || "https://hoyt.farcaster.xyz:2281";
-export const HUB_FALLBACK_URL = process.env["HUB_FALLBACK_URL"] || "https://lamia.farcaster.xyz:2281";
+export const HUB_URL = process.env["HUB_URL"] || "https://snap.farcaster.xyz:3381";
+export const HUB_FALLBACK_URL = process.env["HUB_FALLBACK_URL"] || "https://crackle.farcaster.xyz:3381";
 
 export const OPTIMISM_RPC_URL =
   process.env["OPTIMISM_RPC_URL"] || process.env["OP_MAINNET_RPC_URL"] || "https://mainnet.optimism.io";

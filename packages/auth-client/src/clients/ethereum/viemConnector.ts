@@ -1,17 +1,30 @@
-import { Address, Hex, createPublicClient, encodeAbiParameters, http } from "viem";
+import { Address, Hex, createPublicClient, encodeAbiParameters, http, fallback } from "viem";
 import { optimism } from "viem/chains";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry";
 import { KEY_REGISTRY_ADDRESS, keyRegistryABI } from "../../contracts/keyRegistry";
 import { EthereumConnector } from "./connector";
 
 interface ViemConfigArgs {
-  rpcUrl?: string;
+  rpcUrl?: string | undefined;
+  rpcUrls?: string[] | undefined;
 }
 
 export const viemConnector = (args?: ViemConfigArgs): EthereumConnector => {
+  const transport = (() => {
+    if (args?.rpcUrls) {
+      return fallback(args.rpcUrls.map((rpcUrl) => http(rpcUrl)));
+    }
+
+    if (!args?.rpcUrl) {
+      console.warn("No `rpcUrl` provided to Viem connector, using public endpoint. Do not use this in production");
+    }
+
+    return http(args?.rpcUrl);
+  })();
+
   const publicClient = createPublicClient({
     chain: optimism,
-    transport: http(args?.rpcUrl),
+    transport,
   });
 
   const getFid = async (custody: Hex): Promise<bigint> => {
@@ -37,5 +50,6 @@ export const viemConnector = (args?: ViemConfigArgs): EthereumConnector => {
   return {
     getFid,
     isValidAuthAddress,
+    publicClient,
   };
 };

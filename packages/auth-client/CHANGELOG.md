@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.6.0
+
+### Minor Changes
+
+- 4543cd3: Added `rpcUrls` in the `viemConnector` options to allow specifiying multiple RPCs.
+
 ## 0.5.0
 
 ### Minor Changes

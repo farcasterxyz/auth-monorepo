@@ -1,16 +1,18 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { AppClient, createAppClient, viemConnector } from "@farcaster/auth-client";
 import { UseSignInData } from "../../hooks/useSignIn";
-import type { PublicClient } from "viem";
 
 export interface AuthKitConfig {
   relay?: string;
   domain?: string;
   siweUri?: string;
   rpcUrl?: string;
+  /**
+   * Ensure you provide a stable array reference here to prevent unnecessary re-renders.
+   */
+  rpcUrls?: string[];
   redirectUrl?: string;
   version?: string;
-  publicClient?: PublicClient;
 }
 
 export interface Profile {
@@ -77,20 +79,17 @@ export function AuthKitProvider({
     ...configDefaults,
     ...config,
   };
-  const { relay, rpcUrl, version, publicClient } = authKitConfig;
+  const { relay, rpcUrl, rpcUrls, version } = authKitConfig;
 
   useEffect(() => {
-    const ethereum = rpcUrl ? viemConnector({ rpcUrl }) : viemConnector();
-    const client = createAppClient(
-      {
-        relay,
-        ethereum,
-        version,
-      },
-      publicClient,
-    );
+    const ethereum = viemConnector({ rpcUrl, rpcUrls });
+    const client = createAppClient({
+      relay,
+      ethereum,
+      version,
+    });
     setAppClient(client);
-  }, [relay, rpcUrl, version, publicClient]);
+  }, [relay, rpcUrl, rpcUrls, version]);
 
   const onSignIn = useCallback((signInData: UseSignInData) => {
     const { message, signature, fid, username, bio, displayName, pfpUrl, custody, verifications } = signInData;

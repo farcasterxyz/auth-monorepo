@@ -1,5 +1,16 @@
 # @farcaster/auth-kit
 
+## 0.8.0
+
+### Minor Changes
+
+- 4543cd3: Added `rpcUrls` to support multiple Ethereum RPCs
+
+### Patch Changes
+
+- Updated dependencies [4543cd3]
+  - @farcaster/auth-client@0.6.0
+
 ## 0.7.0
 
 ### Minor Changes

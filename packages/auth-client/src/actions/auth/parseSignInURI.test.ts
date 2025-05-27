@@ -9,7 +9,7 @@ describe("parseSignInURI", () => {
 
   test("parses sign in params from protocol URI", async () => {
     const { channelToken } = client.parseSignInURI({
-      uri: "https://warpcast.com/~/siwf?channelToken=ABCD2345",
+      uri: "https://farcaster.xyz/~/siwf?channelToken=ABCD2345",
     });
 
     expect(channelToken).toBe("ABCD2345");

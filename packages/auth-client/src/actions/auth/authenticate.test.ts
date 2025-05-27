@@ -24,7 +24,7 @@ describe("authenticate", () => {
   const statusResponseDataStub: AuthenticateAPIResponse = {
     state: "completed",
     nonce: "abcd1234",
-    url: "https://warpcast.com/~/siwf?channelToken=ABCD2345",
+    url: "https://farcaster.xyz/~/siwf?channelToken=ABCD2345",
     signatureParams: {
       nonce: "abcd1234",
       siweUri: "https://example.com/login",

@@ -75,7 +75,7 @@ describe("relay server", () => {
       expect(response.status).toBe(201);
       const { channelToken, url, connectUri, nonce, ...rest } = response.data;
       expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
-      expect(url).toMatch("https://warpcast.com/~/siwf");
+      expect(url).toMatch("https://farcaster.xyz/~/siwf");
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
     });

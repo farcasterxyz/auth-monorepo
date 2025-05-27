@@ -28,7 +28,7 @@ export function ProfileButton({
   useDetectClickOutside(ref, () => setShowSignOutButton(false));
 
   const name = userData?.username ?? `!${userData?.fid}`;
-  const pfpUrl = userData?.pfpUrl ?? "https://warpcast.com/avatar.png";
+  const pfpUrl = userData?.pfpUrl ?? "https://farcaster.xyz/avatar.png";
 
   const showSignOut = showSignOutButton && !hideSignOut;
 

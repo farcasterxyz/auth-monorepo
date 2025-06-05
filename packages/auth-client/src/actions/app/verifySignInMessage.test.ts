@@ -41,6 +41,7 @@ describe("verifySignInMessage", () => {
       domain,
       message,
       signature,
+      acceptAuthAddress: false,
     });
     expect(isError).toBe(true);
     expect(error).toStrictEqual(err);
@@ -65,6 +66,7 @@ describe("verifySignInMessage", () => {
       domain,
       message,
       signature,
+      acceptAuthAddress: false,
     });
     expect(isError).toBe(true);
     expect(error).toStrictEqual(err);

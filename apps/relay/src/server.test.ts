@@ -109,7 +109,7 @@ describe("relay server", () => {
         headers: { Authorization: `Bearer ${channelToken}` },
       });
 
-      expect(response.data.acceptAuthAddress).toBe(false);
+      expect(response.data.acceptAuthAddress).toBe(true);
 
       const siweParams = response.data.signatureParams;
 
@@ -420,7 +420,7 @@ describe("relay server", () => {
       expect(state).toBe("pending");
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
       expect(rest).toStrictEqual({
-        acceptAuthAddress: false,
+        acceptAuthAddress: true,
         signatureParams: {
           nonce,
           domain: "example.com",

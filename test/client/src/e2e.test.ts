@@ -72,7 +72,7 @@ describe("clients", () => {
         data: { signatureParams: params, acceptAuthAddress },
       } = await appClient.status({ channelToken });
 
-      expect(acceptAuthAddress).toBe(false);
+      expect(acceptAuthAddress).toBe(true);
       expect(params.siweUri).toBe("https://example.com");
       expect(params.domain).toBe("example.com");
       expect(params.nonce).toBe("abcd1234");

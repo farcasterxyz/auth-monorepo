@@ -11,6 +11,10 @@ export type CreateChannelRequest = {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+
+  /**
+   * @default true
+   */
   acceptAuthAddress?: boolean;
 };
 
@@ -61,7 +65,7 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
   if (channel.isOk()) {
     const channelToken = channel.value;
     const nonce = request.body.nonce ?? generateSiweNonce();
-    const acceptAuthAddress = request.body.acceptAuthAddress ?? false;
+    const acceptAuthAddress = request.body.acceptAuthAddress ?? true;
     const url = constructUrl(channelToken);
 
     const update = await request.channels.update(channelToken, {

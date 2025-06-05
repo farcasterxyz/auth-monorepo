@@ -1,5 +1,14 @@
 # @farcaster/auth-kit
 
+## 0.8.1
+
+### Patch Changes
+
+- 2ea5559: chore: s/warpcast.com/farcaster.xyz
+- Updated dependencies [2ea5559]
+- Updated dependencies [7f05e73]
+  - @farcaster/auth-client@0.7.0
+
 ## 0.8.0
 
 ### Minor Changes

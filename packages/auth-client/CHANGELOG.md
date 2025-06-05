@@ -1,5 +1,15 @@
 # @farcaster/auth-client
 
+## 0.7.0
+
+### Minor Changes
+
+- 7f05e73: Default acceptAuthAddress to true.
+
+### Patch Changes
+
+- 2ea5559: chore: s/warpcast.com/farcaster.xyz
+
 ## 0.6.0
 
 ### Minor Changes

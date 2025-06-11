@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/jfs",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "JSON Farcaster Signature implementation",
   "repository": {
     "type": "git",
@@ -26,14 +26,16 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "typescript": "5.8.3"
+    "@noble/curves": "1.x",
+    "typescript": ">= 5.8.3",
+    "viem": "2.x"
   },
   "devDependencies": {
+    "@noble/curves": "^1.9.2",
+    "viem": "^2.31.0",
     "vitest": "^1.1.0"
   },
-  "dependencies": {
-    "@noble/curves": "^1.9.2",
-    "viem": "^2.31.0"
-  },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ]
 }

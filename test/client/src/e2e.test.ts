@@ -125,6 +125,7 @@ describe("clients", () => {
       expect(verifications).toStrictEqual([
         "0x86924c37a93734e8611eb081238928a9d18a63c0",
         "0xdb83ae472f108049828db5f429595c4b5932b62c",
+        "4sqyRTn46QosW1QrzDsxC7Qrg5WXNmd11ezSSeo4N5yA",
       ]);
 
       // 5. Channel is now closed

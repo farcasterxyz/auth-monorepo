@@ -1,4 +1,4 @@
-import { type Hex, isAddress, verifyMessage, isHex } from "viem";
+import { type Hex, isAddress, verifyMessage, isHex, hexToBytes } from "viem";
 import { ed25519 } from "@noble/curves/ed25519";
 
 const jsonFarcasterSignatureTypes = ["app_key", "auth", "custody"] as const;
@@ -8,7 +8,7 @@ type JsonFarcasterSignatureType = typeof jsonFarcasterSignatureTypes[number];
 export type JsonFarcasterSignatureHeader = {
   fid: number;
   type: JsonFarcasterSignatureType;
-  key: string;
+  key: Hex;
 };
 
 export type JsonFarcasterSignature = {
@@ -158,7 +158,7 @@ export async function verify({
     const verifyResult = ed25519.verify(
       decoded.signature,
       new Uint8Array(Buffer.from(signingInput, "utf-8")),
-      decoded.header.key,
+      hexToBytes(decoded.header.key),
     );
     if (!verifyResult) {
       throw new Error("Invalid signature");

@@ -16,11 +16,12 @@ import {
   type JsonFarcasterSignature,
   type JsonFarcasterSignatureHeader,
 } from "../src/index.js";
+import { bytesToHex } from "viem";
 
 const mockHeader: JsonFarcasterSignatureHeader = {
   fid: 123,
   type: "app_key",
-  key: "test-key",
+  key: "0x0000",
 };
 
 const mockPayload = { message: "test message", timestamp: 1234567890 };
@@ -142,7 +143,7 @@ describe("verify", () => {
   describe("app_key", () => {
     const privateKey = ed25519.utils.randomPrivateKey();
     const publicKey = ed25519.getPublicKey(privateKey);
-    const publicKeyHex = Buffer.from(publicKey).toString("hex");
+    const publicKeyHex = bytesToHex(publicKey);
 
     const appKeyHeader: JsonFarcasterSignatureHeader = {
       fid: 123,
@@ -270,7 +271,7 @@ describe("verify", () => {
     it("error: invalid address", async () => {
       const invalidAuthHeader = {
         ...authHeader,
-        key: "invalid-address",
+        key: "0x0000" as const,
       };
       const invalidAuthJfs: JsonFarcasterSignature = {
         header: encodeHeader(invalidAuthHeader),
@@ -370,7 +371,7 @@ describe("verify", () => {
     it("error: invalid address", async () => {
       const invalidCustodyHeader = {
         ...custodyHeader,
-        key: "invalid-address",
+        key: "0x0000" as const,
       };
       const invalidCustodyJfs: JsonFarcasterSignature = {
         header: encodeHeader(invalidCustodyHeader),

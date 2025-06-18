@@ -1,5 +1,6 @@
 import { type Hex, isAddress, verifyMessage, isHex, hexToBytes } from "viem";
 import { ed25519 } from "@noble/curves/ed25519";
+import { toBase64Url, fromBase64Url } from "./utils";
 
 const jsonFarcasterSignatureTypes = ["app_key", "auth", "custody"] as const;
 
@@ -46,27 +47,27 @@ export function uncompact(value: string): JsonFarcasterSignature {
 }
 
 export function encodeHeader(header: JsonFarcasterSignatureHeader): string {
-  return Buffer.from(JSON.stringify(header), "utf-8").toString("base64url");
+  return toBase64Url(Buffer.from(JSON.stringify(header), "utf-8").toString("base64"));
 }
 
 export function encodePayload<TPayload>(payload: TPayload): string {
-  return Buffer.from(JSON.stringify(payload), "utf-8").toString("base64url");
+  return toBase64Url(Buffer.from(JSON.stringify(payload), "utf-8").toString("base64"));
 }
 
 export function encodeSignature(signature: Uint8Array): string {
-  return Buffer.from(signature).toString("base64url");
+  return toBase64Url(Buffer.from(signature).toString("base64"));
 }
 
 export function decodeHeader(header: string): JsonFarcasterSignatureHeader {
-  return JSON.parse(Buffer.from(header, "base64url").toString("utf-8"));
+  return JSON.parse(Buffer.from(fromBase64Url(header), "base64").toString("utf-8"));
 }
 
 export function decodePayload<TPayload>(payload: string): TPayload {
-  return JSON.parse(Buffer.from(payload, "base64url").toString("utf-8"));
+  return JSON.parse(Buffer.from(fromBase64Url(payload), "base64").toString("utf-8"));
 }
 
 export function decodeSignature(signature: string): Uint8Array {
-  return new Uint8Array(Buffer.from(signature, "base64url"));
+  return new Uint8Array(Buffer.from(fromBase64Url(signature), "base64"));
 }
 
 export function decode<TPayload>(input: JsonFarcasterSignature | string): DecodedJsonFarcasterSignature<TPayload> {
@@ -78,9 +79,11 @@ export function decode<TPayload>(input: JsonFarcasterSignature | string): Decode
     return input;
   })();
 
-  const header = JSON.parse(Buffer.from(data.header, "base64url").toString("utf-8"));
-  const payload = data.payload ? JSON.parse(Buffer.from(data.payload, "base64url").toString("utf-8")) : undefined;
-  const signature = new Uint8Array(Buffer.from(data.signature, "base64url"));
+  const header = JSON.parse(Buffer.from(fromBase64Url(data.header), "base64").toString("utf-8"));
+  const payload = data.payload
+    ? JSON.parse(Buffer.from(fromBase64Url(data.payload), "base64").toString("utf-8"))
+    : undefined;
+  const signature = new Uint8Array(Buffer.from(fromBase64Url(data.signature), "base64"));
 
   return {
     header,

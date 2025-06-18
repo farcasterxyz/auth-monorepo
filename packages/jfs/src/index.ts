@@ -111,7 +111,7 @@ export async function verify({
 
   /**
    * In an early implementation of JFS custody signatures were incorrectly
-   * serialized. If strict is not enabled these signatures will be accpeted.
+   * serialized. If strict is not enabled these signatures will be accepted.
    *
    * @default false
    */

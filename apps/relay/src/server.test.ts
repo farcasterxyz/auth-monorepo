@@ -217,6 +217,26 @@ describe("relay server", () => {
       expect(response.status).toBe(201);
     });
 
+    test("restricted domain", async () => {
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        domain: "farcaster.xyz",
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({ error: "Domain not allowed" });
+    });
+
+    test("subdomain of restricted domain", async () => {
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        domain: "app.farcaster.xyz",
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({ error: "Domain not allowed" });
+    });
+
     test("open channel error", async () => {
       jest.spyOn(httpServer.channels, "open").mockImplementation(() => {
         throw new Error("open error");

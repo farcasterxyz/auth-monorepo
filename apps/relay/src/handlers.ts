@@ -54,6 +54,9 @@ export type RelaySession = {
   acceptAuthAddress: boolean;
 };
 
+// Well known domains that use SIWF signatures and are phishing targets.
+const RESTRICTED_DOMAINS = ["farcaster.xyz"];
+
 const constructUrl = (channelToken: string): string => {
   const params = { channelToken };
   const query = new URLSearchParams(params);
@@ -67,6 +70,10 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
     const nonce = request.body.nonce ?? generateSiweNonce();
     const acceptAuthAddress = request.body.acceptAuthAddress ?? true;
     const url = constructUrl(channelToken);
+
+    if (RESTRICTED_DOMAINS.find((d) => request.body.domain.includes(d))) {
+      return reply.code(400).send({ error: "Domain not allowed" });
+    }
 
     const update = await request.channels.update(channelToken, {
       state: "pending",

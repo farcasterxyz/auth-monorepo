@@ -1,7 +1,7 @@
 import { createWalletClient } from "../../clients/createWalletClient";
 import { jest } from "@jest/globals";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
-import { AuthenticateAPIResponse } from "./authenticate";
+import type { AuthenticateAPIResponse } from "./authenticate";
 
 describe("authenticate", () => {
   const client = createWalletClient({
@@ -24,7 +24,17 @@ describe("authenticate", () => {
   const statusResponseDataStub: AuthenticateAPIResponse = {
     state: "completed",
     nonce: "abcd1234",
-    url: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
+    url: "https://farcaster.xyz/~/siwf?channelToken=ABCD2345",
+    signatureParams: {
+      nonce: "abcd1234",
+      siweUri: "https://example.com/login",
+      domain: "example.com",
+    },
+    metadata: {
+      ip: "127.0.0.1",
+      userAgent: "Mozilla/5.0",
+    },
+    acceptAuthAddress: false,
     message,
     signature,
     fid,

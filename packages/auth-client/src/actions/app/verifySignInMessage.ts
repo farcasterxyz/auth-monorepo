@@ -1,26 +1,30 @@
-import { SiweMessage } from "siwe";
-import { Client } from "../../clients/createClient";
-import { VerifyResponse, verify } from "../../messages/verify";
-import { Unwrapped, unwrap } from "../../errors";
-import type { Provider } from "ethers";
+import type { Client } from "../../clients/createClient";
+import { type VerifyResponse, verify } from "../../messages/verify";
+import { type Unwrapped, unwrap } from "../../errors";
 
 export interface VerifySignInMessageArgs {
   nonce: string;
   domain: string;
-  message: string | Partial<SiweMessage>;
+  message: string;
   signature: `0x${string}`;
+
+  /**
+   * @default true
+   */
+  acceptAuthAddress?: boolean;
 }
 
 export type VerifySignInMessageResponse = Promise<Unwrapped<VerifyResponse>>;
 
 export const verifySignInMessage = async (
   client: Client,
-  { nonce, domain, message, signature }: VerifySignInMessageArgs,
-  provider?: Provider,
+  { nonce, domain, message, signature, acceptAuthAddress = true }: VerifySignInMessageArgs,
 ): VerifySignInMessageResponse => {
   const result = await verify(nonce, domain, message, signature, {
+    acceptAuthAddress: acceptAuthAddress,
     getFid: client.ethereum.getFid,
-    provider,
+    isValidAuthAddress: client.ethereum.isValidAuthAddress,
+    publicClient: client.ethereum.publicClient,
   });
   return unwrap(result);
 };

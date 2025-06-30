@@ -1,5 +1,88 @@
 # @farcaster/auth-kit
 
+## 0.8.1
+
+### Patch Changes
+
+- 2ea5559: chore: s/warpcast.com/farcaster.xyz
+- Updated dependencies [2ea5559]
+- Updated dependencies [7f05e73]
+  - @farcaster/auth-client@0.7.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 4543cd3: Added `rpcUrls` to support multiple Ethereum RPCs
+
+### Patch Changes
+
+- Updated dependencies [4543cd3]
+  - @farcaster/auth-client@0.6.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 14c4fb8: Removed siwe and ethers dependencies.
+
+### Patch Changes
+
+- Updated dependencies [14c4fb8]
+  - @farcaster/auth-client@0.5.0
+
+## 0.6.1
+
+### Patch Changes
+
+- 1384177: chore: update dependencies
+- 782c742: fix: use window.open for mobile links
+- Updated dependencies [c9027f9]
+- Updated dependencies [1384177]
+  - @farcaster/auth-client@0.4.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 088f6ca: Drop SIWE params from sign in URLs
+
+### Patch Changes
+
+- Updated dependencies [088f6ca]
+  - @farcaster/auth-client@0.3.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 70825e6: restyle QR code dialog
+
+## 0.4.0
+
+### Minor Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+
+### Patch Changes
+
+- 9d4371f: Fixed Farcaster SVG Logo missing `viewBox` property that led to incorrect logo render.
+- Updated dependencies [4755c6d]
+- Updated dependencies [fb69861]
+  - @farcaster/auth-client@0.2.0
+
+## 0.3.1
+
+### Patch Changes
+
+- 5c0623d: feat: add sign up CTA to modal
+
+## 0.3.0
+
+### Minor Changes
+
+- 951a692: feat: improve QR code legibility
+
 ## 0.2.2
 
 ### Patch Changes

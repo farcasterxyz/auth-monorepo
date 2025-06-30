@@ -1,6 +1,6 @@
-import path from "path";
+import path from "node:path";
 import { createAppClient, createWalletClient, viemConnector } from "../src/index";
-import * as repl from "repl";
+import * as repl from "node:repl";
 
 (async () => {
   console.log("Loading console environment...");

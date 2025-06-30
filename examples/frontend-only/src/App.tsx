@@ -1,21 +1,18 @@
 import "@farcaster/auth-kit/styles.css";
-import { providers } from "ethers";
 import { AuthKitProvider, SignInButton, useProfile } from "@farcaster/auth-kit";
 
 const config = {
+  relay: "https://relay.farcaster.xyz",
   // For a production app, replace this with an Optimism Mainnet
   // RPC URL from a provider like Alchemy or Infura.
-  relay: "https://relay.farcaster.xyz",
   rpcUrl: "https://mainnet.optimism.io",
   domain: "example.com",
   siweUri: "https://example.com/login",
-  provider: new providers.JsonRpcProvider(undefined, 10)
 };
 
 function App() {
   return (
     <main style={{ fontFamily: 'Inter, "Inter Placeholder", sans-serif' }}>
-      {/* @ts-expect-error ethers version type incompat */}
       <AuthKitProvider config={config}>
         <div style={{ position: "fixed", top: "12px", right: "12px" }}>
           <SignInButton />
@@ -55,9 +52,9 @@ function App() {
               <br />
               cd auth-monorepo/examples/frontend-only &&
               <br />
-              yarn install &&
+              pnpm install &&
               <br />
-              yarn dev
+              pnpm dev
             </div>
           </div>
         </div>
@@ -80,9 +77,8 @@ function Profile() {
           <p>
             Hello, {displayName}! Your FID is {fid}.
           </p>
-          <p>
-            Your custody address is: <pre>{custody}</pre>
-          </p>
+          <p>Your custody address is: </p>
+          <pre>{custody}</pre>
         </div>
       ) : (
         <p>

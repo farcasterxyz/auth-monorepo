@@ -1,4 +1,4 @@
-import { Result } from "neverthrow";
+import type { Result } from "neverthrow";
 
 interface RelayErrorOpts {
   message: string;

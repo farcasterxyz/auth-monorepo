@@ -1,4 +1,4 @@
-import { AuthClientError } from "@farcaster/auth-client";
+import type { AuthClientError } from "@farcaster/auth-client";
 import { useCallback, useEffect, useState } from "react";
 
 import { useAppClient } from "./useAppClient";
@@ -92,7 +92,7 @@ export function useCreateChannel({
 
   const connect = useCallback(async () => {
     setConnected(true);
-  }, [setConnected]);
+  }, []);
 
   const reset = useCallback(() => {
     setChannelToken(undefined);
@@ -100,7 +100,7 @@ export function useCreateChannel({
     setIsSuccess(false);
     setIsError(false);
     setError(undefined);
-  }, [setChannelToken, setUrl, setIsSuccess, setIsError, setError]);
+  }, []);
 
   const reconnect = useCallback(() => {
     reset();

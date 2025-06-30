@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "target": "ES2021",
+    "esModuleInterop": true,
+    "strict": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "lib": [
+      "ES2022" // By using ES2022 we get access to the `.cause` property on `Error` instances.
+    ]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

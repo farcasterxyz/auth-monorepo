@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import { primaryButton, secondaryButton, tertiaryButton, resetButton } from "./styles.css";
 
 export type Props = ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -27,6 +27,9 @@ export const createChannelRequestSchema = {
     redirectUrl: {
       type: "string",
     },
+    acceptAuthAddress: {
+      type: "boolean",
+    },
   },
   required: ["siweUri", "domain"],
   additionalProperties: false,
@@ -42,6 +45,10 @@ export const authenticateRequestSchema = {
     signature: {
       type: "string",
       pattern: "^0x[a-fA-F0-9]{130}$",
+    },
+    authMethod: {
+      type: "string",
+      enum: ["custody", "authAddress"],
     },
     fid: {
       type: "integer",

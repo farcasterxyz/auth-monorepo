@@ -1,4 +1,4 @@
-import { createClient, Client } from "./createClient";
+import { createClient, type Client } from "./createClient";
 import { viemConnector } from "./ethereum/viemConnector";
 
 describe("createClient", () => {

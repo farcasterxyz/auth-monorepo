@@ -1,0 +1,36 @@
+{
+  "name": "@farcaster/jfs",
+  "version": "0.0.3",
+  "description": "JSON Farcaster Signature implementation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farcasterxyz/auth-monorepo.git",
+    "directory": "packages/jfs"
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "sideEffects": false,
+  "scripts": {
+    "build": "pnpm build:cjs && pnpm build:esm",
+    "build:cjs": "tsc --module commonjs --moduleResolution node --outDir dist/cjs",
+    "build:esm": "tsc --outDir dist/esm",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@noble/curves": "1.x",
+    "typescript": ">= 5.8.3",
+    "viem": "2.x"
+  },
+  "devDependencies": {
+    "@noble/curves": "^1.9.2",
+    "viem": "^2.31.0",
+    "vitest": "^1.1.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

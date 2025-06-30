@@ -1,6 +1,6 @@
-import { AuthClientError } from "@farcaster/auth-client";
+import type { AuthClientError } from "@farcaster/auth-client";
 import { Dialog } from "../Dialog/index.ts";
-import { body, siwfHeading, instructions } from "./QRCodeDialog.css.ts";
+import { body, siwfHeading, instructions, qrCodeImage } from "./QRCodeDialog.css.ts";
 import { Button } from "../Button.tsx";
 import { QRCode } from "../QRCode.tsx";
 
@@ -18,50 +18,22 @@ export function QRCodeDialog({
   error?: AuthClientError;
 }) {
   return (
-    <Dialog open={open} titleId="Sign In With Farcaster" onClose={onClose}>
+    <Dialog open={open} titleId="Sign in with Farcaster" onClose={onClose}>
       <div className="fc-authkit-qrcode-dialog">
         <div className={body}>
-          <Button
-            kind="reset"
-            onClick={onClose}
-            style={{ position: "absolute", top: 19, right: 13 }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={18}
-              height={18}
-              fill="none"
-            >
-              <path
-                fill="rgba(0,0,0,0.5)"
-                fillRule="evenodd"
-                d="M1.15 1.15a.937.937 0 0 1 1.325 0L9 7.674l6.525-6.524a.937.937 0 1 1 1.325 1.325L10.326 9l6.524 6.525a.937.937 0 0 1-1.325 1.325L9 10.326 2.475 16.85a.938.938 0 0 1-1.325-1.325L7.674 9 1.15 2.475a.937.937 0 0 1 0-1.325Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </Button>
           {isError ? (
             <>
               <div className={siwfHeading}>Error</div>
-              <div className={instructions}>
-                {error?.message ?? "Unknown error, please try again."}
-              </div>
+              <div className={instructions}>{error?.message ?? "Unknown error, please try again."}</div>
             </>
           ) : (
             <>
               <div className={siwfHeading}>Sign in with Farcaster</div>
               <div className={instructions}>
-                Scan with your phone's camera to continue.
+                To sign in with Farcaster, scan the code below with your phone's camera.
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: 24,
-                  marginBottom: 12,
-                }}
-              >
-                <QRCode uri={url} size={264} logoSize={22} logoMargin={12} />
+              <div className={qrCodeImage}>
+                <QRCode uri={url} size={200} />
               </div>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
@@ -72,15 +44,11 @@ export function QRCodeDialog({
                     fontWeight: 500,
                   }}
                   onClick={() => {
-                    window.location.href = url;
+                    window.open(url, "_blank");
                   }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={12}
-                    height={18}
-                    fill="none"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" width={12} height={18} fill="none">
+                    <title>Sign in With Farcaster QR Code</title>
                     <path
                       fill="#7C65C1"
                       fillRule="evenodd"

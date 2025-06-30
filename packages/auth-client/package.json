@@ -1,14 +1,14 @@
 {
   "name": "@farcaster/auth-client",
-  "version": "0.1.1",
+  "version": "0.7.0",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.mjs"
     }
   },
   "files": [
@@ -18,23 +18,13 @@
   "scripts": {
     "build": "tsup --config tsup.config.ts",
     "clean": "rimraf ./dist",
-    "lint": "biome format src/ scripts/ --write && biome check src/ scripts/ --apply",
-    "lint:ci": "biome ci src/ scripts/",
     "test": "jest",
     "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
-    "console": "yarn ts-node ./scripts/console.ts",
-    "prepublishOnly": "yarn run build"
+    "console": "pnpm ts-node ./scripts/console.ts",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "neverthrow": "^6.1.0",
-    "siwe": "^2.1.4"
-  },
-  "peerDependencies": {
-    "ethers": "5.x || 6.x",
-    "viem": "1.x || 2.x"
-  },
-  "devDependencies": {
-    "ethers": "^6.12.0",
-    "viem": "^1.19.11"
+    "viem": "^2.29.2"
   }
 }

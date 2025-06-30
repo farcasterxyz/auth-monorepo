@@ -1,7 +1,7 @@
 import { createAppClient } from "../../clients/createAppClient";
 import { jest } from "@jest/globals";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
-import { StatusAPIResponse } from "./status";
+import type { StatusAPIResponse } from "./status";
 
 describe("status", () => {
   const client = createAppClient({
@@ -15,7 +15,16 @@ describe("status", () => {
   const statusResponseDataStub: StatusAPIResponse = {
     state: "pending",
     nonce: "abcd1234",
-    url: "https://warpcast.com/~/sign-in-with-farcaster?nonce=abcd1234[...]",
+    url: "https://farcaster.xyz/~/siwf?channelToken=ABCD2345",
+    signatureParams: {
+      domain: "example.com",
+      siweUri: "https://example.com/login",
+    },
+    metadata: {
+      ip: "127.0.0.1",
+      userAgent: "Mozilla/5.0",
+    },
+    acceptAuthAddress: true,
   };
 
   test("constructs API request", async () => {

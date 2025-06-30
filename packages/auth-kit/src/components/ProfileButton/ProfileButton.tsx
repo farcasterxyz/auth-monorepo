@@ -1,11 +1,7 @@
 import { useRef, useState } from "react";
 import { secondaryButton } from "../styles.css.ts";
 import useDetectClickOutside from "../../hooks/useDetectClickOutside.ts";
-import {
-  profileButtonContainer,
-  profileImage,
-  profileName,
-} from "./ProfileButton.css.ts";
+import { profileButtonContainer, profileImage, profileName } from "./ProfileButton.css.ts";
 import { SignOutButton } from "../SignOutButton";
 
 interface UserDataProps {
@@ -28,15 +24,12 @@ export function ProfileButton({
   useDetectClickOutside(ref, () => setShowSignOutButton(false));
 
   const name = userData?.username ?? `!${userData?.fid}`;
-  const pfpUrl = userData?.pfpUrl ?? "https://warpcast.com/avatar.png";
+  const pfpUrl = userData?.pfpUrl ?? "https://farcaster.xyz/avatar.png";
 
   const showSignOut = showSignOutButton && !hideSignOut;
 
   return (
-    <div
-      className={`fc-authkit-profile-button ${profileButtonContainer}`}
-      ref={ref}
-    >
+    <div className={`fc-authkit-profile-button ${profileButtonContainer}`} ref={ref}>
       <div
         style={{
           display: "flex",
@@ -44,21 +37,11 @@ export function ProfileButton({
           alignItems: "flex-end",
         }}
       >
-        <button
-          type="button"
-          className={secondaryButton}
-          onClick={() => setShowSignOutButton(!showSignOutButton)}
-        >
+        <button type="button" className={secondaryButton} onClick={() => setShowSignOutButton(!showSignOutButton)}>
           <img className={profileImage} src={pfpUrl} alt="avatar" />
           <span className={profileName}>{name}</span>
           {!hideSignOut && (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <title>Dropdown</title>
               <g opacity="0.5">
                 <path

@@ -1,14 +1,12 @@
 {
   "name": "client-test",
-  "version": "0.0.5",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "test": " DOTENV_CONFIG_PATH=.env.test jest",
-    "test:ci": "ENVIRONMENT=test DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage",
-    "lint": "biome format src/ --write && biome check src/ --apply",
-    "lint:ci": "biome ci src/"
+    "test:ci": "ENVIRONMENT=test DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage"
   },
   "devDependencies": {
-    "viem": "^1.20.3"
+    "viem": "^2.29.1"
   }
 }

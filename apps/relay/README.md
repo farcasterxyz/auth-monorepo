@@ -7,7 +7,7 @@ Farcaster Auth HTTP relay server.
 Install dependencies:
 
 ```sh
-yarn install
+pnpm install
 ```
 
 Start a Redis container:
@@ -19,7 +19,7 @@ docker compose up
 Run the server:
 
 ```sh
-yarn start
+pnpm start
 ```
 
 ## About

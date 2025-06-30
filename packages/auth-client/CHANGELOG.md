@@ -1,5 +1,60 @@
 # @farcaster/auth-client
 
+## 0.7.0
+
+### Minor Changes
+
+- 7f05e73: Default acceptAuthAddress to true.
+
+### Patch Changes
+
+- 2ea5559: chore: s/warpcast.com/farcaster.xyz
+
+## 0.6.0
+
+### Minor Changes
+
+- 4543cd3: Added `rpcUrls` in the `viemConnector` options to allow specifiying multiple RPCs.
+
+## 0.5.0
+
+### Minor Changes
+
+- 14c4fb8: Removed siwe and ethers dependencies.
+
+## 0.4.0
+
+### Minor Changes
+
+- c9027f9: feat: auth addresses
+
+### Patch Changes
+
+- 1384177: chore: update dependencies
+
+## 0.3.0
+
+### Minor Changes
+
+- 088f6ca: Drop SIWE params from sign in URLs
+
+## 0.2.1
+
+### Patch Changes
+
+- 92b841c: add request metadata to channel
+- b23079b: allow channel token only in sign in URI
+
+## 0.2.0
+
+### Minor Changes
+
+- 4755c6d: feat: add SIWE params to channel body
+
+### Patch Changes
+
+- fb69861: fix: call onResponse before return
+
 ## 0.1.1
 
 ### Patch Changes

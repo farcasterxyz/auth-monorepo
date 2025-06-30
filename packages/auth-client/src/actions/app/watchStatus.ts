@@ -1,7 +1,7 @@
-import { AsyncUnwrapped, unwrap } from "../../errors";
-import { Client } from "../../clients/createClient";
-import { poll, HttpResponse } from "../../clients/transports/http";
-import { StatusAPIResponse } from "./status";
+import { type AsyncUnwrapped, unwrap } from "../../errors";
+import type { Client } from "../../clients/createClient";
+import { poll, type HttpResponse } from "../../clients/transports/http";
+import type { StatusAPIResponse } from "./status";
 
 export interface WatchStatusArgs {
   channelToken: string;

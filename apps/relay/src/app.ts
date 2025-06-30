@@ -1,3 +1,4 @@
+import "./tracing";
 import { RelayServer } from "./server";
 import { CHANNEL_TTL, REDIS_URL, RELAY_SERVER_HOST, RELAY_SERVER_PORT } from "./env";
 

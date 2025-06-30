@@ -1,5 +1,7 @@
+import { LOG_LEVEL } from "./env";
+
 export const logger = {
-  level: "info",
+  level: LOG_LEVEL,
   redact: [
     "req.headers.authorization",
     'req.headers["x-farcaster-auth-relay-key"]',

@@ -1,7 +1,8 @@
-import { StatusAPIResponse } from "../app/status";
-import { post, HttpResponse } from "../../clients/transports/http";
-import { Client } from "../../clients/createClient";
-import { AsyncUnwrapped, unwrap } from "../../errors";
+import type { StatusAPIResponse } from "../app/status";
+import { post, type HttpResponse } from "../../clients/transports/http";
+import type { Client } from "../../clients/createClient";
+import { type AsyncUnwrapped, unwrap } from "../../errors";
+import type { AuthMethod } from "types";
 
 export interface AuthenticateArgs extends AuthenticateRequest {
   authKey: string;
@@ -13,6 +14,7 @@ export type AuthenticateResponse = AsyncUnwrapped<HttpResponse<AuthenticateAPIRe
 interface AuthenticateRequest {
   message: string;
   signature: `0x${string}`;
+  authMethod?: AuthMethod;
   fid: number;
   username?: string;
   bio?: string;

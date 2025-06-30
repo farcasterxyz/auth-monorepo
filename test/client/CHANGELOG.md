@@ -1,5 +1,17 @@
 # client-test
 
+## 0.1.1
+
+### Patch Changes
+
+- 7f05e73: Default acceptAuthAddress to true.
+
+## 0.1.0
+
+### Minor Changes
+
+- c9027f9: feat: auth addresses
+
 ## 0.0.5
 
 ### Patch Changes

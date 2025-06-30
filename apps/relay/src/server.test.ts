@@ -74,8 +74,8 @@ describe("relay server", () => {
 
       expect(response.status).toBe(201);
       const { channelToken, url, connectUri, nonce, ...rest } = response.data;
-      expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
-      expect(url).toMatch("https://warpcast.com/~/sign-in-with-farcaster");
+      expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
+      expect(url).toMatch("https://farcaster.xyz/~/siwf");
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
     });
@@ -86,7 +86,7 @@ describe("relay server", () => {
       const expirationTime = "2023-12-31T00:00:00Z";
       const requestId = "some-request-id";
       const redirectUrl = "http://some-redirect-url";
-      const response = await http.post(getFullUrl("/v1/channel"), {
+      let response = await http.post(getFullUrl("/v1/channel"), {
         ...channelParams,
         nonce: customNonce,
         notBefore,
@@ -99,17 +99,27 @@ describe("relay server", () => {
       const { channelToken, url, connectUri, nonce, ...rest } = response.data;
       // parse query params from URI
       const params = new URLSearchParams(url.split("?")[1]);
-      expect(params.get("siweUri")).toBe(channelParams.siweUri);
-      expect(params.get("domain")).toBe(channelParams.domain);
-      expect(params.get("nonce")).toBe(customNonce);
-      expect(params.get("notBefore")).toBe(notBefore);
-      expect(params.get("expirationTime")).toBe(expirationTime);
-      expect(params.get("requestId")).toBe(requestId);
-      expect(params.get("redirectUrl")).toBe(redirectUrl);
-      expect(channelToken).toMatch(/[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}/);
+      expect(params.get("channelToken")).toBe(channelToken);
+      expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
       expect(nonce).toBe(customNonce);
       expect(url).toBe(connectUri);
       expect(rest).toStrictEqual({});
+
+      response = await http.get(getFullUrl("/v1/channel/status"), {
+        headers: { Authorization: `Bearer ${channelToken}` },
+      });
+
+      expect(response.data.acceptAuthAddress).toBe(true);
+
+      const siweParams = response.data.signatureParams;
+
+      expect(siweParams.siweUri).toBe(channelParams.siweUri);
+      expect(siweParams.domain).toBe(channelParams.domain);
+      expect(siweParams.nonce).toBe(customNonce);
+      expect(siweParams.notBefore).toBe(notBefore);
+      expect(siweParams.expirationTime).toBe(expirationTime);
+      expect(siweParams.requestId).toBe(requestId);
+      expect(siweParams.redirectUrl).toBe(redirectUrl);
     });
 
     test("validates extra SIWE parameters", async () => {
@@ -124,6 +134,30 @@ describe("relay server", () => {
         error: "Validation error",
         message: 'body/notBefore must match format "date-time"',
       });
+    });
+
+    test("creates a channel with accepted auth method", async () => {
+      let response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        acceptAuthAddress: true,
+      });
+
+      expect(response.status).toBe(201);
+      const { channelToken, url, connectUri, nonce, ...rest } = response.data;
+      // parse query params from URI
+      const params = new URLSearchParams(url.split("?")[1]);
+      expect(params.get("channelToken")).toBe(channelToken);
+      expect(channelToken).toMatch(/[2-9A-HJ-NP-Z]{8}/);
+      expect(url).toBe(connectUri);
+      expect(rest).toStrictEqual({});
+
+      response = await http.get(getFullUrl("/v1/channel/status"), {
+        headers: { Authorization: `Bearer ${channelToken}` },
+      });
+
+      const { acceptAuthAddress } = response.data;
+
+      expect(acceptAuthAddress).toBe(true);
     });
 
     test("missing siweUri", async () => {
@@ -181,6 +215,26 @@ describe("relay server", () => {
       });
 
       expect(response.status).toBe(201);
+    });
+
+    test("restricted domain", async () => {
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        domain: "farcaster.xyz",
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({ error: "Domain not allowed" });
+    });
+
+    test("subdomain of restricted domain", async () => {
+      const response = await http.post(getFullUrl("/v1/channel"), {
+        ...channelParams,
+        domain: "app.farcaster.xyz",
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({ error: "Domain not allowed" });
     });
 
     test("open channel error", async () => {
@@ -313,6 +367,19 @@ describe("relay server", () => {
       });
     });
 
+    test("invalid authMethod", async () => {
+      const response = await http.post(
+        getFullUrl("/v1/channel/authenticate"),
+        { ...authenticateParams, authMethod: "invalid" },
+        { headers: { Authorization: `Bearer ${channelToken}` } },
+      );
+      expect(response.status).toBe(400);
+      expect(response.data).toStrictEqual({
+        error: "Validation error",
+        message: "body/authMethod must be equal to one of the allowed values",
+      });
+    });
+
     test("read channel error", async () => {
       jest.spyOn(httpServer.channels, "read").mockImplementation(() => {
         throw new Error("read error");
@@ -372,7 +439,18 @@ describe("relay server", () => {
       const { state, nonce, ...rest } = response.data;
       expect(state).toBe("pending");
       expect(nonce).toMatch(/[a-zA-Z0-9]{16}/);
-      expect(rest).toStrictEqual({});
+      expect(rest).toStrictEqual({
+        acceptAuthAddress: true,
+        signatureParams: {
+          nonce,
+          domain: "example.com",
+          siweUri: "https://example.com",
+        },
+        metadata: {
+          ip: "127.0.0.1",
+          userAgent: "axios/1.9.0",
+        },
+      });
     });
 
     test("GET with invalid token", async () => {

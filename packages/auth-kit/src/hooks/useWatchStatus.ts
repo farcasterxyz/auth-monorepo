@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
+import type { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import useAppClient from "./useAppClient";
 
 export interface UseWatchStatusArgs {
@@ -32,13 +32,13 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<AuthClientError>();
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setStatusData(undefined);
     setIsEnabled(false);
     setIsError(false);
     setIsSuccess(false);
     setError(undefined);
-  };
+  }, []);
 
   const watch = () => {
     setIsEnabled(true);
@@ -79,7 +79,7 @@ export function useWatchStatus(args: UseWatchStatusArgs) {
     if (channelToken) {
       watchStatus();
     }
-  }, [channelToken, watchStatus]);
+  }, [channelToken, watchStatus, resetState]);
 
   return {
     watch,

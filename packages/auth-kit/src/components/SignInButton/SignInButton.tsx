@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import useSignIn, { UseSignInArgs } from "../../hooks/useSignIn.ts";
+import useSignIn, { type UseSignInArgs } from "../../hooks/useSignIn.ts";
 import { ActionButton } from "../ActionButton/index.ts";
 import { ProfileButton } from "../ProfileButton/index.ts";
 import { QRCodeDialog } from "../QRCodeDialog/index.tsx";
 import { isMobile } from "../../utils.ts";
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
+import type { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import { debugPanel } from "./SignInButton.css.ts";
 
 type SignInButtonProps = UseSignInArgs & {
@@ -13,33 +13,28 @@ type SignInButtonProps = UseSignInArgs & {
   hideSignOut?: boolean;
 };
 
-export function SignInButton({
-  debug,
-  hideSignOut,
-  onSignOut,
-  ...signInArgs
-}: SignInButtonProps) {
+export function SignInButton({ debug, hideSignOut, onSignOut, ...signInArgs }: SignInButtonProps) {
   const { onSuccess, onStatusResponse, onError } = signInArgs;
 
   const onSuccessCallback = useCallback(
     (res: StatusAPIResponse) => {
       onSuccess?.(res);
     },
-    [onSuccess]
+    [onSuccess],
   );
 
   const onStatusCallback = useCallback(
     (res: StatusAPIResponse) => {
       onStatusResponse?.(res);
     },
-    [onStatusResponse]
+    [onStatusResponse],
   );
 
   const onErrorCallback = useCallback(
     (error?: AuthClientError) => {
       onError?.(error);
     },
-    [onError]
+    [onError],
   );
 
   const onSignOutCallback = useCallback(() => {
@@ -52,19 +47,8 @@ export function SignInButton({
     onStatusResponse: onStatusCallback,
     onError: onErrorCallback,
   });
-  const {
-    signIn,
-    signOut,
-    connect,
-    reconnect,
-    isSuccess,
-    isError,
-    error,
-    channelToken,
-    url,
-    data,
-    validSignature,
-  } = signInState;
+  const { signIn, signOut, connect, reconnect, isSuccess, isError, error, channelToken, url, data, validSignature } =
+    signInState;
 
   const handleSignOut = useCallback(() => {
     setShowDialog(false);
@@ -81,7 +65,7 @@ export function SignInButton({
     setShowDialog(true);
     signIn();
     if (url && isMobile()) {
-      window.location.href = url;
+      window.open(url, "_blank");
     }
   }, [isError, reconnect, signIn, url]);
 
@@ -96,14 +80,10 @@ export function SignInButton({
   return (
     <div className="fc-authkit-signin-button">
       {authenticated ? (
-        <ProfileButton
-          userData={data}
-          signOut={handleSignOut}
-          hideSignOut={!!hideSignOut}
-        />
+        <ProfileButton userData={data} signOut={handleSignOut} hideSignOut={!!hideSignOut} />
       ) : (
         <>
-          <ActionButton onClick={onClick} label="Sign in" />
+          <ActionButton initializing={!url} onClick={onClick} label={"Sign in"} />
           {url && (
             <QRCodeDialog
               open={showDialog && !isMobile()}

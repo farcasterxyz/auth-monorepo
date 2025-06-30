@@ -1,7 +1,7 @@
-import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import type { Hex } from "viem";
 import { AUTH_KEY, URL_BASE } from "./env";
-import { generateNonce } from "siwe";
+import { generateSiweNonce } from "viem/siwe";
 
 export type CreateChannelRequest = {
   siweUri: string;
@@ -11,16 +11,27 @@ export type CreateChannelRequest = {
   expirationTime?: string;
   requestId?: string;
   redirectUrl?: string;
+
+  /**
+   * @default true
+   */
+  acceptAuthAddress?: boolean;
 };
 
 export type AuthenticateRequest = {
   message: string;
   signature: string;
+  authMethod?: "custody" | "authAddress";
   fid: number;
   username: string;
   bio: string;
   displayName: string;
   pfpUrl: string;
+};
+
+export type SessionMetadata = {
+  ip: string;
+  userAgent: string;
 };
 
 export type RelaySession = {
@@ -30,17 +41,24 @@ export type RelaySession = {
   connectUri: string;
   message?: string;
   signature?: string;
+  authMethod?: "custody" | "authAddress";
   fid?: number;
   username?: string;
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
-  verifications?: Hex[];
+  verifications?: string[];
   custody?: Hex;
+  signatureParams: CreateChannelRequest;
+  metadata: SessionMetadata;
+  acceptAuthAddress: boolean;
 };
 
-const constructUrl = (channelToken: string, nonce: string, extraParams: CreateChannelRequest): string => {
-  const params = { channelToken, nonce, ...extraParams };
+// Well known domains that use SIWF signatures and are phishing targets.
+const RESTRICTED_DOMAINS = ["farcaster.xyz"];
+
+const constructUrl = (channelToken: string): string => {
+  const params = { channelToken };
   const query = new URLSearchParams(params);
   return `${URL_BASE}?${query.toString()}`;
 };
@@ -49,23 +67,32 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
   const channel = await request.channels.open();
   if (channel.isOk()) {
     const channelToken = channel.value;
-    const nonce = request.body.nonce ?? generateNonce();
-    const url = constructUrl(channelToken, nonce, request.body);
+    const nonce = request.body.nonce ?? generateSiweNonce();
+    const acceptAuthAddress = request.body.acceptAuthAddress ?? true;
+    const url = constructUrl(channelToken);
+
+    if (RESTRICTED_DOMAINS.find((d) => request.body.domain.includes(d))) {
+      return reply.code(400).send({ error: "Domain not allowed" });
+    }
 
     const update = await request.channels.update(channelToken, {
       state: "pending",
       nonce,
       url,
       connectUri: url,
+      acceptAuthAddress,
+      signatureParams: { ...request.body, nonce },
+      metadata: {
+        userAgent: request.headers["user-agent"] ?? "Unknown",
+        ip: request.ip,
+      },
     });
     if (update.isOk()) {
       return reply.code(201).send({ channelToken, url, connectUri: url, nonce });
-    } else {
-      return reply.code(500).send({ error: update.error.message });
     }
-  } else {
-    return reply.code(500).send({ error: channel.error.message });
+    return reply.code(500).send({ error: update.error.message });
   }
+  return reply.code(500).send({ error: channel.error.message });
 }
 
 export async function authenticate(request: FastifyRequest<{ Body: AuthenticateRequest }>, reply: FastifyReply) {
@@ -75,7 +102,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
   }
 
   const channelToken = request.channelToken;
-  const { message, signature, fid, username, displayName, bio, pfpUrl } = request.body;
+  const { message, signature, authMethod, fid, username, displayName, bio, pfpUrl } = request.body;
 
   const addrs = await request.addresses.getAddresses(fid);
   if (addrs.isOk()) {
@@ -86,6 +113,7 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
         state: "completed",
         message,
         signature,
+        authMethod: authMethod ?? "custody",
         fid,
         username,
         displayName,
@@ -95,18 +123,15 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
       });
       if (update.isOk()) {
         return reply.code(201).send(update.value);
-      } else {
-        return reply.code(500).send({ error: update.error.message });
       }
-    } else {
-      if (channel.error.errCode === "not_found") {
-        return reply.code(401).send({ error: "Unauthorized " });
-      }
-      return reply.code(500).send({ error: channel.error.message });
+      return reply.code(500).send({ error: update.error.message });
     }
-  } else {
-    return reply.code(500).send({ error: addrs.error.message });
+    if (channel.error.errCode === "not_found") {
+      return reply.code(401).send({ error: "Unauthorized " });
+    }
+    return reply.code(500).send({ error: channel.error.message });
   }
+  return reply.code(500).send({ error: addrs.error.message });
 }
 
 export async function status(request: FastifyRequest, reply: FastifyReply) {
@@ -119,26 +144,23 @@ export async function status(request: FastifyRequest, reply: FastifyReply) {
         return reply.code(500).send({ error: close.error.message });
       }
       return reply.code(200).send(res);
-    } else {
-      return reply.code(202).send(res);
     }
-  } else {
-    if (channel.error.errCode === "not_found") {
-      return reply.code(401).send({ error: "Unauthorized" });
-    }
-    return reply.code(500).send({ error: channel.error.message });
+    return reply.code(202).send(res);
   }
+  if (channel.error.errCode === "not_found") {
+    return reply.code(401).send({ error: "Unauthorized" });
+  }
+  return reply.code(500).send({ error: channel.error.message });
 }
 
 export async function handleError(error: FastifyError, request: FastifyRequest, reply: FastifyReply) {
   const { validation, statusCode } = error;
   if (validation) {
     return reply.status(400).send({ error: "Validation error", message: error.message });
-  } else if (statusCode) {
-    reply.code(statusCode);
-    if (statusCode < 500) reply.send({ error: error.message });
-  } else {
-    request.log.error({ err: error, errMsg: error.message, request }, "Error in http request");
-    return reply.code(500).send({ error: error.message });
   }
+  if (statusCode && statusCode < 500) {
+    return reply.code(statusCode).send({ error: error.message });
+  }
+  request.log.error({ err: error, errMsg: error.message, request }, "Server error");
+  return reply.code(500).send({ error: error.message });
 }

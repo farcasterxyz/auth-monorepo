@@ -1,15 +1,15 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from "axios";
 import { ResultAsync, err, ok } from "neverthrow";
 import { createPublicClient, http } from "viem";
 import type { PublicClient, HttpTransport, Hex } from "viem";
 import { optimism } from "viem/chains";
-import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/core";
+import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/hub-nodejs";
 
-import { RelayAsyncResult, RelayError } from "./errors";
+import { type RelayAsyncResult, RelayError } from "./errors";
 import { HUB_URL, HUB_FALLBACK_URL, OPTIMISM_RPC_URL } from "./env";
 
 interface VerificationAddAddressBody {
-  address: Hex;
+  address: string;
 }
 
 interface ArbitraryVerificationMessageData {
@@ -44,7 +44,7 @@ export class AddressService {
     });
   }
 
-  async getAddresses(fid?: number): RelayAsyncResult<{ custody: Hex; verifications: Hex[] }> {
+  async getAddresses(fid?: number): RelayAsyncResult<{ custody: Hex; verifications: string[] }> {
     const custody = await this.custody(fid);
     if (custody.isErr()) {
       return err(custody.error);
@@ -73,17 +73,17 @@ export class AddressService {
     );
   }
 
-  async verifications(fid?: number): RelayAsyncResult<Hex[]> {
+  async verifications(fid?: number): RelayAsyncResult<string[]> {
     const url = `${HUB_URL}/v1/verificationsByFid?fid=${fid}`;
     const fallbackUrl = `${HUB_FALLBACK_URL}/v1/verificationsByFid?fid=${fid}`;
 
-    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url, { timeout: 1500 }), (error) => {
+    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url, { timeout: 5000 }), (error) => {
       return new RelayError("unknown", error as Error);
     })
       .orElse(() => {
         return ResultAsync.fromPromise(
           this.http.get<VerificationsAPIResponse>(fallbackUrl, {
-            timeout: 3500,
+            timeout: 5000,
           }),
           (error) => {
             return new RelayError("unknown", error as Error);

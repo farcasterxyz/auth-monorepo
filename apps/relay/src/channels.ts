@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 import { ResultAsync, err, ok } from "neverthrow";
-import { randomUUID } from "crypto";
-import { RelayAsyncResult, RelayError } from "./errors";
+import { type RelayAsyncResult, RelayError } from "./errors";
+import { generateChannelToken } from "./tokens";
 
 interface ChannelStoreOpts {
   redisUrl: string;
@@ -18,7 +18,7 @@ export class ChannelStore<T> {
   }
 
   async open(state?: T): RelayAsyncResult<string> {
-    const channelToken = randomUUID();
+    const channelToken = generateChannelToken();
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state ?? {}), "EX", this.ttl),
       (err) => new RelayError("unavailable", err as Error),
@@ -39,9 +39,8 @@ export class ChannelStore<T> {
     ).andThen((channel) => {
       if (channel) {
         return ok(JSON.parse(channel));
-      } else {
-        return err(new RelayError("not_found", "Channel not found"));
       }
+      return err(new RelayError("not_found", "Channel not found"));
     });
   }
 

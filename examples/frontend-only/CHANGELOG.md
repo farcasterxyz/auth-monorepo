@@ -1,5 +1,20 @@
 # frontend-only
 
+## 0.0.3
+
+### Patch Changes
+
+- 5f30b12: chore: remove ethers.js dependency
+
+## 0.0.2
+
+### Patch Changes
+
+- 1384177: chore: update dependencies
+- Updated dependencies [1384177]
+- Updated dependencies [782c742]
+  - @farcaster/auth-kit@0.6.1
+
 ## 0.0.1
 
 ### Patch Changes

@@ -1,7 +1,8 @@
-import { AsyncUnwrapped, unwrap } from "../../errors";
-import { Client } from "../../clients/createClient";
-import { get, HttpResponse } from "../../clients/transports/http";
 import type { Hex } from "viem";
+import { type AsyncUnwrapped, unwrap } from "../../errors";
+import type { Client } from "../../clients/createClient";
+import { get, type HttpResponse } from "../../clients/transports/http";
+import type { AuthMethod } from "../../types";
 
 export interface StatusArgs {
   channelToken: string;
@@ -18,13 +19,28 @@ export type StatusAPIResponse = {
   url: string;
   message: string;
   signature: `0x${string}`;
+  authMethod?: AuthMethod;
   fid: number;
   username?: string;
   bio?: string;
   displayName?: string;
   pfpUrl?: string;
-  verifications?: Hex[];
+  verifications?: string[];
   custody?: Hex;
+  signatureParams: {
+    siweUri: string;
+    domain: string;
+    nonce?: string;
+    notBefore?: string;
+    expirationTime?: string;
+    requestId?: string;
+    redirectUrl?: string;
+  };
+  metadata: {
+    ip: string;
+    userAgent: string;
+  };
+  acceptAuthAddress: boolean;
 }
 
 const path = "channel/status";

@@ -1,5 +1,7 @@
-import { Hex } from "viem";
+import type { Address, Client } from "viem";
 
 export interface EthereumConnector {
-  getFid: (custody: Hex) => Promise<BigInt>;
+  getFid: (custody: Address) => Promise<bigint>;
+  isValidAuthAddress: (authAddress: Address, fid: bigint) => Promise<boolean>;
+  publicClient: Client;
 }

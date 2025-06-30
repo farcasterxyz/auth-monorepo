@@ -1,6 +1,6 @@
 import { ResultAsync, ok, err } from "neverthrow";
-import { Client } from "../createClient";
-import { AuthClientError, AuthClientAsyncResult } from "../../errors";
+import type { Client } from "../createClient";
+import { AuthClientError, type AuthClientAsyncResult } from "../../errors";
 
 export interface HttpOpts {
   authToken?: string;
@@ -90,10 +90,10 @@ export const poll = async <ResponseDataType>(
     const res = await get<ResponseDataType>(client, path, opts);
     if (res.isOk()) {
       const { response } = res.value;
+      onResponse(res.value);
       if (response.status === successCode) {
         return ok(res.value);
       }
-      onResponse(res.value);
       await new Promise((resolve) => setTimeout(resolve, interval));
     } else {
       return err(res.error);

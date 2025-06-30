@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/a11y/noStaticElementInteractions: no interactive element */
+/** biome-ignore-all lint/a11y/noNoninteractiveTabindex: no interactive element */
 import { useCallback, useEffect, useRef } from "react";
 
 const moveFocusWithin = (element: HTMLElement, position: "start" | "end") => {
@@ -36,13 +38,11 @@ export function FocusTrap(props: JSX.IntrinsicElements["div"]) {
     <>
       <div
         onFocus={useCallback(() => contentRef.current && moveFocusWithin(contentRef.current, "end"), [])}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: incorrect
         tabIndex={0}
       />
       <div ref={contentRef} style={{ outline: "none" }} tabIndex={-1} {...props} />
       <div
         onFocus={useCallback(() => contentRef.current && moveFocusWithin(contentRef.current, "start"), [])}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: incorrect
         tabIndex={0}
       />
     </>

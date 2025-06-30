@@ -1,11 +1,11 @@
-import { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
+import type { AuthClientError, StatusAPIResponse } from "@farcaster/auth-client";
 import { useCallback, useEffect } from "react";
 
 import useAppClient from "./useAppClient";
-import useCreateChannel, { UseCreateChannelArgs } from "./useCreateChannel";
+import useCreateChannel, { type UseCreateChannelArgs } from "./useCreateChannel";
 import useAuthKitContext from "./useAuthKitContext";
 import useVerifySignInMessage from "./useVerifySignInMessage";
-import useWatchStatus, { UseWatchStatusData } from "./useWatchStatus";
+import useWatchStatus, { type UseWatchStatusData } from "./useWatchStatus";
 
 export type UseSignInArgs = Omit<UseCreateChannelArgs, "onSuccess" | "onError"> & {
   timeout?: number;

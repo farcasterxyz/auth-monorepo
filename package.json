@@ -3,7 +3,6 @@
   "description": "A monorepo for Farcaster Auth",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@1.22.19",
   "workspaces": [
     "apps/*",
     "examples/*",
@@ -13,16 +12,21 @@
   "scripts": {
     "build": "./node_modules/.bin/turbo run build",
     "clean": "./node_modules/.bin/turbo run clean",
-    "dev": "./node_modules/.bin/turbo run dev --parallel",
-    "test": "./node_modules/.bin/turbo run test",
-    "test:ci": "./node_modules/.bin/turbo run test:ci -- --passWithNoTests",
-    "lint": "./node_modules/.bin/turbo run lint --parallel",
-    "lint:ci": "./node_modules/.bin/turbo run lint:ci --parallel",
+    "changeset:prepublish": "pnpm --filter './packages/*' build",
+    "changeset:publish": "pnpm changeset:prepublish && changeset publish",
+    "changeset:version": "pnpm install --lockfile-only && changeset version && pnpm check",
+    "check": "biome check .",
+    "check:types": "turbo typecheck",
+    "check:write": "biome check --write --unsafe .",
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci -- --passWithNoTests",
+    "preinstall": "only-allow pnpm",
     "prepare": "husky install",
-    "version-packages": "changeset version",
-    "release-packages": "yarn build && changeset publish",
-    "release-all": "yarn build && changeset publish && changeset tag"
+    "release-all": "pnpm build && changeset publish && changeset tag",
+    "typecheck": "turbo typecheck"
   },
+  "packageManager": "pnpm@10.8.0",
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.7"
@@ -33,7 +37,7 @@
     ]
   },
   "devDependencies": {
-    "@biomejs/biome": "~1.1.0",
+    "@biomejs/biome": "~2.0.0",
     "@changesets/changelog-git": "^0.2.0",
     "@changesets/cli": "^2.27.1",
     "@swc/cli": "^0.1.63",
@@ -44,8 +48,9 @@
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "lint-staged": "^15.2.0",
+    "only-allow": "^1.2.1",
     "rimraf": "^5.0.5",
-    "semver": "^7.5.4",
+    "semver": "^7.6.0",
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
     "turbo": "^1.11.0",

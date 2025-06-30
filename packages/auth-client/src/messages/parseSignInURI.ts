@@ -1,5 +1,5 @@
 import { err, ok } from "neverthrow";
-import { AuthClientError, AuthClientResult } from "../errors";
+import { AuthClientError, type AuthClientResult } from "../errors";
 
 export interface ParsedSignInURI {
   channelToken: string;

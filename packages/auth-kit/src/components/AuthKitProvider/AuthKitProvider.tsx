@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
-import { AppClient, createAppClient, viemConnector } from "@farcaster/auth-client";
-import { UseSignInData } from "../../hooks/useSignIn";
+import { createContext, type ReactNode, useCallback, useEffect, useState } from "react";
+import { type AppClient, createAppClient, viemConnector } from "@farcaster/auth-client";
+import type { UseSignInData } from "../../hooks/useSignIn";
 
 export interface AuthKitConfig {
   relay?: string;
@@ -63,13 +63,7 @@ export const AuthKitContext = createContext<AuthKitContextValues>({
   onSignOut: () => {},
 });
 
-export function AuthKitProvider({
-  config,
-  children,
-}: {
-  config: AuthKitConfig;
-  children: ReactNode;
-}) {
+export function AuthKitProvider({ config, children }: { config: AuthKitConfig; children: ReactNode }) {
   const [appClient, setAppClient] = useState<AppClient>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [profile, setProfile] = useState<Profile>({});

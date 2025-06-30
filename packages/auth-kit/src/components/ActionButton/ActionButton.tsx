@@ -4,7 +4,7 @@ import { Button } from "../Button.tsx";
 export function ActionButton({
   label,
   onClick,
-  initializing
+  initializing,
 }: {
   label: string;
   onClick: () => void;

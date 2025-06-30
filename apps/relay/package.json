@@ -6,11 +6,9 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc --project ./tsconfig.json",
-    "lint": "biome format src/ --write && biome check src/ --apply",
-    "lint:ci": "biome ci src/",
-    "test": "yarn build && DOTENV_CONFIG_PATH=.env.test jest",
-    "test:ci": "yarn build && ENVIRONMENT=test NODE_OPTIONS=\"--max-old-space-size=4096\" DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage",
-    "start": "yarn build && node build/app.js start"
+    "test": "pnpm build && DOTENV_CONFIG_PATH=.env.test jest",
+    "test:ci": "pnpm build && ENVIRONMENT=test NODE_OPTIONS=\"--max-old-space-size=4096\" DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage",
+    "start": "pnpm build && node build/app.js start"
   },
   "engines": {
     "node": ">=18"
@@ -28,6 +26,7 @@
     "viem": "^2.5.0"
   },
   "devDependencies": {
+    "@jest/globals": "^30.0.3",
     "jest": "^29.7.0"
   }
 }

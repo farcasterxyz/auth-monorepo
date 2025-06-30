@@ -1,4 +1,4 @@
-import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import type { Hex } from "viem";
 import { AUTH_KEY, URL_BASE } from "./env";
 import { generateSiweNonce } from "viem/siwe";
@@ -89,12 +89,10 @@ export async function createChannel(request: FastifyRequest<{ Body: CreateChanne
     });
     if (update.isOk()) {
       return reply.code(201).send({ channelToken, url, connectUri: url, nonce });
-    } else {
-      return reply.code(500).send({ error: update.error.message });
     }
-  } else {
-    return reply.code(500).send({ error: channel.error.message });
+    return reply.code(500).send({ error: update.error.message });
   }
+  return reply.code(500).send({ error: channel.error.message });
 }
 
 export async function authenticate(request: FastifyRequest<{ Body: AuthenticateRequest }>, reply: FastifyReply) {
@@ -125,18 +123,15 @@ export async function authenticate(request: FastifyRequest<{ Body: AuthenticateR
       });
       if (update.isOk()) {
         return reply.code(201).send(update.value);
-      } else {
-        return reply.code(500).send({ error: update.error.message });
       }
-    } else {
-      if (channel.error.errCode === "not_found") {
-        return reply.code(401).send({ error: "Unauthorized " });
-      }
-      return reply.code(500).send({ error: channel.error.message });
+      return reply.code(500).send({ error: update.error.message });
     }
-  } else {
-    return reply.code(500).send({ error: addrs.error.message });
+    if (channel.error.errCode === "not_found") {
+      return reply.code(401).send({ error: "Unauthorized " });
+    }
+    return reply.code(500).send({ error: channel.error.message });
   }
+  return reply.code(500).send({ error: addrs.error.message });
 }
 
 export async function status(request: FastifyRequest, reply: FastifyReply) {
@@ -149,15 +144,13 @@ export async function status(request: FastifyRequest, reply: FastifyReply) {
         return reply.code(500).send({ error: close.error.message });
       }
       return reply.code(200).send(res);
-    } else {
-      return reply.code(202).send(res);
     }
-  } else {
-    if (channel.error.errCode === "not_found") {
-      return reply.code(401).send({ error: "Unauthorized" });
-    }
-    return reply.code(500).send({ error: channel.error.message });
+    return reply.code(202).send(res);
   }
+  if (channel.error.errCode === "not_found") {
+    return reply.code(401).send({ error: "Unauthorized" });
+  }
+  return reply.code(500).send({ error: channel.error.message });
 }
 
 export async function handleError(error: FastifyError, request: FastifyRequest, reply: FastifyReply) {
@@ -167,8 +160,7 @@ export async function handleError(error: FastifyError, request: FastifyRequest, 
   }
   if (statusCode && statusCode < 500) {
     return reply.code(statusCode).send({ error: error.message });
-  } else {
-    request.log.error({ err: error, errMsg: error.message, request }, "Server error");
-    return reply.code(500).send({ error: error.message });
   }
+  request.log.error({ err: error, errMsg: error.message, request }, "Server error");
+  return reply.code(500).send({ error: error.message });
 }

@@ -18,12 +18,10 @@
   "scripts": {
     "build": "tsup --config tsup.config.ts",
     "clean": "rimraf ./dist",
-    "lint": "biome format src/ scripts/ --write && biome check src/ scripts/ --apply",
-    "lint:ci": "biome ci src/ scripts/",
     "test": "jest",
     "test:ci": "ENVIRONMENT=test jest --ci --forceExit --coverage",
-    "console": "yarn ts-node ./scripts/console.ts",
-    "prepublishOnly": "yarn run build"
+    "console": "pnpm ts-node ./scripts/console.ts",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "neverthrow": "^6.1.0",

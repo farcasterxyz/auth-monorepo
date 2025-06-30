@@ -2,7 +2,7 @@ import { createAppClient } from "../../clients/createAppClient";
 import { jest } from "@jest/globals";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
 import { AuthClientError } from "../../errors";
-import { CreateChannelAPIResponse } from "./createChannel";
+import type { CreateChannelAPIResponse } from "./createChannel";
 
 describe("createChannel", () => {
   const client = createAppClient({

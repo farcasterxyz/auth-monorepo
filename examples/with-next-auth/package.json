@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@farcaster/auth-kit": "*",
+    "@farcaster/auth-kit": "workspace:*",
+    "@farcaster/auth-client": "workspace:*",
     "next": "^14.2.28",
     "next-auth": "^4.24.11",
     "react": "^18.2.43",

@@ -1,8 +1,8 @@
-import { Address, Hex, createPublicClient, encodeAbiParameters, http, fallback } from "viem";
+import { type Address, type Hex, createPublicClient, encodeAbiParameters, http, fallback } from "viem";
 import { optimism } from "viem/chains";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "../../contracts/idRegistry";
 import { KEY_REGISTRY_ADDRESS, keyRegistryABI } from "../../contracts/keyRegistry";
-import { EthereumConnector } from "./connector";
+import type { EthereumConnector } from "./connector";
 
 interface ViemConfigArgs {
   rpcUrl?: string | undefined;

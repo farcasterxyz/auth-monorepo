@@ -1,6 +1,5 @@
 # Logs
-yarn-debug.log*
-yarn-error.log*
+pnpm-debug.log*
 
 .DS_Store
 **/.DS_Store

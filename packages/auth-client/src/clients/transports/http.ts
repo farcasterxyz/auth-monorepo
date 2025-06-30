@@ -1,6 +1,6 @@
 import { ResultAsync, ok, err } from "neverthrow";
-import { Client } from "../createClient";
-import { AuthClientError, AuthClientAsyncResult } from "../../errors";
+import type { Client } from "../createClient";
+import { AuthClientError, type AuthClientAsyncResult } from "../../errors";
 
 export interface HttpOpts {
   authToken?: string;

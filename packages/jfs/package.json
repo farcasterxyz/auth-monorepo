@@ -11,7 +11,7 @@
   "module": "dist/esm/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "yarn build:cjs && yarn build:esm",
+    "build": "pnpm build:cjs && pnpm build:esm",
     "build:cjs": "tsc --module commonjs --moduleResolution node --outDir dist/cjs",
     "build:esm": "tsc --outDir dist/esm",
     "clean": "rm -rf dist",
@@ -30,5 +30,7 @@
     "viem": "^2.31.0",
     "vitest": "^1.1.0"
   },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ]
 }

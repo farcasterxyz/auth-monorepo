@@ -99,9 +99,9 @@ function Content() {
             <br />
             cd auth-monorepo/examples/with-next-auth &&
             <br />
-            yarn install &&
+            pnpm install &&
             <br />
-            yarn dev
+            pnpm dev
           </div>
         </div>
       </div>

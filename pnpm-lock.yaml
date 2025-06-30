@@ -241,8 +241,8 @@ importers:
   packages/auth-kit:
     dependencies:
       '@farcaster/auth-client':
-        specifier: ^0.7.0
-        version: 0.7.0(typescript@5.4.5)
+        specifier: workspace:*
+        version: link:../auth-client
       '@vanilla-extract/css':
         specifier: ^1.14.0
         version: 1.14.0
@@ -1935,9 +1935,6 @@ packages:
   '@expo/xcpretty@4.3.1':
     resolution: {integrity: sha512-sqXgo1SCv+j4VtYEwl/bukuOIBrVgx6euIoCat3Iyx5oeoXwEA2USCoeL0IPubflMxncA2INkqJ/Wr3NGrSgzw==}
     hasBin: true
-
-  '@farcaster/auth-client@0.7.0':
-    resolution: {integrity: sha512-WtQ/dNAlS8VXA73bMjlgdV49vuUJyoPJz6QfSj0rMbv3JFw3SrRDxP5d6fDQxFcYHiDsWCm6ZOe6X03DBNnbaA==}
 
   '@farcaster/core@0.14.20':
     resolution: {integrity: sha512-VHnvt78fITnztYwRrrLAI0MTxgUelGw8ieync4yLxDx/BA2wSr9gNNeLxnQupLXD6qf8k7JsxqLJrFAuVDzt5A==}
@@ -10227,16 +10224,6 @@ snapshots:
       chalk: 4.1.2
       find-up: 5.0.0
       js-yaml: 4.1.0
-
-  '@farcaster/auth-client@0.7.0(typescript@5.4.5)':
-    dependencies:
-      neverthrow: 6.2.2
-      viem: 2.31.0(typescript@5.4.5)
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
 
   '@farcaster/core@0.14.20(typescript@5.8.3)':
     dependencies:

@@ -28,21 +28,32 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Restore cached dependencies for Node modules.
-        id: module-cache
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}--node--${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Run build
-        run: yarn build
+        run: pnpm build
 
       - name: Run linter
-        run: yarn lint:ci
+        run: pnpm lint:ci
 
   test:
     timeout-minutes: 10
@@ -59,18 +70,29 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
 
-      - name: Restore cached dependencies for Node modules.
-        id: module-cache
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}--node--${{ matrix.node_version}}--${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ matrix.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-${{ matrix.node_version }}-
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Run build
-        run: yarn build
+        run: pnpm build
 
       - name: Log in to Docker Hub to avoid rate limiting
         if: ${{ env.DOCKER_TOKEN != '' }}
@@ -84,7 +106,7 @@ jobs:
         run: docker compose -f ./apps/relay/docker-compose.yml up --build --detach redis
 
       - name: Run tests
-        run: yarn test:ci
+        run: pnpm test:ci
 
       - name: Upload coverage results
         uses: codecov/codecov-action@v3

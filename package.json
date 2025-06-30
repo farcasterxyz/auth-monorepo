@@ -3,13 +3,7 @@
   "description": "A monorepo for Farcaster Auth",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@1.22.19",
-  "workspaces": [
-    "apps/*",
-    "examples/*",
-    "packages/*",
-    "test/*"
-  ],
+  "workspaces": ["apps/*", "examples/*", "packages/*", "test/*"],
   "scripts": {
     "build": "./node_modules/.bin/turbo run build",
     "clean": "./node_modules/.bin/turbo run clean",
@@ -20,17 +14,15 @@
     "lint:ci": "./node_modules/.bin/turbo run lint:ci --parallel",
     "prepare": "husky install",
     "version-packages": "changeset version",
-    "release-packages": "yarn build && changeset publish",
-    "release-all": "yarn build && changeset publish && changeset tag"
+    "release-packages": "pnpm build && changeset publish",
+    "release-all": "pnpm build && changeset publish && changeset tag"
   },
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.7"
   },
   "lint-staged": {
-    "*.ts": [
-      "biome check"
-    ]
+    "*.ts": ["biome check"]
   },
   "devDependencies": {
     "@biomejs/biome": "~1.1.0",

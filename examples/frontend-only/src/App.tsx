@@ -52,9 +52,9 @@ function App() {
               <br />
               cd auth-monorepo/examples/frontend-only &&
               <br />
-              yarn install &&
+              pnpm install &&
               <br />
-              yarn dev
+              pnpm dev
             </div>
           </div>
         </div>

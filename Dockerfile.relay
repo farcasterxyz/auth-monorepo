@@ -15,9 +15,9 @@ WORKDIR /home/node/app
 
 # Run turbo prune to create a pruned version of monorepo
 COPY --chown=node:node ./package.json ./package.json
-RUN yarn global add turbo@$(node -e "console.log(require('./package.json').devDependencies.turbo)")
+RUN npm install -g pnpm && pnpm add -g turbo@$(node -e "console.log(require('./package.json').devDependencies.turbo)")
 COPY --chown=node:node . .
-RUN /home/node/.yarn/bin/turbo prune --scope=@farcaster/auth-relay --docker
+RUN turbo prune --scope=@farcaster/auth-relay --docker
 
 ###############################################################################
 ############## Stage 2: Build the code using a full node image ################
@@ -41,9 +41,10 @@ ENV RUSTFLAGS="-C target-feature=-crt-static"
 
 # Copy dependency information and install all dependencies
 COPY --chown=node:node --from=prune /home/node/app/out/json/ .
-COPY --chown=node:node --from=prune /home/node/app/out/yarn.lock ./yarn.lock
+COPY --chown=node:node --from=prune /home/node/app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --chown=node:node --from=prune /home/node/app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
-RUN yarn install --frozen-lockfile --network-timeout 1800000
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 # Copy source code (and all other relevant files)
 COPY --chown=node:node --from=prune /home/node/app/out/full/ .
@@ -51,10 +52,10 @@ COPY --chown=node:node --from=prune /home/node/app/out/full/ .
 COPY --chown=node:node tsconfig.json tsconfig.json
 
 # Build code
-RUN yarn build
+RUN pnpm build
 
 # Purge dev dependencies and only install production dependencies
-RUN rm -rf node_modules && yarn install --production --ignore-scripts --prefer-offline --force --frozen-lockfile
+RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile
 
 ###############################################################################
 ########## Stage 3: Copy over the built code to a leaner alpine image #########

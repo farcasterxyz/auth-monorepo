@@ -101,7 +101,7 @@ importers:
         version: 30.0.3
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
+        version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@20.12.7)(typescript@5.4.5))
 
   examples/authkit-expo-demo:
     dependencies:
@@ -109,8 +109,8 @@ importers:
         specifier: ~3.1.3
         version: 3.1.3(react-native@0.73.6(@babel/core@7.24.4)(@babel/preset-env@7.24.4(@babel/core@7.24.4))(react@18.2.0))
       '@farcaster/auth-kit':
-        specifier: '*'
-        version: 0.8.1(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.8.3)
+        specifier: workspace:*
+        version: link:../../packages/auth-kit
       expo:
         specifier: ~50.0.14
         version: 50.0.17(@babel/core@7.24.4)(@react-native/babel-preset@0.73.21(@babel/core@7.24.4)(@babel/preset-env@7.24.4(@babel/core@7.24.4)))
@@ -143,8 +143,8 @@ importers:
   examples/frontend-only:
     dependencies:
       '@farcaster/auth-kit':
-        specifier: '*'
-        version: 0.8.1(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
+        specifier: workspace:*
+        version: link:../../packages/auth-kit
       react:
         specifier: ^18.2.43
         version: 18.3.1
@@ -191,15 +191,18 @@ importers:
 
   examples/with-next-auth:
     dependencies:
+      '@farcaster/auth-client':
+        specifier: workspace:*
+        version: link:../../packages/auth-client
       '@farcaster/auth-kit':
-        specifier: '*'
-        version: 0.8.1(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
+        specifier: workspace:*
+        version: link:../../packages/auth-kit
       next:
         specifier: ^14.2.28
-        version: 14.2.28(@babel/core@7.27.7)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.28(@babel/core@7.24.4)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-auth:
         specifier: ^4.24.11
-        version: 4.24.11(next@14.2.28(@babel/core@7.27.7)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.11(next@14.2.28(@babel/core@7.24.4)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.2.43
         version: 18.3.1
@@ -1935,12 +1938,6 @@ packages:
 
   '@farcaster/auth-client@0.7.0':
     resolution: {integrity: sha512-WtQ/dNAlS8VXA73bMjlgdV49vuUJyoPJz6QfSj0rMbv3JFw3SrRDxP5d6fDQxFcYHiDsWCm6ZOe6X03DBNnbaA==}
-
-  '@farcaster/auth-kit@0.8.1':
-    resolution: {integrity: sha512-n9/szpj9TZosOvUaxS66VOnpGJpK4mHGoiUqoiRaCCRgFvRSi+jFG0SxyY4S/HV+Dv/In3pN/Suy3CwpD9nPLw==}
-    peerDependencies:
-      react: '>= 17'
-      react-dom: '>= 17'
 
   '@farcaster/core@0.14.20':
     resolution: {integrity: sha512-VHnvt78fITnztYwRrrLAI0MTxgUelGw8ieync4yLxDx/BA2wSr9gNNeLxnQupLXD6qf8k7JsxqLJrFAuVDzt5A==}
@@ -10241,48 +10238,6 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@farcaster/auth-client@0.7.0(typescript@5.8.3)':
-    dependencies:
-      neverthrow: 6.2.2
-      viem: 2.31.0(typescript@5.8.3)
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@farcaster/auth-kit@0.8.1(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.8.3)':
-    dependencies:
-      '@farcaster/auth-client': 0.7.0(typescript@5.8.3)
-      '@vanilla-extract/css': 1.14.0
-      ethers: 6.14.0
-      qrcode: 1.5.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-remove-scroll: 2.5.7(@types/react@18.2.79)(react@18.2.0)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@farcaster/auth-kit@0.8.1(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)':
-    dependencies:
-      '@farcaster/auth-client': 0.7.0(typescript@5.4.5)
-      '@vanilla-extract/css': 1.14.0
-      ethers: 6.14.0
-      qrcode: 1.5.3
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-remove-scroll: 2.5.7(@types/react@18.2.79)(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-
   '@farcaster/core@0.14.20(typescript@5.8.3)':
     dependencies:
       '@noble/curves': 1.9.2
@@ -10418,41 +10373,6 @@ snapshots:
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
       jest-config: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@20.12.7)(typescript@5.4.5))
-      jest-haste-map: 29.7.0
-      jest-message-util: 29.7.0
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-resolve-dependencies: 29.7.0
-      jest-runner: 29.7.0
-      jest-runtime: 29.7.0
-      jest-snapshot: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      jest-watcher: 29.7.0
-      micromatch: 4.0.5
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-ansi: 6.0.1
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  '@jest/core@29.7.0(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))':
-    dependencies:
-      '@jest/console': 29.7.0
-      '@jest/reporters': 29.7.0
-      '@jest/test-result': 29.7.0
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      '@types/node': 22.15.17
-      ansi-escapes: 4.3.2
-      chalk: 4.1.2
-      ci-info: 3.9.0
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -12849,21 +12769,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  create-jest@29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3)):
-    dependencies:
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
-      jest-util: 29.7.0
-      prompts: 2.4.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   create-require@1.1.1: {}
 
   cross-fetch@3.1.8:
@@ -14714,25 +14619,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-cli@29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3)):
-    dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
-      '@jest/test-result': 29.7.0
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
-      exit: 0.1.2
-      import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   jest-config@29.7.0(@types/node@20.12.7)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@20.12.7)(typescript@5.4.5)):
     dependencies:
       '@babel/core': 7.24.4
@@ -14791,37 +14677,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.15.17
       ts-node: 10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@20.12.7)(typescript@5.4.5)
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
-  jest-config@29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3)):
-    dependencies:
-      '@babel/core': 7.24.4
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.24.4)
-      chalk: 4.1.2
-      ci-info: 3.9.0
-      deepmerge: 4.3.1
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 22.15.17
-      ts-node: 10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -15139,18 +14994,6 @@ snapshots:
       '@jest/types': 29.6.3
       import-local: 3.1.0
       jest-cli: 29.7.0(@types/node@20.12.7)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@20.12.7)(typescript@5.4.5))
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  jest@29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3)):
-    dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
-      '@jest/types': 29.6.3
-      import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@22.15.17)(ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3))
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -15876,13 +15719,13 @@ snapshots:
 
   neverthrow@6.2.2: {}
 
-  next-auth@4.24.11(next@14.2.28(@babel/core@7.27.7)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-auth@4.24.11(next@14.2.28(@babel/core@7.24.4)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.27.1
       '@panva/hkdf': 1.1.1
       cookie: 0.7.2
       jose: 4.15.5
-      next: 14.2.28(@babel/core@7.27.7)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 14.2.28(@babel/core@7.24.4)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       oauth: 0.9.15
       openid-client: 5.6.5
       preact: 10.20.2
@@ -15891,7 +15734,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       uuid: 8.3.2
 
-  next@14.2.28(@babel/core@7.27.7)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@14.2.28(@babel/core@7.24.4)(@opentelemetry/api@1.8.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 14.2.28
       '@swc/helpers': 0.5.5
@@ -15901,7 +15744,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.1.1(@babel/core@7.27.7)(react@18.3.1)
+      styled-jsx: 5.1.1(@babel/core@7.24.4)(react@18.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.28
       '@next/swc-darwin-x64': 14.2.28
@@ -16684,30 +16527,11 @@ snapshots:
 
   react-refresh@0.14.0: {}
 
-  react-remove-scroll-bar@2.3.4(@types/react@18.2.79)(react@18.2.0):
-    dependencies:
-      react: 18.2.0
-      react-style-singleton: 2.2.1(@types/react@18.2.79)(react@18.2.0)
-      tslib: 2.7.0
-    optionalDependencies:
-      '@types/react': 18.2.79
-
   react-remove-scroll-bar@2.3.4(@types/react@18.2.79)(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-style-singleton: 2.2.1(@types/react@18.2.79)(react@18.3.1)
       tslib: 2.7.0
-    optionalDependencies:
-      '@types/react': 18.2.79
-
-  react-remove-scroll@2.5.7(@types/react@18.2.79)(react@18.2.0):
-    dependencies:
-      react: 18.2.0
-      react-remove-scroll-bar: 2.3.4(@types/react@18.2.79)(react@18.2.0)
-      react-style-singleton: 2.2.1(@types/react@18.2.79)(react@18.2.0)
-      tslib: 2.7.0
-      use-callback-ref: 1.3.0(@types/react@18.2.79)(react@18.2.0)
-      use-sidecar: 1.1.2(@types/react@18.2.79)(react@18.2.0)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -16727,15 +16551,6 @@ snapshots:
       object-assign: 4.1.1
       react: 18.2.0
       react-is: 18.2.0
-
-  react-style-singleton@2.2.1(@types/react@18.2.79)(react@18.2.0):
-    dependencies:
-      get-nonce: 1.0.1
-      invariant: 2.2.4
-      react: 18.2.0
-      tslib: 2.7.0
-    optionalDependencies:
-      '@types/react': 18.2.79
 
   react-style-singleton@2.2.1(@types/react@18.2.79)(react@18.3.1):
     dependencies:
@@ -17411,12 +17226,12 @@ snapshots:
 
   structured-headers@0.4.1: {}
 
-  styled-jsx@5.1.1(@babel/core@7.27.7)(react@18.3.1):
+  styled-jsx@5.1.1(@babel/core@7.24.4)(react@18.3.1):
     dependencies:
       client-only: 0.0.1
       react: 18.3.1
     optionalDependencies:
-      '@babel/core': 7.27.7
+      '@babel/core': 7.24.4
 
   styleq@0.1.3: {}
 
@@ -17627,27 +17442,6 @@ snapshots:
       diff: 4.0.2
       make-error: 1.3.6
       typescript: 5.4.5
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    optionalDependencies:
-      '@swc/core': 1.3.100(@swc/helpers@0.5.5)
-    optional: true
-
-  ts-node@10.9.1(@swc/core@1.3.100(@swc/helpers@0.5.5))(@types/node@22.15.17)(typescript@5.8.3):
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.4
-      '@types/node': 22.15.17
-      acorn: 8.15.0
-      acorn-walk: 8.3.4
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.8.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
@@ -17879,24 +17673,9 @@ snapshots:
       punycode: 1.4.1
       qs: 6.11.2
 
-  use-callback-ref@1.3.0(@types/react@18.2.79)(react@18.2.0):
-    dependencies:
-      react: 18.2.0
-      tslib: 2.7.0
-    optionalDependencies:
-      '@types/react': 18.2.79
-
   use-callback-ref@1.3.0(@types/react@18.2.79)(react@18.3.1):
     dependencies:
       react: 18.3.1
-      tslib: 2.7.0
-    optionalDependencies:
-      '@types/react': 18.2.79
-
-  use-sidecar@1.1.2(@types/react@18.2.79)(react@18.2.0):
-    dependencies:
-      detect-node-es: 1.1.0
-      react: 18.2.0
       tslib: 2.7.0
     optionalDependencies:
       '@types/react': 18.2.79

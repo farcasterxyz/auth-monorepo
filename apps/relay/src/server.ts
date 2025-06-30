@@ -6,15 +6,15 @@ import { createChannelRequestSchema, authenticateRequestSchema } from "./schemas
 import { ChannelStore } from "./channels";
 import { AddressService } from "./addresses";
 import {
-  AuthenticateRequest,
-  CreateChannelRequest,
-  RelaySession,
+  type AuthenticateRequest,
+  type CreateChannelRequest,
+  type RelaySession,
   authenticate,
   createChannel,
   handleError,
   status,
 } from "./handlers";
-import { RelayError, RelayAsyncResult } from "./errors";
+import { RelayError, type RelayAsyncResult } from "./errors";
 import logger from "./logger";
 
 interface RelayServerConfig {

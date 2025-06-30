@@ -1,4 +1,4 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
@@ -7,12 +7,7 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    vanillaExtractPlugin(),
-    dts({ rollupTypes: true }),
-    nodePolyfills({ include: ["buffer"] }),
-  ],
+  plugins: [react(), vanillaExtractPlugin(), dts({ rollupTypes: true }), nodePolyfills({ include: ["buffer"] })],
   build: {
     lib: {
       formats: ["es"],
@@ -20,12 +15,7 @@ export default defineConfig({
       fileName: "auth-kit",
     },
     rollupOptions: {
-      external: [
-        "react",
-        "react/jsx-runtime",
-        "react-dom",
-        "@farcaster/auth-client",
-      ],
+      external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/auth-client"],
     },
   },
 });

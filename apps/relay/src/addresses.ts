@@ -1,11 +1,11 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from "axios";
 import { ResultAsync, err, ok } from "neverthrow";
 import { createPublicClient, http } from "viem";
 import type { PublicClient, HttpTransport, Hex } from "viem";
 import { optimism } from "viem/chains";
 import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/hub-nodejs";
 
-import { RelayAsyncResult, RelayError } from "./errors";
+import { type RelayAsyncResult, RelayError } from "./errors";
 import { HUB_URL, HUB_FALLBACK_URL, OPTIMISM_RPC_URL } from "./env";
 
 interface VerificationAddAddressBody {

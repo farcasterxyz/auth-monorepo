@@ -1,22 +1,14 @@
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
 import QRCodeUtil from "qrcode";
-import { ReactElement, useMemo } from "react";
+import { type ReactElement, useMemo } from "react";
 import { qrCodeWrapper, qrCode } from "./styles.css";
 
-const generateMatrix = (
-  value: string,
-  errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel
-) => {
-  const arr = Array.prototype.slice.call(
-    QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data,
-    0
-  );
+const generateMatrix = (value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel) => {
+  const arr = Array.prototype.slice.call(QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data, 0);
   const sqrt = Math.sqrt(arr.length);
   return arr.reduce(
-    (rows, key, index) =>
-      (index % sqrt === 0
-        ? rows.push([key])
-        : rows[rows.length - 1].push(key)) && rows,
-    []
+    (rows, key, index) => (index % sqrt === 0 ? rows.push([key]) : rows[rows.length - 1].push(key)) && rows,
+    [],
   );
 };
 
@@ -31,7 +23,7 @@ type Props = {
 
 export function QRCode({ ecl = "M", size: sizeProp = 200, uri }: Props) {
   const padding = "20";
-  const size = sizeProp - parseInt(padding, 10) * 2;
+  const size = sizeProp - Number.parseInt(padding, 10) * 2;
 
   const squares = useMemo(() => {
     const squares: ReactElement[] = [];
@@ -55,7 +47,7 @@ export function QRCode({ ecl = "M", size: sizeProp = 200, uri }: Props) {
             width={cellSize * (7 - i * 2)}
             x={x1 + cellSize * i}
             y={y1 + cellSize * i}
-          />
+          />,
         );
       }
     });
@@ -63,13 +55,7 @@ export function QRCode({ ecl = "M", size: sizeProp = 200, uri }: Props) {
     matrix.forEach((row: QRCodeUtil.QRCode[], i: number) => {
       row.forEach((_, j) => {
         if (matrix[i][j]) {
-          if (
-            !(
-              (i < 7 && j < 7) ||
-              (i > matrix.length - 8 && j < 7) ||
-              (i < 7 && j > matrix.length - 8)
-            )
-          ) {
+          if (!((i < 7 && j < 7) || (i > matrix.length - 8 && j < 7) || (i < 7 && j > matrix.length - 8))) {
             squares.push(
               <rect
                 fill="black"
@@ -78,7 +64,7 @@ export function QRCode({ ecl = "M", size: sizeProp = 200, uri }: Props) {
                 width={cellSize}
                 x={i * cellSize}
                 y={j * cellSize}
-              />
+              />,
             );
           }
         }

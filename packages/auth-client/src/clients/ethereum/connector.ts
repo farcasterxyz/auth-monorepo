@@ -1,4 +1,4 @@
-import { Address, Client } from "viem";
+import type { Address, Client } from "viem";
 
 export interface EthereumConnector {
   getFid: (custody: Address) => Promise<bigint>;

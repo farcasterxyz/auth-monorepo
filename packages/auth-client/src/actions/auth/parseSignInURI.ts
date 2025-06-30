@@ -1,6 +1,6 @@
-import { Unwrapped, unwrap } from "../../errors";
-import { Client } from "../../clients/createClient";
-import { parseSignInURI as parse, ParsedSignInURI } from "../../messages/parseSignInURI";
+import { type Unwrapped, unwrap } from "../../errors";
+import type { Client } from "../../clients/createClient";
+import { parseSignInURI as parse, type ParsedSignInURI } from "../../messages/parseSignInURI";
 
 export interface ParseSignInURIArgs {
   uri: string;

@@ -1,20 +1,20 @@
 {
+  "root": false,
   "$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
-  "organizeImports": {
-    "enabled": false
-  },
-  "formatter": {
-    "enabled": true,
-    "indentSize": 2,
-    "indentStyle": "space",
-    "lineWidth": 120
-  },
+  "extends": "//",
   "linter": {
-    "enabled": true,
     "rules": {
-      "recommended": true,
-      "complexity": {
-        "useLiteralKeys": "off"
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       }
     }
   }

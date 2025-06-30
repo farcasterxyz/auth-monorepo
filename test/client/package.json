@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "test": " DOTENV_CONFIG_PATH=.env.test jest",
-    "test:ci": "ENVIRONMENT=test DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage",
-    "lint": "biome format src/ --write && biome check src/ --apply",
-    "lint:ci": "biome ci src/"
+    "test:ci": "ENVIRONMENT=test DOTENV_CONFIG_PATH=.env.test jest --ci --forceExit --coverage"
   },
   "devDependencies": {
     "viem": "^2.29.1"

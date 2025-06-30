@@ -1,8 +1,8 @@
 import type { Hex } from "viem";
-import { AsyncUnwrapped, unwrap } from "../../errors";
-import { Client } from "../../clients/createClient";
-import { get, HttpResponse } from "../../clients/transports/http";
-import { AuthMethod } from "../../types";
+import { type AsyncUnwrapped, unwrap } from "../../errors";
+import type { Client } from "../../clients/createClient";
+import { get, type HttpResponse } from "../../clients/transports/http";
+import type { AuthMethod } from "../../types";
 
 export interface StatusArgs {
   channelToken: string;

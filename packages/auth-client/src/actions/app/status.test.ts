@@ -1,7 +1,7 @@
 import { createAppClient } from "../../clients/createAppClient";
 import { jest } from "@jest/globals";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
-import { StatusAPIResponse } from "./status";
+import type { StatusAPIResponse } from "./status";
 
 describe("status", () => {
   const client = createAppClient({

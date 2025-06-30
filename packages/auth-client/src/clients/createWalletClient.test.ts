@@ -1,4 +1,4 @@
-import { createWalletClient, WalletClient } from "./createWalletClient";
+import { createWalletClient, type WalletClient } from "./createWalletClient";
 import { viemConnector } from "./ethereum/viemConnector";
 
 describe("createWalletClient", () => {

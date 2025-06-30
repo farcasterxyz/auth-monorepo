@@ -1,7 +1,7 @@
 import { createWalletClient } from "../../clients/createWalletClient";
 import { jest } from "@jest/globals";
 import { viemConnector } from "../../clients/ethereum/viemConnector";
-import { AuthenticateAPIResponse } from "./authenticate";
+import type { AuthenticateAPIResponse } from "./authenticate";
 
 describe("authenticate", () => {
   const client = createWalletClient({

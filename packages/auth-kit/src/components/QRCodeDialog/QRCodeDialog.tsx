@@ -1,11 +1,6 @@
-import { AuthClientError } from "@farcaster/auth-client";
+import type { AuthClientError } from "@farcaster/auth-client";
 import { Dialog } from "../Dialog/index.ts";
-import {
-  body,
-  siwfHeading,
-  instructions,
-  qrCodeImage,
-} from "./QRCodeDialog.css.ts";
+import { body, siwfHeading, instructions, qrCodeImage } from "./QRCodeDialog.css.ts";
 import { Button } from "../Button.tsx";
 import { QRCode } from "../QRCode.tsx";
 
@@ -29,16 +24,13 @@ export function QRCodeDialog({
           {isError ? (
             <>
               <div className={siwfHeading}>Error</div>
-              <div className={instructions}>
-                {error?.message ?? "Unknown error, please try again."}
-              </div>
+              <div className={instructions}>{error?.message ?? "Unknown error, please try again."}</div>
             </>
           ) : (
             <>
               <div className={siwfHeading}>Sign in with Farcaster</div>
               <div className={instructions}>
-                To sign in with Farcaster, scan the code below with your phone's
-                camera.
+                To sign in with Farcaster, scan the code below with your phone's camera.
               </div>
               <div className={qrCodeImage}>
                 <QRCode uri={url} size={200} />
@@ -55,12 +47,7 @@ export function QRCodeDialog({
                     window.open(url, "_blank");
                   }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={12}
-                    height={18}
-                    fill="none"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" width={12} height={18} fill="none">
                     <title>Sign in With Farcaster QR Code</title>
                     <path
                       fill="#7C65C1"

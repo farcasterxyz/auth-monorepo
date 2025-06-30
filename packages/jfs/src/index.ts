@@ -4,7 +4,7 @@ import { toBase64Url, fromBase64Url } from "./utils";
 
 const jsonFarcasterSignatureTypes = ["app_key", "auth", "custody"] as const;
 
-type JsonFarcasterSignatureType = typeof jsonFarcasterSignatureTypes[number];
+type JsonFarcasterSignatureType = (typeof jsonFarcasterSignatureTypes)[number];
 
 export type JsonFarcasterSignatureHeader = {
   fid: number;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { AuthClientError } from "@farcaster/auth-client";
+import type { AuthClientError } from "@farcaster/auth-client";
 import useAppClient from "./useAppClient";
 
 export interface UseVerifySignInMessageArgs {
@@ -32,12 +32,12 @@ export function useVerifySignInMessage({
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<AuthClientError>();
 
-  const resetState = async () => {
+  const resetState = useCallback(async () => {
     setIsError(false);
     setIsSuccess(false);
     setValidSignature(false);
     setError(undefined);
-  };
+  }, []);
 
   const verifySignInMessage = useCallback(async () => {
     if (appClient && nonce && domain && message && signature) {
@@ -68,7 +68,7 @@ export function useVerifySignInMessage({
     if (nonce && domain && message && signature) {
       verifySignInMessage();
     }
-  }, [nonce, domain, message, signature, verifySignInMessage]);
+  }, [nonce, domain, message, signature, verifySignInMessage, resetState]);
 
   return {
     isSuccess,

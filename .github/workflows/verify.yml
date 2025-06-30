@@ -1,0 +1,77 @@
+name: Verify
+
+on:
+  workflow_call:
+
+jobs:
+  checks:
+    name: Checks
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Check code
+        run: pnpm check
+
+  build:
+    name: Build
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: checks
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Run build
+        run: pnpm build
+
+  test:
+    name: Test (Node ${{ matrix.node_version }})
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: checks
+
+    strategy:
+      matrix:
+        node_version: [18, 20, 22]
+
+    env:
+      DOCKER_USER:  ${{ vars.FARCASTERXYZ_DOCKER_HUB_USER }}
+      DOCKER_TOKEN: ${{ secrets.FARCASTERXYZ_DOCKER_HUB_TOKEN }}
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Log in to Docker Hub to avoid rate limiting
+        if: ${{ env.DOCKER_TOKEN != '' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_TOKEN }}
+
+      - name: Start background services
+        shell: bash
+        run: docker compose -f ./apps/relay/docker-compose.yml up --build --detach redis
+
+      - name: Run tests
+        run: pnpm test:ci
+
+      - name: Upload coverage results
+        uses: codecov/codecov-action@v4

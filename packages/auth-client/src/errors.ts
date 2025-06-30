@@ -1,4 +1,4 @@
-import { Result } from "neverthrow";
+import type { Result } from "neverthrow";
 
 interface AuthClientErrorOpts {
   message: string;
@@ -82,7 +82,6 @@ export type AsyncUnwrapped<T> = Promise<Unwrapped<T>>;
 export const unwrap = <T>(result: AuthClientResult<T>): Unwrapped<T> => {
   if (result.isErr()) {
     return { error: result.error, isError: true as const };
-  } else {
-    return { ...result.value, isError: false };
   }
+  return { ...result.value, isError: false };
 };

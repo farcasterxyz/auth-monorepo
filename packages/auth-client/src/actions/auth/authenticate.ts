@@ -1,8 +1,8 @@
-import { StatusAPIResponse } from "../app/status";
-import { post, HttpResponse } from "../../clients/transports/http";
-import { Client } from "../../clients/createClient";
-import { AsyncUnwrapped, unwrap } from "../../errors";
-import { AuthMethod } from "types";
+import type { StatusAPIResponse } from "../app/status";
+import { post, type HttpResponse } from "../../clients/transports/http";
+import type { Client } from "../../clients/createClient";
+import { type AsyncUnwrapped, unwrap } from "../../errors";
+import type { AuthMethod } from "types";
 
 export interface AuthenticateArgs extends AuthenticateRequest {
   authKey: string;

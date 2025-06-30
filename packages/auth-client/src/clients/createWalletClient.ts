@@ -1,11 +1,11 @@
-import { authenticate, AuthenticateArgs, AuthenticateResponse } from "../actions/auth/authenticate";
-import { parseSignInURI, ParseSignInURIArgs, ParseSignInURIResponse } from "../actions/auth/parseSignInURI";
+import { authenticate, type AuthenticateArgs, type AuthenticateResponse } from "../actions/auth/authenticate";
+import { parseSignInURI, type ParseSignInURIArgs, type ParseSignInURIResponse } from "../actions/auth/parseSignInURI";
 import {
   buildSignInMessage,
-  BuildSignInMessageArgs,
-  BuildSignInMessageResponse,
+  type BuildSignInMessageArgs,
+  type BuildSignInMessageResponse,
 } from "../actions/auth/buildSignInMessage";
-import { Client, CreateClientArgs, createClient } from "./createClient";
+import { type Client, type CreateClientArgs, createClient } from "./createClient";
 
 export interface WalletClient extends Client {
   authenticate: (args: AuthenticateArgs) => AuthenticateResponse;

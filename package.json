@@ -3,26 +3,37 @@
   "description": "A monorepo for Farcaster Auth",
   "version": "0.0.0",
   "private": true,
-  "workspaces": ["apps/*", "examples/*", "packages/*", "test/*"],
+  "workspaces": [
+    "apps/*",
+    "examples/*",
+    "packages/*",
+    "test/*"
+  ],
   "scripts": {
     "build": "./node_modules/.bin/turbo run build",
     "clean": "./node_modules/.bin/turbo run clean",
-    "dev": "./node_modules/.bin/turbo run dev --parallel",
-    "test": "./node_modules/.bin/turbo run test",
-    "test:ci": "./node_modules/.bin/turbo run test:ci -- --passWithNoTests",
-    "lint": "./node_modules/.bin/turbo run lint --parallel",
-    "lint:ci": "./node_modules/.bin/turbo run lint:ci --parallel",
+    "changeset:prepublish": "pnpm --filter './packages/*' build",
+    "changeset:publish": "pnpm changeset:prepublish && changeset publish",
+    "changeset:version": "pnpm install --lockfile-only && changeset version && pnpm check",
+    "check": "biome check .",
+    "check:types": "turbo typecheck",
+    "check:write": "biome check --write --unsafe .",
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci -- --passWithNoTests",
+    "preinstall": "only-allow pnpm",
     "prepare": "husky install",
-    "version-packages": "changeset version",
-    "release-packages": "pnpm build && changeset publish",
-    "release-all": "pnpm build && changeset publish && changeset tag"
+    "release-all": "pnpm build && changeset publish && changeset tag",
+    "typecheck": "turbo typecheck"
   },
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.7"
   },
   "lint-staged": {
-    "*.ts": ["biome check"]
+    "*.ts": [
+      "biome check"
+    ]
   },
   "devDependencies": {
     "@biomejs/biome": "~1.1.0",

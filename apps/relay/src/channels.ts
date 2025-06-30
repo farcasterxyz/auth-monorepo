@@ -1,6 +1,6 @@
 import { Redis } from "ioredis";
 import { ResultAsync, err, ok } from "neverthrow";
-import { RelayAsyncResult, RelayError } from "./errors";
+import { type RelayAsyncResult, RelayError } from "./errors";
 import { generateChannelToken } from "./tokens";
 
 interface ChannelStoreOpts {
@@ -39,9 +39,8 @@ export class ChannelStore<T> {
     ).andThen((channel) => {
       if (channel) {
         return ok(JSON.parse(channel));
-      } else {
-        return err(new RelayError("not_found", "Channel not found"));
       }
+      return err(new RelayError("not_found", "Channel not found"));
     });
   }
 

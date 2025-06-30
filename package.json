@@ -26,6 +26,7 @@
     "release-all": "pnpm build && changeset publish && changeset tag",
     "typecheck": "turbo typecheck"
   },
+  "packageManager": "pnpm@10.8.0",
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.7"
@@ -36,7 +37,7 @@
     ]
   },
   "devDependencies": {
-    "@biomejs/biome": "~1.1.0",
+    "@biomejs/biome": "~2.0.0",
     "@changesets/changelog-git": "^0.2.0",
     "@changesets/cli": "^2.27.1",
     "@swc/cli": "^0.1.63",
@@ -47,6 +48,7 @@
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "lint-staged": "^15.2.0",
+    "only-allow": "^1.2.1",
     "rimraf": "^5.0.5",
     "semver": "^7.6.0",
     "ts-node": "^10.9.1",

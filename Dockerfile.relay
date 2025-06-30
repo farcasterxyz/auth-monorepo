@@ -9,15 +9,28 @@ FROM node:20.2-alpine AS prune
 
 RUN apk add --no-cache libc6-compat
 
+# Install pnpm globally as root before switching user
+RUN npm install -g pnpm
+
 USER node
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
-# Run turbo prune to create a pruned version of monorepo
+# Copy workspace configuration
 COPY --chown=node:node ./package.json ./package.json
-RUN npm install -g pnpm && pnpm add -g turbo@$(node -e "console.log(require('./package.json').devDependencies.turbo)")
-COPY --chown=node:node . .
-RUN turbo prune --scope=@farcaster/auth-relay --docker
+COPY --chown=node:node ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --chown=node:node ./pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --chown=node:node ./turbo.json ./turbo.json
+
+# Copy the relay app package.json
+COPY --chown=node:node ./apps/relay/package.json ./apps/relay/package.json
+
+# Create package directories
+RUN mkdir -p packages/auth-client packages/jfs
+
+# Copy package.json files for internal packages
+COPY --chown=node:node ./packages/auth-client/package.json ./packages/auth-client/
+COPY --chown=node:node ./packages/jfs/package.json ./packages/jfs/
 
 ###############################################################################
 ############## Stage 2: Build the code using a full node image ################
@@ -27,6 +40,9 @@ FROM node:20.2-alpine AS build
 
 # Needed for compilation step
 RUN apk add --no-cache libc6-compat python3 make g++ linux-headers curl
+
+# Install pnpm globally as root before switching user
+RUN npm install -g pnpm
 
 USER node
 RUN mkdir /home/node/app
@@ -39,23 +55,25 @@ ENV PATH="/home/node/.cargo/bin:${PATH}"
 # Rust flags to allow building with musl, which is needed for alpine
 ENV RUSTFLAGS="-C target-feature=-crt-static"
 
-# Copy dependency information and install all dependencies
-COPY --chown=node:node --from=prune /home/node/app/out/json/ .
-COPY --chown=node:node --from=prune /home/node/app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --chown=node:node --from=prune /home/node/app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+# Copy dependency information from prune stage
+COPY --chown=node:node --from=prune /home/node/app/package.json ./package.json
+COPY --chown=node:node --from=prune /home/node/app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --chown=node:node --from=prune /home/node/app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --chown=node:node --from=prune /home/node/app/turbo.json ./turbo.json
+COPY --chown=node:node --from=prune /home/node/app/apps/relay/package.json ./apps/relay/package.json
+COPY --chown=node:node --from=prune /home/node/app/packages/ ./packages/
 
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+# Install dependencies for relay and its dependencies
+RUN pnpm install --frozen-lockfile --filter=@farcaster/auth-relay...
 
-# Copy source code (and all other relevant files)
-COPY --chown=node:node --from=prune /home/node/app/out/full/ .
-# turbo prune doesn't include global tsconfig.json (https://github.com/vercel/turbo/issues/2177)
-COPY --chown=node:node tsconfig.json tsconfig.json
+# Copy source code
+COPY --chown=node:node . .
 
 # Build code
-RUN pnpm build
+RUN pnpm --filter=@farcaster/auth-relay build
 
 # Purge dev dependencies and only install production dependencies
-RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile
+RUN rm -rf node_modules && pnpm install --prod --frozen-lockfile --filter=@farcaster/auth-relay... --ignore-scripts
 
 ###############################################################################
 ########## Stage 3: Copy over the built code to a leaner alpine image #########
@@ -74,11 +92,13 @@ ENV NODE_ENV production
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
-# Copy results from previous stage.
-# The base image is same as the build stage, so it is safe to copy node_modules over to this stage.
-COPY --chown=node:node --from=prune /home/node/app/out/json/ .
-COPY --chown=node:node --from=build /home/node/app/apps/relay/build ./apps/relay/build
+# Copy workspace files and built app
+COPY --chown=node:node --from=build /home/node/app/package.json ./package.json
+COPY --chown=node:node --from=build /home/node/app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --chown=node:node --from=build /home/node/app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --chown=node:node --from=build /home/node/app/apps/relay ./apps/relay
 COPY --chown=node:node --from=build /home/node/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /home/node/app/packages ./packages
 
 # BuildKit doesn't support --squash flag, so emulate by copying into fewer layers
 FROM scratch

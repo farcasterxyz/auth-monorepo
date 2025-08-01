@@ -125,36 +125,40 @@ export async function verify({
   }
 
   const signingInput = `${jfs.header}.${jfs.payload}`;
-
   if (decoded.header.type === "auth" || decoded.header.type === "custody") {
     if (!isAddress(decoded.header.key)) {
       throw new Error("Key is not an address");
     }
 
-    try {
-      await verifyMessage({
-        address: decoded.header.key,
-        signature: decoded.signature,
-        message: signingInput,
-      });
-      return;
-    } catch (error) {
-      if (!strict) {
-        const utf8EncodedHexSignature = Buffer.from(decoded.signature).toString("utf-8");
+    const valid = await (async () => {
+      try {
+        return await verifyMessage({
+          address: decoded.header.key,
+          signature: decoded.signature,
+          message: signingInput,
+        });
+      } catch (error) {
+        if (!strict) {
+          const utf8EncodedHexSignature = Buffer.from(decoded.signature).toString("utf-8");
 
-        if (isHex(utf8EncodedHexSignature)) {
-          await verifyMessage({
-            address: decoded.header.key,
-            signature: utf8EncodedHexSignature,
-            message: signingInput,
-          });
-
-          return;
+          if (isHex(utf8EncodedHexSignature)) {
+            return await verifyMessage({
+              address: decoded.header.key,
+              signature: utf8EncodedHexSignature,
+              message: signingInput,
+            });
+          }
         }
-      }
 
-      throw error;
+        throw error;
+      }
+    })();
+
+    if (!valid) {
+      throw new Error("Invalid signature");
     }
+
+    return;
   }
 
   if (decoded.header.type === "app_key") {

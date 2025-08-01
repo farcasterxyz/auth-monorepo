@@ -247,13 +247,24 @@ describe("verify", () => {
       await expect(verify({ data: validAuthJfs, keyTypes: ["auth"] })).resolves.not.toThrow();
     });
 
-    it("error: invalid signature", async () => {
+    it("error: malformed signature", async () => {
       const invalidJfs: JsonFarcasterSignature = {
         header: encodedAuthHeader,
         payload: encodedTestPayload,
         signature: encodeSignature(new Uint8Array(65)), // invalid signature
       };
       await expect(verify({ data: invalidJfs })).rejects.toThrow();
+    });
+
+    it("error: invalid signature", async () => {
+      const invalidJfs = {
+        header:
+          "eyJmaWQiOjkxNTIsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgwMmVmNzkwRGQ3OTkzQTM1ZkQ4NDdDMDUzRURkQUU5NDBEMDU1NTk2In0",
+        payload: "eyJkb21haW4iOiJmYWtlLmNvbiJ9",
+        signature:
+          "MHgxMGQwZGU4ZGYwZDUwZTdmMGIxN2YxMTU2NDI1MjRmZTY0MTUyZGU4ZGU1MWU0MThiYjU4ZjVmZmQxYjRjNDBiNGVlZTRhNDcwNmVmNjhlMzQ0ZGQ5MDBkYmQyMmNlMmVlZGY5ZGQ0N2JlNWRmNzMwYzUxNjE4OWVjZDJjY2Y0MDFj",
+      };
+      await expect(verify({ data: invalidJfs, keyTypes: ["custody"] })).rejects.toThrow();
     });
 
     it("error: disallowed key type", async () => {

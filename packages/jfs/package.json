@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/jfs",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "JSON Farcaster Signature implementation",
   "repository": {
     "type": "git",

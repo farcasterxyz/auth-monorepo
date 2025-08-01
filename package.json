@@ -14,7 +14,7 @@
     "clean": "./node_modules/.bin/turbo run clean",
     "changeset:prepublish": "pnpm --filter './packages/*' build",
     "changeset:publish": "pnpm changeset:prepublish && changeset publish",
-    "changeset:version": "pnpm install --lockfile-only && changeset version && pnpm check",
+    "changeset:version": "pnpm install --lockfile-only && changeset version",
     "check": "biome check .",
     "check:types": "turbo typecheck",
     "check:write": "biome check --write --unsafe .",

@@ -1,5 +1,11 @@
 # @farcaster/jfs
 
+## 0.1.0
+
+### Minor Changes
+
+- df3ae40: Upgraded @noble/curves peer depedency to 2.x
+
 ## 0.0.6
 
 ### Patch Changes

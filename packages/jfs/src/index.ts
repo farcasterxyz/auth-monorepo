@@ -1,5 +1,5 @@
 import { type Hex, isAddress, verifyMessage, isHex, hexToBytes } from "viem";
-import { ed25519 } from "@noble/curves/ed25519";
+import { ed25519 } from "@noble/curves/ed25519.js";
 import { toBase64Url, fromBase64Url } from "./utils";
 
 const jsonFarcasterSignatureTypes = ["app_key", "auth", "custody"] as const;

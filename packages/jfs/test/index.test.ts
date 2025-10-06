@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ed25519 } from "@noble/curves/ed25519";
+import { ed25519 } from "@noble/curves/ed25519.js";
 import { generatePrivateKey, privateKeyToAccount, signMessage } from "viem/accounts";
 import {
   toJsonFarcasterSignature,
@@ -141,7 +141,7 @@ describe("verify", () => {
   const encodedTestPayload = encodePayload(testPayload);
 
   describe("app_key", () => {
-    const privateKey = ed25519.utils.randomPrivateKey();
+    const privateKey = ed25519.utils.randomSecretKey();
     const publicKey = ed25519.getPublicKey(privateKey);
     const publicKeyHex = bytesToHex(publicKey);
 

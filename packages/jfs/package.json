@@ -21,14 +21,14 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@noble/curves": "1.x",
+    "@noble/curves": "2.x",
     "typescript": ">= 5.8.3",
     "viem": "2.x"
   },
   "devDependencies": {
-    "@noble/curves": "^1.9.2",
-    "viem": "^2.31.0",
-    "vitest": "^1.1.0"
+    "@noble/curves": "2.x",
+    "viem": "^2.37.13",
+    "vitest": "^3.2.4"
   },
   "files": [
     "dist"

@@ -1,5 +1,11 @@
 # @farcaster/jfs
 
+## 0.2.0
+
+### Minor Changes
+
+- 47239ac: feat: support smart account signatures
+
 ## 0.1.0
 
 ### Minor Changes

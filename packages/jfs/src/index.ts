@@ -2,6 +2,10 @@ import { type Hex, isAddress, verifyMessage, isHex, hexToBytes } from "viem";
 import { ed25519 } from "@noble/curves/ed25519.js";
 import { toBase64Url, fromBase64Url } from "./utils";
 
+export interface VerifyMessageClient {
+  verifyMessage(args: { address: Hex; message: string; signature: Hex | Uint8Array }): Promise<boolean>;
+}
+
 const jsonFarcasterSignatureTypes = ["app_key", "auth", "custody"] as const;
 
 type JsonFarcasterSignatureType = (typeof jsonFarcasterSignatureTypes)[number];
@@ -101,6 +105,7 @@ export async function verify({
   data,
   keyTypes,
   strict = false,
+  publicClient,
 }: {
   data: JsonFarcasterSignature | string;
 
@@ -116,6 +121,13 @@ export async function verify({
    * @default false
    */
   strict?: boolean;
+
+  /**
+   * Optional client for verifying smart contract signatures.
+   * When provided, supports ERC-1271, ERC-6492, and ERC-8010 signatures.
+   * When not provided, only EOA signatures are supported.
+   */
+  publicClient?: VerifyMessageClient;
 }): Promise<void> {
   const jfs = toJsonFarcasterSignature(data);
   const decoded = decode(jfs);
@@ -132,6 +144,13 @@ export async function verify({
 
     const valid = await (async () => {
       try {
+        if (publicClient) {
+          return await publicClient.verifyMessage({
+            address: decoded.header.key,
+            signature: decoded.signature,
+            message: signingInput,
+          });
+        }
         return await verifyMessage({
           address: decoded.header.key,
           signature: decoded.signature,
@@ -142,6 +161,13 @@ export async function verify({
           const utf8EncodedHexSignature = Buffer.from(decoded.signature).toString("utf-8");
 
           if (isHex(utf8EncodedHexSignature)) {
+            if (publicClient) {
+              return await publicClient.verifyMessage({
+                address: decoded.header.key,
+                signature: utf8EncodedHexSignature,
+                message: signingInput,
+              });
+            }
             return await verifyMessage({
               address: decoded.header.key,
               signature: utf8EncodedHexSignature,

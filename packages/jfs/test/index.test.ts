@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { ed25519 } from "@noble/curves/ed25519.js";
 import { generatePrivateKey, privateKeyToAccount, signMessage } from "viem/accounts";
+import { createPublicClient, http } from "viem";
+import { optimism } from "viem/chains";
+import { toCoinbaseSmartAccount } from "viem/account-abstraction";
 import {
   toJsonFarcasterSignature,
   compact,
@@ -390,6 +393,145 @@ describe("verify", () => {
         signature: encodeSignature(new Uint8Array(65)),
       };
       await expect(verify({ data: invalidCustodyJfs })).rejects.toThrow("Key is not an address");
+    });
+  });
+
+  describe("backward compatibility", () => {
+    it("behavior: EOA signatures work without publicClient", async () => {
+      const privateKey = generatePrivateKey();
+      const account = privateKeyToAccount(privateKey);
+      const ethAddress = account.address;
+
+      const authHeader: JsonFarcasterSignatureHeader = {
+        fid: 123,
+        type: "auth",
+        key: ethAddress,
+      };
+
+      const testPayload = { message: "test" };
+      const encodedTestPayload = encodePayload(testPayload);
+      const encodedAuthHeader = encodeHeader(authHeader);
+      const signingInput = `${encodedAuthHeader}.${encodedTestPayload}`;
+      const signature = await signMessage({ privateKey, message: signingInput });
+
+      const validAuthJfs: JsonFarcasterSignature = {
+        header: encodedAuthHeader,
+        payload: encodedTestPayload,
+        signature: encodeSignature(new Uint8Array(Buffer.from(signature.slice(2), "hex"))),
+      };
+
+      await expect(verify({ data: validAuthJfs })).resolves.not.toThrow();
+    });
+  });
+
+  describe("smart contract signatures", () => {
+    const publicClient = createPublicClient({
+      chain: optimism,
+      transport: http(),
+    });
+
+    describe("1271 signatures", () => {
+      const smartContractAddress = "0xE8C088f750544b434573825769A5FC79D96cc83a" as const;
+      const testPayload = { domain: "erc-1271-test.example.com" };
+      const encodedTestPayload = encodePayload(testPayload);
+
+      const authHeader: JsonFarcasterSignatureHeader = {
+        fid: 9999,
+        type: "custody",
+        key: smartContractAddress,
+      };
+
+      const encodedAuthHeader = encodeHeader(authHeader);
+
+      const hexSig =
+        "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000001700000000000000000000000000000000000000000000000000000000000000015752b05ca512759efd40b6287568ad611cf52b2bf1c091cbd1104571b8a1410b4a254a0c9aeb56932d6be8775a22867f37851e7234a0d8eaefbdee3e06198f760000000000000000000000000000000000000000000000000000000000000025f198086b2db17256731bc456673b96bcef23f51d1fbacdd7c4379ef65465572f1d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008a7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a2266654842336f473648524c7a5a61683247736168527145717a424175536d6e724c5a527174656c4a755145222c226f726967696e223a2268747470733a2f2f6b6579732e636f696e626173652e636f6d222c2263726f73734f726967696e223a66616c73657d00000000000000000000000000000000000000000000";
+      const smartContractSignatureBytes = Buffer.from(hexSig.slice(2), "hex");
+
+      it("default: with smart contract signature", async () => {
+        const validSmartContractJfs: JsonFarcasterSignature = {
+          header: encodedAuthHeader,
+          payload: encodedTestPayload,
+          signature: encodeSignature(new Uint8Array(smartContractSignatureBytes)),
+        };
+        await expect(verify({ data: validSmartContractJfs, publicClient })).resolves.not.toThrow();
+      });
+
+      it("error: invalid smart contract signature", async () => {
+        const invalidSignature =
+          "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        const invalidSmartContractJfs: JsonFarcasterSignature = {
+          header: encodedAuthHeader,
+          payload: encodedTestPayload,
+          signature: encodeSignature(new Uint8Array(Buffer.from(invalidSignature.slice(2), "hex"))),
+        };
+        await expect(verify({ data: invalidSmartContractJfs, publicClient })).rejects.toThrow("Invalid signature");
+      });
+
+      it("error: wrong payload with smart contract signature", async () => {
+        const wrongPayload = { domain: "wrong-domain.com" };
+        const encodedWrongPayload = encodePayload(wrongPayload);
+        const wrongPayloadHeader: JsonFarcasterSignatureHeader = {
+          fid: 6162,
+          type: "auth",
+          key: smartContractAddress,
+        };
+        const encodedWrongHeader = encodeHeader(wrongPayloadHeader);
+
+        const invalidJfs: JsonFarcasterSignature = {
+          header: encodedWrongHeader,
+          payload: encodedWrongPayload,
+          signature: encodeSignature(new Uint8Array(smartContractSignatureBytes)),
+        };
+        await expect(verify({ data: invalidJfs, publicClient })).rejects.toThrow("Invalid signature");
+      });
+    });
+
+    describe("ERC-6492", () => {
+      it("default: verify signature from undeployed Coinbase Smart Account", async () => {
+        const ownerPrivateKey = generatePrivateKey();
+        const owner = privateKeyToAccount(ownerPrivateKey);
+
+        const smartAccount = await toCoinbaseSmartAccount({
+          client: publicClient,
+          owners: [owner],
+          version: "1",
+        });
+
+        const testPayload = { domain: "erc6492-test.example.com" };
+        const encodedTestPayload = encodePayload(testPayload);
+
+        const authHeader: JsonFarcasterSignatureHeader = {
+          fid: 9999,
+          type: "auth",
+          key: smartAccount.address,
+        };
+
+        const encodedAuthHeader = encodeHeader(authHeader);
+        const signingInput = `${encodedAuthHeader}.${encodedTestPayload}`;
+
+        const signature = await smartAccount.signMessage({
+          message: signingInput,
+        });
+
+        const signatureBytes = Buffer.from(signature.slice(2), "hex");
+        const validJfs: JsonFarcasterSignature = {
+          header: encodedAuthHeader,
+          payload: encodedTestPayload,
+          signature: encodeSignature(new Uint8Array(signatureBytes)),
+        };
+
+        await expect(verify({ data: validJfs, publicClient })).resolves.not.toThrow();
+
+        const invalidSignature =
+          "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        const invalidJfs: JsonFarcasterSignature = {
+          header: encodedAuthHeader,
+          payload: encodedTestPayload,
+          signature: encodeSignature(new Uint8Array(Buffer.from(invalidSignature.slice(2), "hex"))),
+        };
+
+        await expect(verify({ data: invalidJfs, publicClient })).rejects.toThrow("Invalid signature");
+      });
     });
   });
 });

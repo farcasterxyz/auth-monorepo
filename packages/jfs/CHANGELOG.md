@@ -1,5 +1,11 @@
 # @farcaster/jfs
 
+## 0.2.1
+
+### Patch Changes
+
+- 3747551: fix: handle legacy encoding + smart account signatures
+
 ## 0.2.0
 
 ### Minor Changes

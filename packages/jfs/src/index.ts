@@ -142,43 +142,41 @@ export async function verify({
       throw new Error("Key is not an address");
     }
 
-    const valid = await (async () => {
-      try {
-        if (publicClient) {
-          return await publicClient.verifyMessage({
-            address: decoded.header.key,
-            signature: decoded.signature,
-            message: signingInput,
-          });
-        }
-        return await verifyMessage({
+    let valid = false;
+    try {
+      if (publicClient) {
+        // Returns false for legacy encoding
+        valid = await publicClient.verifyMessage({
           address: decoded.header.key,
           signature: decoded.signature,
           message: signingInput,
         });
-      } catch (error) {
-        if (!strict) {
-          const utf8EncodedHexSignature = Buffer.from(decoded.signature).toString("utf-8");
-
-          if (isHex(utf8EncodedHexSignature)) {
-            if (publicClient) {
-              return await publicClient.verifyMessage({
-                address: decoded.header.key,
-                signature: utf8EncodedHexSignature,
-                message: signingInput,
-              });
-            }
-            return await verifyMessage({
-              address: decoded.header.key,
-              signature: utf8EncodedHexSignature,
-              message: signingInput,
-            });
-          }
-        }
-
-        throw error;
+      } else {
+        // Throws for legacy encoding
+        valid = await verifyMessage({
+          address: decoded.header.key,
+          signature: decoded.signature,
+          message: signingInput,
+        });
       }
-    })();
+    } catch (_error) {
+      valid = false;
+    }
+
+    // If verification failed and we're not in strict mode, try legacy encoding.
+    // Early JFS implementations incorrectly base64-encoded the UTF-8 string
+    // representation of hex signatures instead of raw signature bytes.
+    if (!valid && !strict) {
+      const utf8EncodedHexSignature = Buffer.from(decoded.signature).toString("utf-8");
+      if (isHex(utf8EncodedHexSignature)) {
+        // Legacy encoding only works with EOA verification
+        valid = await verifyMessage({
+          address: decoded.header.key,
+          signature: utf8EncodedHexSignature,
+          message: signingInput,
+        });
+      }
+    }
 
     if (!valid) {
       throw new Error("Invalid signature");

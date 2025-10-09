@@ -361,6 +361,41 @@ describe("verify", () => {
       await expect(verify({ data: validCustodyJfs, keyTypes: ["custody"], strict: true })).rejects.toThrow();
     });
 
+    it("behavior: legacy encoding with publicClient", async () => {
+      const publicClient = createPublicClient({
+        chain: optimism,
+        transport: http(),
+      });
+
+      const legacyJfs = {
+        header:
+          "eyJmaWQiOjEyMTUyLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MEJGNDVGOTY3RTkwZmZENjA2MzVkMUFDMTk1MDYyYTNBOUZjQzYyQiJ9",
+        payload: "eyJkb21haW4iOiJmb28uYmFyIn0",
+        signature:
+          "MHgwODE5YTdiNDMwMTQxNTY5YjY0ZWFlOGZjZGUxNTExZmMwOGFmYWUzOWRiY2Y0ZDBhMzIzYWE2NjI1NjRkMmE3MDM5Y2Y5MWY4MjViZWQ4MzEwZmYxYWQxZjIyNTA1ZTFhODY2OGJjN2FjMTllOGY0ZWFmMjFjZjcwMGJlMzA5ZTFi",
+      };
+
+      await expect(verify({ data: legacyJfs, publicClient, strict: false })).resolves.not.toThrow();
+    });
+
+    it("error: legacy encoding with publicClient and strict true", async () => {
+      const publicClient = createPublicClient({
+        chain: optimism,
+        transport: http(),
+      });
+
+      const legacyJfs = {
+        header:
+          "eyJmaWQiOjEyMTUyLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MEJGNDVGOTY3RTkwZmZENjA2MzVkMUFDMTk1MDYyYTNBOUZjQzYyQiJ9",
+        payload: "eyJkb21haW4iOiJmb28uYmFyIn0",
+        signature:
+          "MHgwODE5YTdiNDMwMTQxNTY5YjY0ZWFlOGZjZGUxNTExZmMwOGFmYWUzOWRiY2Y4MzEwZmYxYWQxZjIyNTA1ZTFhODY2OGJjN2FjMTllOGY0ZWFmMjFjZjcwMGJlMzA5ZTFi",
+      };
+
+      // Should fail with strict: true
+      await expect(verify({ data: legacyJfs, publicClient, strict: true })).rejects.toThrow();
+    });
+
     it("error: invalid signature", async () => {
       const invalidJfs: JsonFarcasterSignature = {
         header: encodedCustodyHeader,

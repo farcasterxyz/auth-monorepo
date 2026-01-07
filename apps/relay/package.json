@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "description": "Farcaster Auth relay server",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "build": "tsc --project ./tsconfig.json",
     "test": "pnpm build && DOTENV_CONFIG_PATH=.env.test jest",
@@ -14,16 +14,13 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@farcaster/hub-nodejs": "^0.11.24",
-    "@fastify/cors": "^8.4.2",
-    "@fastify/rate-limit": "^9.0.1",
-    "axios": "^1.8.2",
+    "@farcaster/relay-core": "workspace:*",
+    "@hono/node-server": "^1.13.0",
     "dd-trace": "^5.21.0",
     "dotenv": "^16.3.1",
-    "fastify": "^4.24.3",
+    "hono": "^4.7.0",
     "ioredis": "^5.3.2",
-    "neverthrow": "^6.1.0",
-    "viem": "^2.5.0"
+    "neverthrow": "^6.1.0"
   },
   "devDependencies": {
     "@jest/globals": "^30.0.3",

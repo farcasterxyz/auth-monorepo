@@ -1,58 +1,57 @@
 import { Redis } from "ioredis";
 import { ResultAsync, err, ok } from "neverthrow";
-import { type RelayAsyncResult, RelayError } from "./errors";
-import { generateChannelToken } from "./tokens";
+import type { ChannelStorage, ChannelStorageConfig, RelayAsyncResult } from "@farcaster/relay-core";
+import { RelayError, generateChannelToken } from "@farcaster/relay-core";
 
-interface ChannelStoreOpts {
+export interface RedisChannelStorageConfig extends ChannelStorageConfig {
   redisUrl: string;
-  ttl?: number;
 }
 
-export class ChannelStore<T> {
+export class RedisChannelStorage<T> implements ChannelStorage<T> {
   private redis: Redis;
   private ttl: number;
 
-  constructor({ redisUrl, ttl }: ChannelStoreOpts) {
+  constructor({ redisUrl, ttl }: RedisChannelStorageConfig) {
     this.redis = new Redis(redisUrl);
-    this.ttl = ttl ?? 3600;
+    this.ttl = ttl;
   }
 
   async open(state?: T): RelayAsyncResult<string> {
     const channelToken = generateChannelToken();
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state ?? {}), "EX", this.ttl),
-      (err) => new RelayError("unavailable", err as Error),
+      (error) => new RelayError("unavailable", error as Error),
     ).andThen(() => ok(channelToken));
   }
 
   async update(channelToken: string, state: T): RelayAsyncResult<T> {
     return ResultAsync.fromPromise(
       this.redis.set(channelToken, JSON.stringify(state), "KEEPTTL"),
-      (err) => new RelayError("unavailable", err as Error),
+      (error) => new RelayError("unavailable", error as Error),
     ).andThen(() => ok(state));
   }
 
   async read(channelToken: string): RelayAsyncResult<T> {
     return ResultAsync.fromPromise(
       this.redis.get(channelToken),
-      (err) => new RelayError("unavailable", err as Error),
+      (error) => new RelayError("unavailable", error as Error),
     ).andThen((channel) => {
       if (channel) {
-        return ok(JSON.parse(channel));
+        return ok(JSON.parse(channel) as T);
       }
       return err(new RelayError("not_found", "Channel not found"));
     });
   }
 
-  async close(channelToken: string) {
-    return ResultAsync.fromPromise(this.redis.del(channelToken), (err) => new RelayError("unknown", err as Error));
+  async close(channelToken: string): RelayAsyncResult<number> {
+    return ResultAsync.fromPromise(this.redis.del(channelToken), (error) => new RelayError("unknown", error as Error));
   }
 
-  async clear() {
-    return this.redis.flushall();
+  async clear(): Promise<void> {
+    await this.redis.flushall();
   }
 
-  async stop() {
-    return this.redis.quit();
+  async stop(): Promise<void> {
+    await this.redis.quit();
   }
 }

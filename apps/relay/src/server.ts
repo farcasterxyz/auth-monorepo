@@ -1,21 +1,7 @@
-import fastify from "fastify";
-import cors from "@fastify/cors";
-import rateLimit from "@fastify/rate-limit";
-import { err, ok } from "neverthrow";
-import { createChannelRequestSchema, authenticateRequestSchema } from "./schemas";
-import { ChannelStore } from "./channels";
-import { AddressService } from "./addresses";
-import {
-  type AuthenticateRequest,
-  type CreateChannelRequest,
-  type RelaySession,
-  authenticate,
-  createChannel,
-  handleError,
-  status,
-} from "./handlers";
-import { RelayError, type RelayAsyncResult } from "./errors";
-import logger from "./logger";
+import { serve, type ServerType } from "@hono/node-server";
+import { createRelayApp, type RelaySession } from "@farcaster/relay-core";
+import { RedisChannelStorage } from "./storage/redis";
+import { AUTH_KEY, URL_BASE, HUB_URL, HUB_FALLBACK_URL, OPTIMISM_RPC_URL } from "./env";
 
 interface RelayServerConfig {
   redisUrl: string;
@@ -24,83 +10,54 @@ interface RelayServerConfig {
 }
 
 export class RelayServer {
-  app = fastify({ logger, trustProxy: true });
-  channels: ChannelStore<RelaySession>;
-  addresses: AddressService;
+  private storage: RedisChannelStorage<RelaySession>;
+  private server: ServerType | null = null;
+  app;
 
-  constructor({ redisUrl, ttl, corsOrigin }: RelayServerConfig) {
-    this.channels = new ChannelStore<RelaySession>({
+  constructor({ redisUrl, ttl }: RelayServerConfig) {
+    this.storage = new RedisChannelStorage<RelaySession>({
       redisUrl,
       ttl,
     });
-    this.addresses = new AddressService();
-    this.app.setErrorHandler(handleError);
 
-    this.app.register(cors, { origin: [corsOrigin] });
-    this.app.decorateRequest("channels");
-    this.app.decorateRequest("addresses");
-    this.app.addHook("onRequest", async (request) => {
-      request.channels = this.channels;
-      request.addresses = this.addresses;
-    });
-    this.app.get("/healthcheck", async (_request, reply) => reply.send({ status: "OK" }));
-    this.app.addSchema(createChannelRequestSchema);
-    this.app.addSchema(authenticateRequestSchema);
-    this.initHandlers();
-  }
-
-  initHandlers() {
-    this.app.register(
-      async (v1, _opts) => {
-        await v1.register(async (publicRoutes, _opts) => {
-          await publicRoutes.register(rateLimit);
-          publicRoutes.post<{ Body: CreateChannelRequest }>(
-            "/channel",
-            { schema: { body: createChannelRequestSchema } },
-            createChannel,
-          );
-        });
-
-        await v1.register(async (protectedRoutes, _opts) => {
-          protectedRoutes.decorateRequest("channelToken", "");
-          protectedRoutes.addHook("preHandler", async (request, reply) => {
-            const auth = request.headers.authorization;
-            const channelToken = auth?.split(" ")[1];
-            if (channelToken) {
-              request.channelToken = channelToken;
-            } else {
-              return reply.code(401).send({ error: "Unauthorized " });
-            }
-          });
-
-          protectedRoutes.post<{
-            Body: AuthenticateRequest;
-          }>("/channel/authenticate", { schema: { body: authenticateRequestSchema } }, authenticate);
-
-          protectedRoutes.get("/channel/status", status);
-        });
+    this.app = createRelayApp({
+      storage: this.storage,
+      config: {
+        urlBase: URL_BASE,
+        authKey: AUTH_KEY,
+        hubUrl: HUB_URL,
+        hubFallbackUrl: HUB_FALLBACK_URL,
+        optimismRpcUrl: OPTIMISM_RPC_URL,
       },
-      { prefix: "/v1" },
-    );
+    });
   }
 
-  async start(ip = "0.0.0.0", port = 0): RelayAsyncResult<string> {
+  async start(host = "0.0.0.0", port = 8000): Promise<string> {
     return new Promise((resolve) => {
-      this.app.listen({ host: ip, port }, (e, address) => {
-        if (e) {
-          this.app.log.error({ err: e, errMsg: e.message }, "Failed to start http server");
-          resolve(err(new RelayError("unavailable", `Failed to start http server: ${e.message}`)));
-        }
+      this.server = serve({
+        fetch: this.app.fetch,
+        hostname: host,
+        port,
+      });
 
-        this.app.log.info({ address }, "Started relay server");
-        resolve(ok(address));
+      this.server.on("listening", () => {
+        const address = this.server?.address();
+        const actualPort = typeof address === "object" && address ? address.port : port;
+        console.log(`Relay server started on http://${host}:${actualPort}`);
+        resolve(`http://${host}:${actualPort}`);
       });
     });
   }
 
   async stop() {
-    await this.app.close();
-    await this.channels.stop();
-    this.app.log.info("Stopped relay server");
+    if (this.server) {
+      this.server.close();
+    }
+    await this.storage.stop?.();
+    console.log("Stopped relay server");
+  }
+
+  get channels() {
+    return this.storage;
   }
 }

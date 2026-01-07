@@ -1,0 +1,21 @@
+{
+  "name": "@farcaster/auth-relay-worker",
+  "version": "0.1.0",
+  "description": "Farcaster Auth relay server for Cloudflare Workers",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@farcaster/relay-core": "workspace:*",
+    "hono": "^4.7.0",
+    "neverthrow": "^6.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "wrangler": "^3.99.0"
+  }
+}

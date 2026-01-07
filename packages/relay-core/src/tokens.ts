@@ -1,9 +1,9 @@
-import crypto from "node:crypto";
-
 const ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
 export function generateChannelToken(length = 8): string {
-  const bytes = crypto.randomBytes(length);
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+
   let id = "";
   for (let i = 0; i < length; i++) {
     const byte = bytes[i];
@@ -12,8 +12,10 @@ export function generateChannelToken(length = 8): string {
     }
     id += ALPHABET[byte % ALPHABET.length];
   }
+
   if (id.length < length) {
     throw new Error("Error generating channel token");
   }
+
   return id;
 }

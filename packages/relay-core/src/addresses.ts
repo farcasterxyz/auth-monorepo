@@ -1,12 +1,20 @@
-import axios, { type AxiosInstance } from "axios";
 import { ResultAsync, err, ok } from "neverthrow";
 import { createPublicClient, http } from "viem";
 import type { PublicClient, HttpTransport, Hex } from "viem";
 import { optimism } from "viem/chains";
-import { ID_REGISTRY_ADDRESS, idRegistryABI } from "@farcaster/hub-nodejs";
-
 import { type RelayAsyncResult, RelayError } from "./errors";
-import { HUB_URL, HUB_FALLBACK_URL, OPTIMISM_RPC_URL } from "./env";
+
+const ID_REGISTRY_ADDRESS = "0x00000000Fc6c5F01Fc30151999387Bb99A9f489b" as const;
+
+const idRegistryABI = [
+  {
+    inputs: [{ internalType: "uint256", name: "fid", type: "uint256" }],
+    name: "custodyOf",
+    outputs: [{ internalType: "address", name: "custody", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
 
 interface VerificationAddAddressBody {
   address: string;
@@ -32,15 +40,21 @@ interface VerificationsAPIResponse {
   messages: VerificationMessage[];
 }
 
-export class AddressService {
-  private http: AxiosInstance;
-  private publicClient: PublicClient<HttpTransport, typeof optimism>;
+export interface AddressServiceConfig {
+  hubUrl: string;
+  hubFallbackUrl: string;
+  optimismRpcUrl: string;
+}
 
-  constructor() {
-    this.http = axios.create();
+export class AddressService {
+  private publicClient: PublicClient<HttpTransport, typeof optimism>;
+  private config: AddressServiceConfig;
+
+  constructor(config: AddressServiceConfig) {
+    this.config = config;
     this.publicClient = createPublicClient({
       chain: optimism,
-      transport: http(OPTIMISM_RPC_URL),
+      transport: http(config.optimismRpcUrl),
     });
   }
 
@@ -67,37 +81,40 @@ export class AddressService {
         functionName: "custodyOf",
         args: [BigInt(fid ?? 0)],
       }),
-      (error) => {
-        return new RelayError("unknown", error as Error);
-      },
+      (error) => new RelayError("unknown", error as Error),
     );
   }
 
   async verifications(fid?: number): RelayAsyncResult<string[]> {
-    const url = `${HUB_URL}/v1/verificationsByFid?fid=${fid}`;
-    const fallbackUrl = `${HUB_FALLBACK_URL}/v1/verificationsByFid?fid=${fid}`;
+    const url = `${this.config.hubUrl}/v1/verificationsByFid?fid=${fid}`;
+    const fallbackUrl = `${this.config.hubFallbackUrl}/v1/verificationsByFid?fid=${fid}`;
 
-    return ResultAsync.fromPromise(this.http.get<VerificationsAPIResponse>(url, { timeout: 5000 }), (error) => {
-      return new RelayError("unknown", error as Error);
-    })
-      .orElse(() => {
-        return ResultAsync.fromPromise(
-          this.http.get<VerificationsAPIResponse>(fallbackUrl, {
-            timeout: 5000,
-          }),
-          (error) => {
-            return new RelayError("unknown", error as Error);
-          },
-        );
-      })
-      .andThen((res) => {
-        return ok(
-          res.data.messages.map((message) => {
+    const fetchWithTimeout = async (targetUrl: string): Promise<VerificationsAPIResponse> => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      try {
+        const res = await fetch(targetUrl, { signal: controller.signal });
+        if (!res.ok) {
+          throw new Error(`HTTP error: ${res.status}`);
+        }
+        return res.json() as Promise<VerificationsAPIResponse>;
+      } finally {
+        clearTimeout(timeout);
+      }
+    };
+
+    return ResultAsync.fromPromise(fetchWithTimeout(url), (error) => new RelayError("unknown", error as Error))
+      .orElse(() =>
+        ResultAsync.fromPromise(fetchWithTimeout(fallbackUrl), (error) => new RelayError("unknown", error as Error)),
+      )
+      .andThen((data) =>
+        ok(
+          data.messages.map((message) => {
             return (
               message.data?.verificationAddAddressBody?.address || message.data?.verificationAddEthAddressBody?.address
             );
           }),
-        );
-      });
+        ),
+      );
   }
 }

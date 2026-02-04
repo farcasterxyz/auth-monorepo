@@ -15,6 +15,11 @@
     "dist"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farcasterxyz/auth-monorepo.git",
+    "directory": "packages/auth-client"
+  },
   "scripts": {
     "build": "tsup --config tsup.config.ts",
     "clean": "rimraf ./dist",

@@ -12,6 +12,11 @@
     "dist"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farcasterxyz/auth-monorepo.git",
+    "directory": "packages/auth-kit"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

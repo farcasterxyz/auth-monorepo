@@ -1,5 +1,13 @@
 # with-next-auth
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [47a4c35]
+  - @farcaster/auth-client@0.7.1
+  - @farcaster/auth-kit@0.8.2
+
 ## 0.1.3
 
 ### Patch Changes

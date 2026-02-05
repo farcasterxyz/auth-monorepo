@@ -1,5 +1,11 @@
 # @farcaster/jfs
 
+## 0.2.2
+
+### Patch Changes
+
+- 47a4c35: Test deploy with new CI auth method
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # frontend-only
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [47a4c35]
+  - @farcaster/auth-kit@0.8.2
+
 ## 0.0.3
 
 ### Patch Changes

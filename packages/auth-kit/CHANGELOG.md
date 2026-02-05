@@ -1,5 +1,13 @@
 # @farcaster/auth-kit
 
+## 0.8.2
+
+### Patch Changes
+
+- 47a4c35: Test deploy with new CI auth method
+- Updated dependencies [47a4c35]
+  - @farcaster/auth-client@0.7.1
+
 ## 0.8.1
 
 ### Patch Changes

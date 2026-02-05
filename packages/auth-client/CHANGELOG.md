@@ -1,5 +1,11 @@
 # @farcaster/auth-client
 
+## 0.7.1
+
+### Patch Changes
+
+- 47a4c35: Test deploy with new CI auth method
+
 ## 0.7.0
 
 ### Minor Changes

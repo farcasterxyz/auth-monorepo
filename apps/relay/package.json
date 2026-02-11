@@ -17,7 +17,7 @@
     "@farcaster/hub-nodejs": "^0.11.24",
     "@fastify/cors": "^8.4.2",
     "@fastify/rate-limit": "^9.0.1",
-    "axios": "^1.8.2",
+    "axios": "^1.13.5",
     "dd-trace": "^5.21.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",

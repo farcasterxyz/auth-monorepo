@@ -64,7 +64,7 @@ COPY --chown=node:node --from=prune /home/node/app/apps/relay/package.json ./app
 COPY --chown=node:node --from=prune /home/node/app/packages/ ./packages/
 
 # Pre-download node-gyp headers to avoid parallel download race conditions
-RUN npx node-gyp install
+RUN pnpm dlx node-gyp@12.2.0 install
 
 # Install dependencies for relay and its dependencies
 RUN pnpm install --frozen-lockfile --filter=@farcaster/auth-relay...

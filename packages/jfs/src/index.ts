@@ -1,6 +1,6 @@
 import { type Hex, isAddress, verifyMessage, isHex, hexToBytes } from "viem";
 import { ed25519 } from "@noble/curves/ed25519.js";
-import { toBase64Url, fromBase64Url } from "./utils";
+import { toBase64Url, fromBase64Url } from "./utils.js";
 
 export interface VerifyMessageClient {
   verifyMessage(args: { address: Hex; message: string; signature: Hex | Uint8Array }): Promise<boolean>;

@@ -27,12 +27,13 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@noble/curves": "2.x",
     "typescript": ">= 5.8.3",
     "viem": "2.x"
   },
+  "dependencies": {
+    "@noble/curves": "2.x"
+  },
   "devDependencies": {
-    "@noble/curves": "2.x",
     "viem": "^2.37.13",
     "vitest": "^3.2.4"
   },

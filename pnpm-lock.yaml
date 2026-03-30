@@ -295,13 +295,13 @@ importers:
 
   packages/jfs:
     dependencies:
+      '@noble/curves':
+        specifier: 2.x
+        version: 2.0.1
       typescript:
         specifier: '>= 5.8.3'
         version: 5.8.3
     devDependencies:
-      '@noble/curves':
-        specifier: 2.x
-        version: 2.0.1
       viem:
         specifier: ^2.37.13
         version: 2.37.13(typescript@5.8.3)

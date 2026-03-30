@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "moduleResolution": "nodenext",
-    "module": "nodenext",
-    "target": "ES2021",
+    "moduleResolution": "bundler",
+    "module": "ES2022",
+    "target": "ES2022",
     "esModuleInterop": true,
     "strict": true,
     "declaration": true,

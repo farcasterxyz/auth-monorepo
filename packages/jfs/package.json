@@ -7,13 +7,19 @@
     "url": "https://github.com/farcasterxyz/auth-monorepo.git",
     "directory": "packages/jfs"
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "sideEffects": false,
   "scripts": {
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc --module commonjs --moduleResolution node --outDir dist/cjs",
-    "build:esm": "tsc --outDir dist/esm",
+    "build": "tsup --config tsup.config.ts",
     "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -21,12 +27,13 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@noble/curves": "2.x",
     "typescript": ">= 5.8.3",
     "viem": "2.x"
   },
+  "dependencies": {
+    "@noble/curves": "2.x"
+  },
   "devDependencies": {
-    "@noble/curves": "2.x",
     "viem": "^2.37.13",
     "vitest": "^3.2.4"
   },

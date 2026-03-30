@@ -9,6 +9,12 @@
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "build": "pnpm build:cjs && pnpm build:esm",

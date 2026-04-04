@@ -1,4 +1,4 @@
-import { ChannelStore } from "./channels";
+import { RedisChannelStorage } from "./storage/redis";
 import { jest } from "@jest/globals";
 
 interface TestSession {
@@ -6,20 +6,21 @@ interface TestSession {
   baz?: string;
 }
 
-let channels: ChannelStore<TestSession>;
+let channels: RedisChannelStorage<TestSession>;
 
 beforeAll(async () => {
-  channels = new ChannelStore<TestSession>({
+  channels = new RedisChannelStorage<TestSession>({
     redisUrl: "redis://localhost:6379",
+    ttl: 3600,
   });
 });
 
 afterAll(async () => {
-  await channels.stop();
+  await channels.stop?.();
 });
 
 afterEach(async () => {
-  await channels.clear();
+  await channels.clear?.();
   jest.restoreAllMocks();
 });
 

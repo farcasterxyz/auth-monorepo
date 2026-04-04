@@ -1,0 +1,34 @@
+{
+  "name": "@farcaster/relay-core",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup --config tsup.config.ts",
+    "clean": "rimraf ./dist",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "hono": "^4.7.0",
+    "neverthrow": "^6.1.0",
+    "viem": "^2.5.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "@hono/zod-validator": "^0.4.2",
+    "tsup": "^8.0.0"
+  }
+}

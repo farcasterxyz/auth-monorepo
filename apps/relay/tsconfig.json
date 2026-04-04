@@ -2,10 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "resolveJsonModule": true,
-    "moduleResolution": "node",
-    // BullMQ doesn't support ESM
-    // https://github.com/taskforcesh/bullmq/issues/1534
-    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
     "baseUrl": "./src",
     "outDir": "build",
     "rootDir": "src"

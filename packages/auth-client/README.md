@@ -41,7 +41,7 @@ To use a custom RPC, pass an RPC URL to the viem connector.
 
 Type: `Ethereum`
 
-Example: `viemConnector("http://mainnet.optimism.io")`
+Example: `viemConnector({ rpcUrl: "http://mainnet.optimism.io" })`
 
 ##### relay (optional)
 
@@ -353,7 +353,7 @@ To use a custom RPC, pass an RPC URl to the viem connector.
 
 Type: `Ethereum`
 
-Example: `viem("http://mainnet.optimism.io")`
+Example: `viemConnector({ rpcUrl: "http://mainnet.optimism.io" })`
 
 ##### relay (optional)
 

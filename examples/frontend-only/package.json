@@ -13,8 +13,7 @@
     "@farcaster/auth-kit": "workspace:*",
     "react": "^18.2.43",
     "react-dom": "^18.2.43",
-    "viem": "^2.29.1",
-    "vite-plugin-node-polyfills": "^0.28.0"
+    "viem": "^2.29.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

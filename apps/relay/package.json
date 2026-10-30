@@ -11,7 +11,7 @@
     "start": "pnpm build && node build/app.js start"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "dependencies": {
     "@farcaster/hub-nodejs": "^0.11.24",

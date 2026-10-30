@@ -34,15 +34,15 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.43",
-    "@vanilla-extract/vite-plugin": "^3.9.3",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vanilla-extract/vite-plugin": "^5.2.6",
+    "@vitejs/plugin-react": "^4.7.0",
     "react": "^18.2.43",
     "react-dom": "^18.2.43",
     "typescript": "^5.2.2",
     "viem": "^2.29.2",
-    "vite": "^5.4.19",
+    "vite": "^6.4.5",
     "vite-plugin-dts": "^3.9.1",
-    "vite-plugin-node-polyfills": "^0.23.0"
+    "vite-plugin-node-polyfills": "^0.28.0"
   },
   "peerDependencies": {
     "react": ">= 17",

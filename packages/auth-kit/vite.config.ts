@@ -13,6 +13,7 @@ export default defineConfig({
       formats: ["es"],
       entry: resolve(__dirname, "src/index.ts"),
       fileName: "auth-kit",
+      cssFileName: "style",
     },
     rollupOptions: {
       external: ["react", "react/jsx-runtime", "react-dom", "@farcaster/auth-client"],

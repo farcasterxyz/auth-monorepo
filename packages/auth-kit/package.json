@@ -41,8 +41,7 @@
     "typescript": "^5.2.2",
     "viem": "^2.29.2",
     "vite": "^6.4.5",
-    "vite-plugin-dts": "^3.9.1",
-    "vite-plugin-node-polyfills": "^0.28.0"
+    "vite-plugin-dts": "^4.5.4"
   },
   "peerDependencies": {
     "react": ">= 17",

@@ -448,7 +448,7 @@ describe("relay server", () => {
         },
         metadata: {
           ip: "127.0.0.1",
-          userAgent: "axios/1.9.0",
+          userAgent: `axios/${axios.VERSION}`,
         },
       });
     });

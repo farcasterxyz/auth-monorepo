@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "viem": "^2.37.13",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.12"
   },
   "files": [
     "dist"

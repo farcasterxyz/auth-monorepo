@@ -15,6 +15,19 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(monorepoRoot, 'node_modules'),
 ];
+// 3. Resolve React from this app so workspace packages (e.g. auth-kit, which has its
+// own React devDependency) don't bundle a second copy and break hooks
+const singletons = ['react', 'react-dom'];
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (singletons.some((name) => moduleName === name || moduleName.startsWith(`${name}/`))) {
+    return context.resolveRequest(
+      { ...context, originModulePath: path.join(projectRoot, 'package.json') },
+      moduleName,
+      platform,
+    );
+  }
+  return context.resolveRequest(context, moduleName, platform);
+};
 
 module.exports = config;
 

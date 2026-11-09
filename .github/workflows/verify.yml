@@ -45,8 +45,9 @@ jobs:
     needs: checks
 
     strategy:
+      fail-fast: false
       matrix:
-        node_version: [20, 22]
+        node_version: [22, 24, 26]
 
     env:
       DOCKER_USER:  ${{ vars.FARCASTERXYZ_DOCKER_HUB_USER }}
@@ -58,6 +59,8 @@ jobs:
 
       - name: Install dependencies
         uses: ./.github/actions/install-dependencies
+        with:
+          node-version: ${{ matrix.node_version }}
 
       - name: Run build
         run: pnpm build
